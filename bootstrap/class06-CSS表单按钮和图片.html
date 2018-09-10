@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">  
+<title>CSS表单、按钮和图片</title>
+</head>
+<!--role的作用是描述一个非标准的tag的实际作用。比如用div做button，那么设置div 的 role=“button”，辅助工具就可以认出这实际上是个button
+比如，
+
+<div role="checkbox" aria-checked="checked"></div>
+辅助工具就会知道，这个div实际上是个checkbox的角色，为选中状态。-->
+<body>
+	<form role="form"> <!--role属性-->
+		<div class="form-group">
+			<label>用户名</label>
+			<input type="email" class="form-control" placeholder="Enter email">
+			<!--placeholder 是做提示用的，占位符，就是你一个输入框还没输入的时候，里面就实现是placeholder的内容-->
+		</div>
+		<div class="form-group">
+			<label>密码</label>
+			<input type="password" class="form-control" placeholder="Enter password">
+			<!--placeholder 是做提示用的，占位符，就是你一个输入框还没输入的时候，里面就实现是placeholder的内容-->
+		</div>
+		<div class="form-group">
+			<label>
+				<input type="file">
+				<p class="help-block"> 选择你需要的文件</p>
+			</label>
+		</div>
+	</form>
+
+	<!--创建内联表单,表单宽度将会变成自适应-->
+	<form role="form" class="form-inline"> <!--role属性-->
+		<div class="form-group">
+			<label>用户名</label>
+			<input type="email" class="form-control" placeholder="Enter email">
+			<!--placeholder 是做提示用的，占位符，就是你一个输入框还没输入的时候，里面就实现是placeholder的内容-->
+		</div>
+		<br>
+		<div class="form-group">
+			<label class="sr-only">密码</label>
+			<input type="password" class="form-control" placeholder="Enter password">
+			<!--placeholder 是做提示用的，占位符，就是你一个输入框还没输入的时候，里面就实现是placeholder的内容-->
+		</div>
+		<br>
+		<div class="form-group">
+			<<label>
+				<input type="file">
+				<p class="help-block"> 选择你需要的文件</p>
+			</label>
+		</div>
+	</form>
+
+	<!--创建水平排列的表单-->
+	<form class="form-horizontal" role="form">
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Email</label>
+			<div class="col-sm-10">
+				<input type="email" placeholder="Email" class="form-control">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Password</label>
+			<div class="col-sm-10">
+				<input type="password" placeholder="password" class="form-control">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<div class="checkbox">
+					<labe>
+						<input type="checkbox">记住密码
+					</label>					
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10" >
+				<button type="submit" class="btn btn-default">登录</button>
+			</div>
+		</div>
+	</form>
+		
+	</form>
+</body>
+</html>

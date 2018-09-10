@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">  
+<title>表单样式</title>
+
+<body>
+	<form role="form">
+		<input type="text" class="form-control">
+		<textarea class="form-control" rows="5">Hello</textarea>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" value="">
+				吃橘子	
+			</label>
+		</div>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" value="">
+				吃苹果
+			</label>
+		</div>
+
+		<div class="radio">
+			<label>
+				<input name="optionsRadios" type="radio" checked>
+				男
+			</label>
+		</div>
+		<div class="radio">
+			<label>
+				<input name="optionsRadios" type="radio" >
+				女
+			</label>
+		</div>
+
+		<select class="form-control">
+			<option>1</option>
+			<option>2</option>
+			<option>3</option>
+			<option>4</option>
+		</select>
+		<!--静态控件-->
+		<p class="form-control-static">请按照我的格式输入：hello@163.com</p>
+		<!--焦点状态就是鼠标点到框里有阴影状态-->
+		<input class="form-control" type="text" placeholder="hello" disabled="">
+		<input class="form-control" type="text" placeholder="hello" readonly=""><!--只读可复制-->
+	</form>
+
+	<!--表单全部禁用fieldset-->
+	<form role="form">
+		<fieldset disabled="">
+			<input type="text" class="form-control">
+		<textarea class="form-control" rows="5">Hello</textarea>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" value="">
+				吃橘子	
+			</label>
+		</div>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" value="">
+				吃苹果
+			</label>
+		</div>
+
+		<div class="radio">
+			<label>
+				<input name="optionsRadios" type="radio" checked>
+				男
+			</label>
+		</div>
+		<div class="radio">
+			<label>
+				<input name="optionsRadios" type="radio" >
+				女
+			</label>
+		</div>
+
+		<select class="form-control">
+			<option>1</option>
+			<option>2</option>
+			<option>3</option>
+			<option>4</option>
+		</select>
+		<!--静态控件-->
+		<p class="form-control-static">请按照我的格式输入：hello@163.com</p>
+		<!--焦点状态就是鼠标点到框里有阴影状态-->
+		<input class="form-control" type="text" placeholder="hello" disabled="">
+		</fieldset>
+		
+	</form>
+	<br>
+
+	<form role="form" class="col-xs-5">
+		<div class="form-group has-warning has-feedback ">
+			<label>用户ing</label>
+			<input class="form-control" type="text">
+			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+		</div>
+		<div class="form-group has-success">
+			<label>用户ing</label>
+			<input class="form-control" type="text">
+		</div>
+		<div class="form-group has-error">
+			<label>用户ing</label>
+			<input class="form-control" type="text">
+		</div>
+	</form>
+</body>
+</html>

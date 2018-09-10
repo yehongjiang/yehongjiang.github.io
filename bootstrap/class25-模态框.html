@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit"> 
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!--<link rel="stylesheet" href="css/bootstrap.min.css">-->
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"> 
+<style type="text/css">
+
+</style>
+<title>模态框</title>
+<!--低版本浏览器不支持CSS3开始-->
+<body>
+	<button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-example-modal-lg">
+		启动大modal
+	</button>	
+
+	<div class="modal fade bs-example-modal-lg" tabindex="-1"  role="dialog" aria-labelledby="myLargeModallabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				这是一个大的模态框
+			</div>
+		</div>
+	</div>
+
+	<button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-example-modal-sm">
+		启动小modal
+	</button>	
+
+	<div class="modal fade bs-example-modal-sm" tabindex="-1"  role="dialog" aria-labelledby="myLargeModallabel" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				这是一个小的模态框
+			</div>
+		</div>
+	</div>
+
+	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Open modal for @mdo		
+	</button>
+	<div class="modal fade" id="exampleModal" tabindex="-1"  role="dialog" aria-labelledby="exampleModal" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="exampleModalLable">New Message</h4>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="recipient-name" class="control-label">Recipient</label>
+							<input class="form-control" type="text" id="recipient-name">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">
+						close
+					</button>
+					<button type="button" class="btn btn-primary">send</button>
+				</div>
+			</div>
+		</div>
+	</div>
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    	$("#exampleModal").on("show.bs.modal",function(event){
+    		var button = $(event.relatedTarget)
+    		var recipient = button.data("whatever")
+    		var modal = $(this);
+    		modal.find(".modal-title").text("New Message to"+recipient);
+    		modal.find(".modal-body input").val(recipient)
+    	})
+    </script>
+</body>
+</html>
