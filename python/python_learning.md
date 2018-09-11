@@ -1,4 +1,4 @@
-# Python3学习
+# Python3基础
 ## 输入和输出
 1）输出  
 <pre>>>>print('hello, world')</pre>
@@ -139,3 +139,53 @@ tips:tuple的陷阱：当你定义一个tuple时，在定义的时候，tuple的
 >>> t = (1,)
 >>> t
 (1,)</pre>
+## 条件判断  
+tips:elif 相当于 C++的else if  
+<pre>if x:
+    print('True')</pre>
+只要x是非零数值、非空字符串、非空list等，就判断为True，否则为False。  
+## 循环
+<pre>>>> list(range(5))
+[0, 1, 2, 3, 4]</pre>
+## 使用dict和set
+1）dict就是字典，c++中的map  
+<pre>>>> d = {'Michael': 95, 'Bob': 75, 'Tracy': 85}
+>>> d['Michael']
+95</pre>
+tips:如果key不存在，dict就会报错  
+tips:要避免key不存在的错误，有两种办法，一是通过in判断key是否存在  
+tips:二是通过dict提供的get()方法，如果key不存在，可以返回None，或者自己指定的value：
+<pre>>>> d.get('Thomas')
+>>> d.get('Thomas', -1)
+-1</pre>
+要删除一个key，用pop(key)方法，对应的value也会从dict中删除：
+<pre>
+>>> d.pop('Bob')
+75
+>>> d
+{'Michael': 95, 'Tracy': 85}</pre>  
+tips:请务必注意，dict内部存放的顺序和key放入的顺序是没有关系的。  
+tips:要保证hash的正确性，作为key的对象就不能变。在Python中，字符串、整数等都是不可变的，因此，可以放心地作为key。而list是可变的，就不能作为key  
+2）set就是C++里的set意思
+要创建一个set，需要提供一个list作为输入集合：
+<pre>
+>>> s = set([1, 1, 2, 3])
+>>> s
+{1, 2, 3}</pre>
+通过add(key)方法可以添加元素到set中  
+通过remove(key)方法可以删除元素  
+和C++不同的是python的set不会自动排序，但是可以通过sort()方法
+<pre>
+>>> a = 'abc'
+>>> b = a.replace('a', 'A')
+>>> b
+'Abc'
+>>> a
+'abc'
+>>> a.replace('ab','C')
+>>> a
+'C'
+>>> a.replace('ac','C')
+>>> a
+'abc'
+</pre>
