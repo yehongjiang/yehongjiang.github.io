@@ -66,3 +66,45 @@ import math语句表示导入math包，并允许后续代码引用math包里的s
 (151.96152422706632, 70.0)</pre>
 原来返回值是一个tuple！但是，在语法上，返回一个tuple可以省略括号，而多个变量可以同时接收一个tuple，按位置赋给对应的值，所以，Python的函数返回多值其实就是返回一个tuple，但写起来更方便。  
 ## 函数的参数
+1）默认参数  
+由于我们经常计算x2，所以，完全可以把第二个参数n的默认值设定为2：
+<pre>
+def power(x, n=2):
+    s = 1
+    while n > 0:
+        n = n - 1
+        s = s * x
+    return s</pre>
+这样，当我们调用power(5)时，相当于调用power(5, 2)：
+<pre>
+>>> power(5)
+25
+>>> power(5, 2)
+25</pre>
+tips:一是必选参数在前，默认参数在后  
+2）可变参数  
+<pre>
+def calc(numbers):
+    sum = 0
+    for n in numbers:
+        sum = sum + n * n
+    return sum</pre>
+但是调用的时候，需要先组装出一个list或tuple：
+<pre>
+>>> calc([1, 2, 3])
+14
+>>> calc((1, 3, 5, 7))
+84</pre>
+如果利用可变参数，调用函数的方式可以简化成这样：
+<pre>
+>>> calc(1, 2, 3)
+14
+>>> calc(1, 3, 5, 7)
+84</pre>
+所以，我们把函数的参数改为可变参数：
+<pre>
+def calc(*numbers):
+    sum = 0
+    for n in numbers:
+        sum = sum + n * n
+    return sum</pre>
