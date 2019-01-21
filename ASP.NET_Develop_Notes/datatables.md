@@ -64,6 +64,15 @@ $(function(){
     });
 });
 </pre>
+## 设置排序规则  
+<pre>
+$(function(){
+    $('#dyntable2').dataTable({
+        "aaSorting": [[ 4, "desc" ]]  //以序号为4也就是第5列进行降序排列
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0 ] }]         //初始化datatable，但对序号为0列的列不进行排序，别的列均可进行排序
+     });
+});
+</pre>
 ## 不同的分页样式  
 
 [仔细阅读官网的内容，会有收获的](https://datatables.net/examples/styling/bootstrap.html)
