@@ -1,0 +1,45 @@
+﻿@model tryadonet.Models.Student
+@{
+    Layout = null;
+}
+@if(Model == null && ViewData["ID"]==null)
+{
+    Response.Redirect("Index", true);   //后面的bool值为是否停止执行当前页。跳转向新的页面，原窗口被代替。
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Detail</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div> 
+        <table class="table table-striped">
+            <tr>
+                <td>学号</td>
+                <td>@Model.stu_id</td>
+            </tr>
+            <tr>
+                <td>姓名</td>
+                <td>@Model.stu_name</td>
+            </tr>
+            <tr>
+                <td>性别</td>
+                <td>@Model.stu_sex</td>
+            </tr>
+            <tr>
+                <td>年龄</td>
+                <td>@Model.stu_age</td>
+            </tr>
+            <tr>
+                <td>专业</td>
+                <td>@Model.stu_dept</td>
+            </tr>
+            <tr><td colspan="2"><button class="btn btn-warning btn-block" onclick="window.location.href='Index'">返回</button></td></tr>
+        </table>
+
+    </div>
+</body>
+</html>

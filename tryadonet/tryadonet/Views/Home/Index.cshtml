@@ -1,0 +1,103 @@
+﻿
+@model List<tryadonet.Models.Student>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <style>
+        form {
+            margin: 0px;
+            display: inline;
+        }
+    </style>
+
+</head>
+<body>
+    <div>
+        <p></p>
+        <table class="table table-bordered table-hover table-striped" id="table_id_example">
+            <thead>
+                <tr>
+                    <th>学号</th>
+                    <th>学生姓名</th>
+                    <th>性别</th>
+                    <th>年龄</th>
+                    <th>所学专业</th>
+                    <th>相关操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>@item.stu_id </td>
+                        <td>@item.stu_name</td>
+                        <td>@item.stu_sex</td>
+                        <td>@item.stu_age</td>
+                        <td>@item.stu_dept</td>
+                        <td>
+                            @using (@Html.BeginForm("OutTable", "Home", FormMethod.Post))
+                            {
+                                <button class="btn btn-primary btn-xs" type="submit" name="output"  value="@item.stu_id" onclick="">导出表格</button>
+                            }
+                            @using (@Html.BeginForm("DeleteInfo", "Home", FormMethod.Post))
+                            {
+                                <button class="btn btn-danger btn-xs" type="submit" value="@item.stu_id" name="del" id="del" onclick="return confirm('确定删除吗？？？')">删除</button>
+                            }
+                            @using (@Html.BeginForm("Detail", "Home", FormMethod.Post))
+                            {
+                                <button class="btn btn-default btn-xs" type="submit" name="output" value="@item.stu_id" onclick="">详细信息</button>
+                            }
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+
+
+        <a href="AddStudent">新增人员</a>
+    </div>
+</body>
+</html>
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.13/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+<!--第三步：初始化Datatables-->
+
+<script type="text/javascript">
+    $(function () {
+        $("#table_id_example").dataTable({
+            searching: true,//搜索
+            lengthMenu: [10, 2, 5, 10, 20, 30],
+            "bSort": false,
+        });
+    });
+
+</script>
+
+<script type="text/javascript">
+
+    $(function () {
+        $("#submitButton").click(function () {
+            var data = $('#submitButton').val();
+            $.post("/HomeController/DeleteInfo", { frontViewData: data }, function () {
+                alert("submit data is OK!");
+            });
+        });
+    })
+</script>

@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+您 Web 项目的发布/打包进程将使用此文件。您可以通过编辑此 MSBuild 文件
+来自定义该进程的行为。若要了解与此相关的详细信息，请访问 http://go.microsoft.com/fwlink/?LinkID=208121。
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>G:\TestWeb</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="ApplicationInsights.config">
+      <publishTime>01/16/2019 19:31:32</publishTime>
+    </File>
+    <File Include="bin/ApplicationInsights.config">
+      <publishTime>01/16/2019 19:31:32</publishTime>
+    </File>
+    <File Include="bin/Gma.QrCodeNet.Encoding.dll">
+      <publishTime>05/13/2016 15:36:04</publishTime>
+    </File>
+    <File Include="bin/ICSharpCode.SharpZipLib.dll">
+      <publishTime>08/15/2018 17:16:34</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.Agent.Intercept.dll">
+      <publishTime>12/07/2015 19:04:38</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.DependencyCollector.dll">
+      <publishTime>03/10/2016 14:26:18</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.PerfCounterCollector.dll">
+      <publishTime>03/10/2016 14:26:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.ServerTelemetryChannel.dll">
+      <publishTime>03/09/2016 12:00:14</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.Web.dll">
+      <publishTime>03/10/2016 14:26:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.WindowsServer.dll">
+      <publishTime>03/10/2016 14:26:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ApplicationInsights.dll">
+      <publishTime>03/09/2016 11:57:34</publishTime>
+    </File>
+    <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
+      <publishTime>06/15/2015 02:06:24</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>04/23/2012 15:23:58</publishTime>
+    </File>
+    <File Include="bin/NPOI.dll">
+      <publishTime>12/17/2018 19:15:12</publishTime>
+    </File>
+    <File Include="bin/NPOI.OOXML.dll">
+      <publishTime>12/17/2018 19:15:12</publishTime>
+    </File>
+    <File Include="bin/NPOI.OpenXml4Net.dll">
+      <publishTime>12/17/2018 19:15:12</publishTime>
+    </File>
+    <File Include="bin/NPOI.OpenXmlFormats.dll">
+      <publishTime>12/17/2018 19:15:12</publishTime>
+    </File>
+    <File Include="bin/QRCoder.dll">
+      <publishTime>11/23/2018 09:54:56</publishTime>
+    </File>
+    <File Include="bin/roslyn/csc.exe">
+      <publishTime>06/18/2015 20:19:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.Build.Tasks.CodeAnalysis.dll">
+      <publishTime>06/18/2015 20:19:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.CSharp.dll">
+      <publishTime>06/18/2015 20:19:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.dll">
+      <publishTime>06/18/2015 20:19:44</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.VisualBasic.dll">
+      <publishTime>06/18/2015 20:19:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CSharp.Core.targets">
+      <publishTime>06/18/2015 20:19:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.VisualBasic.Core.targets">
+      <publishTime>06/18/2015 20:19:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Collections.Immutable.dll">
+      <publishTime>06/18/2015 20:19:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Reflection.Metadata.dll">
+      <publishTime>06/18/2015 20:19:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/vbc.exe">
+      <publishTime>06/18/2015 20:19:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/VBCSCompiler.exe">
+      <publishTime>06/18/2015 20:19:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/VBCSCompiler.exe.config">
+      <publishTime>06/18/2015 20:19:46</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>01/28/2015 04:04:30</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>01/28/2015 04:02:18</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>01/28/2015 04:02:32</publishTime>
+    </File>
+    <File Include="bin/System.Web.Webpages.Deployment.dll">
+      <publishTime>01/28/2015 04:04:30</publishTime>
+    </File>
+    <File Include="bin/System.Web.Webpages.dll">
+      <publishTime>01/28/2015 04:04:30</publishTime>
+    </File>
+    <File Include="bin/System.Web.Webpages.Razor.dll">
+      <publishTime>01/28/2015 04:04:30</publishTime>
+    </File>
+    <File Include="bin/ThoughtWorks.QRCode.dll">
+      <publishTime>06/29/2015 16:49:52</publishTime>
+    </File>
+    <File Include="bin/tryadonet.dll">
+      <publishTime>02/21/2019 22:33:07</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Helpers.resources.dll">
+      <publishTime>01/28/2015 04:04:32</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Mvc.resources.dll">
+      <publishTime>01/28/2015 04:02:22</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Razor.resources.dll">
+      <publishTime>01/28/2015 04:02:34</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Webpages.Deployment.resources.dll">
+      <publishTime>01/28/2015 04:04:32</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Webpages.Razor.resources.dll">
+      <publishTime>01/28/2015 04:04:32</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Webpages.resources.dll">
+      <publishTime>01/28/2015 04:04:32</publishTime>
+    </File>
+    <File Include="Content/bootstrap.css">
+      <publishTime>01/16/2019 19:31:51</publishTime>
+    </File>
+    <File Include="Content/bootstrap.min.css">
+      <publishTime>01/16/2019 19:31:51</publishTime>
+    </File>
+    <File Include="Content/footable.bootstrap.css">
+      <publishTime>01/20/2019 00:02:50</publishTime>
+    </File>
+    <File Include="Content/footable.bootstrap.min.css">
+      <publishTime>01/20/2019 00:02:50</publishTime>
+    </File>
+    <File Include="Content/jquery.dataTables.min.css">
+      <publishTime>01/20/2019 00:17:20</publishTime>
+    </File>
+    <File Include="Excel/template.xls">
+      <publishTime>01/24/2019 22:19:18</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>01/16/2019 19:31:24</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>02/12/2019 21:23:58</publishTime>
+    </File>
+    <File Include="scripts/bootstrap-table-export.js">
+      <publishTime>01/17/2019 23:06:25</publishTime>
+    </File>
+    <File Include="scripts/bootstrap-table.js">
+      <publishTime>01/17/2019 23:06:25</publishTime>
+    </File>
+    <File Include="scripts/bootstrap.min.js">
+      <publishTime>01/17/2019 23:06:25</publishTime>
+    </File>
+    <File Include="scripts/footable.js">
+      <publishTime>01/20/2019 00:03:01</publishTime>
+    </File>
+    <File Include="scripts/footable.min.js">
+      <publishTime>01/20/2019 00:03:01</publishTime>
+    </File>
+    <File Include="scripts/jquery-1.11.0.min.js">
+      <publishTime>01/19/2019 23:18:35</publishTime>
+    </File>
+    <File Include="scripts/jquery-2.1.1.js">
+      <publishTime>01/30/2019 20:09:29</publishTime>
+    </File>
+    <File Include="scripts/jquery-2.1.1.min.js">
+      <publishTime>01/30/2019 20:09:29</publishTime>
+    </File>
+    <File Include="scripts/jquery-2.1.1.min.map">
+      <publishTime>01/30/2019 20:09:29</publishTime>
+    </File>
+    <File Include="scripts/jquery.base64.js">
+      <publishTime>01/17/2019 23:06:25</publishTime>
+    </File>
+    <File Include="scripts/jquery.dataTables.min.js">
+      <publishTime>01/20/2019 00:17:15</publishTime>
+    </File>
+    <File Include="scripts/jquery.min.js">
+      <publishTime>01/17/2019 23:06:25</publishTime>
+    </File>
+    <File Include="scripts/jquery.qrcode.min.js">
+      <publishTime>01/25/2019 21:45:10</publishTime>
+    </File>
+    <File Include="scripts/nugetexample.js">
+      <publishTime>01/30/2019 20:09:32</publishTime>
+    </File>
+    <File Include="scripts/paginathing.js">
+      <publishTime>01/19/2019 23:18:35</publishTime>
+    </File>
+    <File Include="scripts/paginathing.min.js">
+      <publishTime>01/19/2019 23:18:35</publishTime>
+    </File>
+    <File Include="scripts/tableExport.js">
+      <publishTime>01/17/2019 23:06:25</publishTime>
+    </File>
+    <File Include="Views/Home/AddStudent.cshtml">
+      <publishTime>01/17/2019 21:39:34</publishTime>
+    </File>
+    <File Include="Views/Home/Ajax.cshtml">
+      <publishTime>02/19/2019 20:13:30</publishTime>
+    </File>
+    <File Include="Views/Home/Detail.cshtml">
+      <publishTime>01/26/2019 12:32:00</publishTime>
+    </File>
+    <File Include="Views/Home/Index.cshtml">
+      <publishTime>01/26/2019 08:38:42</publishTime>
+    </File>
+    <File Include="Views/Home/QRCoder.cshtml">
+      <publishTime>02/20/2019 22:55:17</publishTime>
+    </File>
+    <File Include="Views/Home/tag.cshtml">
+      <publishTime>01/21/2019 21:23:05</publishTime>
+    </File>
+    <File Include="Views/web.config">
+      <publishTime>01/16/2019 19:31:24</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>01/26/2019 09:13:07</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

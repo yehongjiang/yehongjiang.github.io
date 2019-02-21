@@ -1,0 +1,30 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>AddStudent</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="divid">789798797</div>
+    <div class="jumbotron">
+        @using (@Html.BeginForm("AddStudent","Home",FormMethod.Post))
+        {
+            <input type="text" placeholder="stu_id" class="form-control" name="ID">
+            <input type="text" placeholder="stu_name" class="form-control" name="Name">
+            <input type="text" placeholder="stu_sex" class="form-control" name="Sex">
+            <input type="text" placeholder="stu_age" class="form-control" name="Age">
+            <input type="text" placeholder="stu_dept" class="form-control" name="Dept">
+            <button type="submit" class="btn btn-warning btn-block"  >添加学生数据</button>
+
+        }
+
+    </div>
+</body>
+</html>
