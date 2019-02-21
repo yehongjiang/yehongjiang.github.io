@@ -1,0 +1,132 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>瓯江口污水厂综合管理系统</title>
+    <link rel="shortcut icon" href="~/images/logo.ico" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #1a2a39;
+        }
+
+        .jumbotron {
+            background-color: white;
+        }
+
+        .header {
+            color: white;
+            text-align: center;
+        }
+
+        .footer {
+            color: white;
+        }
+
+        .ropdown-menu {
+        }
+    </style>
+
+
+</head>
+<body>
+
+    <div id="TheWayToVertical" class="container">
+        <div class="header">
+            <h1><strong>污水厂综合管理系统</strong></h1>
+            <p>Comprehensive Management System Of Sewage Plant</p>
+        </div>
+        <div class="jumbotron">
+            <form>
+                <input type="text" class="form-control" placeholder="请输入用户名" aria-describedby="basic-addon1">
+                <p></p>
+                <input type="password" class="form-control" placeholder="请输入密码" aria-describedby="basic-addon1">
+
+                <label>
+                    <input type="checkbox" value="remenber-me" />
+                    <font size="2">
+                        是否记住登录状态
+                    </font>
+                </label>
+                <button type="button" class="btn btn-warning btn-block"><strong>登录</strong></button>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle  btn-block " type="button" data-toggle="dropdown">
+                        更多More
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu btn-block text-center" role="menu" aria-labelledby="dropdownMenu1">
+                        <li><a href="Register.aspx" role="menuitem">申请注册</a></li>
+                        <li><a href="#" role="menuitem">密码找回</a></li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <footer class="footer ">
+        <div class="container">
+            <div class="row footer-top">
+                <div class="col-md-6 col-lg-6">
+                    <h4>
+                        <img src="~/images/oujiangkou.png">
+                    </h4>
+                    <p>Address：温州市洞头区灵昆街道九村路利民桥尽头</p>
+                </div>
+                <div class="col-md-6  col-lg-5 col-lg-offset-1">
+                    <div class="row about">
+                        <div class="col-md-3">
+                        </div>
+                        <div class="col-sm-3">
+                        </div>
+                        <div class="col-md-3">
+                            <h4>友情链接</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="http://www.wzgytz.com/" target="_blank">温州公用集团</a></li>
+                                <li><a href="http://www.wzpsgs.com/" target="_blank">温州排水公司</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <h4>联系方式</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="" title="就不告诉你" target="_blank">新浪微博</a></li>
+                                <li><a href="mailto:1161963076@qq.com">电子邮件</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row footer-bottom">
+                <ul class="list-inline text-center">
+                    <li>Copyright © oujiangkou  - 2019</li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+
+</body>
+
+
+
+
+</html>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script>
+    if (window.innerHeight)
+        winHeight = window.innerHeight;
+    else if ((document.body) && (document.body.clientHeight))
+        winHeight = document.body.clientHeight;
+    var temp = document.getElementById("TheWayToVertical");
+    temp.style.marginTop = (winHeight / 8) + "px";
+
+    //<!--这个cg就是span的id，初始化Date时间并转化为字符string类型,每1000毫秒，setInterval() 就会调用函数，直到被关闭。-->
+    setInterval("cg.innerHTML=new Date().toLocaleString()", 1000);
+</script>

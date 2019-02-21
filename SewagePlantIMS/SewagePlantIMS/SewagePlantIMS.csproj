@@ -192,7 +192,7 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ElectricManageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -203,28 +203,8 @@
     <Content Include="assets\css\admin.css" />
     <Content Include="assets\css\amazeui.min.css" />
     <Content Include="assets\css\app.css" />
-    <Content Include="assets\img\32.jpg" />
-    <Content Include="assets\img\43.jpg" />
-    <Content Include="assets\img\a1.png" />
-    <Content Include="assets\img\a10.png" />
-    <Content Include="assets\img\a2.png" />
-    <Content Include="assets\img\a3.png" />
-    <Content Include="assets\img\a4.png" />
-    <Content Include="assets\img\a5.png" />
-    <Content Include="assets\img\a6.png" />
-    <Content Include="assets\img\a7.png" />
-    <Content Include="assets\img\a8.png" />
-    <Content Include="assets\img\a9.png" />
-    <Content Include="assets\img\lbbg.png" />
     <Content Include="assets\img\logo.png" />
     <Content Include="assets\img\syncfusion-icons-white.png" />
-    <Content Include="assets\img\user01.png" />
-    <Content Include="assets\img\user02.png" />
-    <Content Include="assets\img\user03.png" />
-    <Content Include="assets\img\user04.png" />
-    <Content Include="assets\img\user05.png" />
-    <Content Include="assets\img\user06.png" />
-    <Content Include="assets\img\user07.png" />
     <Content Include="assets\i\app-icon72x72%402x.png" />
     <Content Include="assets\i\examples\admin-chrome.png" />
     <Content Include="assets\i\examples\admin-firefox.png" />
@@ -265,6 +245,7 @@
     <Content Include="assets\fonts\fontawesome-webfont.woff" />
     <Content Include="assets\fonts\fontawesome-webfont.woff2" />
     <Content Include="assets\fonts\FontAwesome.otf" />
+    <None Include="Properties\PublishProfiles\SewagePlantIMS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -288,7 +269,8 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Manage\Index.cshtml" />
+    <Content Include="Views\ElectricManage\Index.cshtml" />
+    <Content Include="Views\ElectricManage\ElectricalEquipment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

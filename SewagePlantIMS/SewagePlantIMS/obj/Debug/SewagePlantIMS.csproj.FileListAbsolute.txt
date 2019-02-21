@@ -1,4 +1,3 @@
-G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\obj\Debug\SewagePlantIMS.csprojResolveAssemblyReference.cache
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\ApplicationInsights.config
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\roslyn\csc.exe
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
