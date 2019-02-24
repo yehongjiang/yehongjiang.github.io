@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "添加电气图片";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>添加设备图片</h2>
+
+@using (@Html.BeginForm("ElectricalPicPost", "ElectricManage", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <table>
+        <tr>
+            <td>
+                <input id="File1" type="file" name="File" />
+            </td>
+            <td>
+                <button type="submit" value="@ViewBag.elec_id" name="id" class="btn btn-success">提交图片</button>
+            </td>
+        </tr>
+    </table>
+}
+

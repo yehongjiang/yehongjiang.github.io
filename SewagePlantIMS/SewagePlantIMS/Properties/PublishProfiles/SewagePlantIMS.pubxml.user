@@ -16,7 +16,7 @@
       <publishTime>02/19/2019 20:56:57</publishTime>
     </File>
     <File Include="assets/css/amazeui.min.css">
-      <publishTime>02/19/2019 20:56:57</publishTime>
+      <publishTime>02/23/2019 14:29:35</publishTime>
     </File>
     <File Include="assets/css/app.css">
       <publishTime>02/19/2019 20:56:57</publishTime>
@@ -110,6 +110,9 @@
     </File>
     <File Include="bin/EntityFramework.SqlServer.dll">
       <publishTime>03/02/2015 09:32:26</publishTime>
+    </File>
+    <File Include="bin/Gma.QrCodeNet.Encoding.dll">
+      <publishTime>03/17/2013 13:26:30</publishTime>
     </File>
     <File Include="bin/Microsoft.AI.Agent.Intercept.dll">
       <publishTime>12/07/2015 19:04:38</publishTime>
@@ -217,7 +220,7 @@
       <publishTime>06/18/2015 20:19:46</publishTime>
     </File>
     <File Include="bin/SewagePlantIMS.dll">
-      <publishTime>02/20/2019 23:25:37</publishTime>
+      <publishTime>02/24/2019 21:03:34</publishTime>
     </File>
     <File Include="bin/System.Web.Helpers.dll">
       <publishTime>01/28/2015 04:04:30</publishTime>
@@ -337,7 +340,7 @@
       <publishTime>01/13/2019 21:49:10</publishTime>
     </File>
     <File Include="packages.config">
-      <publishTime>02/19/2019 20:39:03</publishTime>
+      <publishTime>02/24/2019 00:21:46</publishTime>
     </File>
     <File Include="Scripts/ai.0.22.9-build00167.js">
       <publishTime>02/19/2019 20:39:02</publishTime>
@@ -384,17 +387,29 @@
     <File Include="Scripts/_references.js">
       <publishTime>02/19/2019 20:58:49</publishTime>
     </File>
+    <File Include="Views/ElectricManage/AddElectrical.cshtml">
+      <publishTime>02/23/2019 20:09:41</publishTime>
+    </File>
     <File Include="Views/ElectricManage/ElectricalEquipment.cshtml">
-      <publishTime>02/20/2019 20:21:31</publishTime>
+      <publishTime>02/23/2019 11:45:08</publishTime>
+    </File>
+    <File Include="Views/ElectricManage/Electrical_List.cshtml">
+      <publishTime>02/24/2019 20:55:49</publishTime>
     </File>
     <File Include="Views/ElectricManage/Index.cshtml">
-      <publishTime>02/20/2019 20:22:18</publishTime>
+      <publishTime>02/23/2019 11:51:43</publishTime>
+    </File>
+    <File Include="Views/ElectricManage/ShowElectrical.cshtml">
+      <publishTime>02/23/2019 17:26:54</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
       <publishTime>02/19/2019 21:22:54</publishTime>
     </File>
+    <File Include="Views/Home/Login.cshtml">
+      <publishTime>02/19/2019 21:22:54</publishTime>
+    </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>02/20/2019 20:22:03</publishTime>
+      <publishTime>02/23/2019 22:27:15</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>02/19/2019 20:38:48</publishTime>
@@ -403,7 +418,7 @@
       <publishTime>02/19/2019 20:38:48</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>02/20/2019 23:20:59</publishTime>
+      <publishTime>02/24/2019 20:09:53</publishTime>
     </File>
   </ItemGroup>
 </Project>

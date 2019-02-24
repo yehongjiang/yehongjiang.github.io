@@ -44,6 +44,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Gma.QrCodeNet.Encoding, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\QrCode.Net.0.4.0.0\lib\net45\Gma.QrCodeNet.Encoding.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.1.2.1\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
@@ -196,6 +200,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Electrical.cs" />
+    <Compile Include="Models\elec_pic.cs" />
+    <Compile Include="Models\technology.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -271,10 +278,16 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\ElectricManage\Index.cshtml" />
     <Content Include="Views\ElectricManage\ElectricalEquipment.cshtml" />
+    <Content Include="Views\ElectricManage\AddElectrical.cshtml" />
+    <Content Include="Views\ElectricManage\ShowElectrical.cshtml" />
+    <Content Include="Views\ElectricManage\Electrical_List.cshtml" />
+    <Content Include="Views\ElectricManage\ElectricalPic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
+    <Folder Include="images\ElectricalPic\" />
+    <Folder Include="QRcode\ElectricQR\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

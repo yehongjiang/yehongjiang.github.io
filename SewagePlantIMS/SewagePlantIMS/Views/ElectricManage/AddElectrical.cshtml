@@ -1,0 +1,33 @@
+﻿@model List<SewagePlantIMS.Models.technology>
+@{
+    ViewBag.Title = "AddElectrical";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.tag = "添加电气设备";
+}
+@using (@Html.BeginForm("AddElectrical_Post", "ElectricManage", FormMethod.Post))
+{
+    <fieldset>
+        <legend style="color:#5b9bd1">基本信息</legend>
+    </fieldset>
+    <div class="am-form-group">
+        <label for="elec_name">电气名称</label>
+        <input type="text" placeholder="请输入电气名称" class="form-control" name="elec_name">
+    </div>
+
+    <div class="am-form-group">
+        <label for="name">所属工艺段</label>
+        <select class="form-control" name="technology_name">
+            @foreach (var item in Model)
+            {
+                <option>@item.title</option>
+            }               
+        </select>
+    </div>
+    <div class="am-form-group">
+        <label>添加备注</label>
+        <textarea class="form-control" rows="4" name="remarks" placeholder="请输入其他相关的内容"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block" >添加电气数据</button>
+    
+}
+<button class="btn btn-default btn-block" onclick="javascrtpt:window.location.href='Electrical_List'">返回</button>

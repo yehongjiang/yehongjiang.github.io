@@ -1,0 +1,48 @@
+﻿@model List<SewagePlantIMS.Models.Electrical>
+@{
+    ViewBag.Title = "设备列表";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <a href="AddElectrical">新增电器设备</a>
+    <table class="table table-bordered table-hover table-striped" id="table_id_example">
+        <thead>
+            <tr>
+                <th>序号</th>
+                <th>名称</th>
+                <th>相关操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.id </td>
+                    <td>@item.elec_name</td>
+
+                    <td>
+                        @using (@Html.BeginForm("DeleteElectrical", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
+                        {
+                            <button class="btn btn-danger btn-xs" type="submit" value="@item.id" name="del" id="del" onclick="return confirm('确定删除吗？？？')">删除</button>                          
+                        }
+                        <button class="btn btn-default btn-xs"  onclick="javascrtpt:window.location.href='ShowElectrical'">展示页</button>
+                        @using (@Html.BeginForm("DownloadQRcode", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
+                        {
+                            <button class="btn btn-warning btn-xs" value="@item.elec_name" name="qrcode" type="submit" >二维码</button>
+                        }
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+
+
+    
+</div>
+
+
+
