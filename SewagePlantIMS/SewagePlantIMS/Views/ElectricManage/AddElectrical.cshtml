@@ -1,6 +1,6 @@
 ﻿@model List<SewagePlantIMS.Models.technology>
 @{
-    ViewBag.Title = "AddElectrical";
+    ViewBag.Title = "添加电气信息";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.tag = "添加电气设备";
 }
@@ -22,6 +22,10 @@
                 <option>@item.title</option>
             }               
         </select>
+    </div>
+    <div class="am-form-group">
+        <label for="elec_power">功率(kw)</label>
+        <input type="text" placeholder="请输入电气功率" class="form-control" name="elec_power">
     </div>
     <div class="am-form-group">
         <label>添加备注</label>

@@ -60,7 +60,7 @@ namespace SewagePlantIMS.Controllers
             string selectID = "select id from dm_technology where title = '" + Request.Form["technology_name"] + "'";
             SqlCommand cmd2 = new SqlCommand(selectID, con);
             var id = cmd2.ExecuteScalar();
-            string sqlStr = "insert into dm_electrical(technology_id,elec_name,remarks) values('" + id + "','" + Request.Form["elec_name"] + "','" + Request.Form["remarks"] + "');";
+            string sqlStr = "insert into dm_electrical(technology_id,elec_name,remarks,elec_power) values('" + id + "','" + Request.Form["elec_name"] + "','" + Request.Form["remarks"] + "','" + Convert.ToDouble(Request.Form["elec_power"]) + "');";
             SqlCommand cmd = new SqlCommand(sqlStr, con);
             int check = cmd.ExecuteNonQuery();
             con.Close();
@@ -68,9 +68,9 @@ namespace SewagePlantIMS.Controllers
                 Response.Write("<script>alert('添加数据成功！！');window.location.href='Index';</script>");
             else
                 Response.Write("<script>alert('添加数据失败！,请手动联系管理员~');</script>");
-            return View("Index");
+            return RedirectToAction("Electrical_List");
         }
-
+        [HttpGet]
         public ActionResult Electrical_List()
         {
             List<Electrical> electrical = new List<Electrical>();
@@ -328,11 +328,11 @@ namespace SewagePlantIMS.Controllers
         }
         //前端下载二维码图片
         public void DownloadQRcode()
-        { 
+        {
             string path = "~/QRcode/ElectricQR/" + Request.Form["qrcode"] + ".png";
             RenderToBrowser(path, Request.Form["qrcode"]);
         }
-        public void RenderToBrowser(string filePath , string picname)
+        public void RenderToBrowser(string filePath, string picname)
         {
             filePath = Server.MapPath(filePath);//路径 
             //以字符流的形式下载文件 
@@ -342,47 +342,111 @@ namespace SewagePlantIMS.Controllers
             fs.Close();
             Response.ContentType = "application/octet-stream";
             //文件名+文件格式 （这里编码采用的是utf-8）
-            Response.AddHeader("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(picname+".png", System.Text.Encoding.UTF8));
+            Response.AddHeader("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(picname + ".png", System.Text.Encoding.UTF8));
             Response.BinaryWrite(bytes);
             Response.Flush();
             Response.End();
         }
 
-
-        //添加设备图片
         [HttpGet]
-        public ActionResult ElectricalPic()
+        public ViewResult ElectricalPic(int id)
+        {
+            ViewBag.elec_id = id;
+            List<elec_pic> elec_pics = new List<elec_pic>();
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            string sqlStr = "select id,pic_url from dm_elec_pic where elec_id = " + ViewBag.elec_id + "; ";
+            SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            elec_pic[] tc = new elec_pic[ds.Tables[0].Rows.Count];
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                tc[mDr] = new elec_pic();
+                tc[mDr].id = Convert.ToInt32(ds.Tables[0].Rows[mDr][0]);
+                tc[mDr].pic_url = ds.Tables[0].Rows[mDr][1].ToString();
+
+                elec_pics.Add(tc[mDr]);
+            }
+            con.Close();
+            return View(elec_pics);
+        }
+        //添加设备图片
+        [HttpPost]
+        public ViewResult ElectricalPic()
         {
             ViewBag.elec_id = Request.Form["id"];
-            return View();
-        }
-        [HttpPost]
-        public ActionResult ElectricalPicPost()
-        {
-            //elec_pic ep = new elec_pic();
-            HttpPostedFileBase ff = Request.Files["File"];
-           /* if (ff != null && ff.ContentLength != 0)
+            List<elec_pic> elec_pics = new List<elec_pic>();
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            string sqlStr = "select id,pic_url from dm_elec_pic where elec_id = " + ViewBag.elec_id + "; ";
+            SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            elec_pic[] tc = new elec_pic[ds.Tables[0].Rows.Count];
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
             {
-                if (!Directory.Exists(Server.MapPath("~images/ElectricalPic/")))
-                {
-                    Directory.CreateDirectory("~images/ElectricalPic/");
-                }
-            }*/
-            string filepath = "C:/Users/11619/Desktop/dsds/456.png";
-            ff.SaveAs(filepath);//在服务器上保存上传文件
-            //string[] readFile = System.IO.File.ReadAllLines(filepath);//读取txt文档存放在字符数组中
+                tc[mDr] = new elec_pic();
+                tc[mDr].id = Convert.ToInt32(ds.Tables[0].Rows[mDr][0]);
+                tc[mDr].pic_url = ds.Tables[0].Rows[mDr][1].ToString();
 
-           /* SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+                elec_pics.Add(tc[mDr]);
+            }
+            con.Close();
+            return View(elec_pics);
+        }
+        public void ElectricalPicPost()
+        {
+            elec_pic ep = new elec_pic();
+            HttpPostedFileBase ff = Request.Files["File"];
+
+            /*if (ff != null && ff.ContentLength != 0)
+             {
+                 if (!Directory.Exists(Server.MapPath("~images/ElectricalPic")))
+                 {
+                     Directory.CreateDirectory("~images/ElectricalPic");
+                 }
+             }*/
+            //修改文件名去掉其原有的扩展名
+            string filename = Request.Form["filename2"];
+            string[] filename_temp = filename.Split('.');
+            filename = filename_temp[0];
+            string filepath = Server.MapPath("/images/ElectricalPic/" + filename + ".png");
+            ff.SaveAs(filepath);//在服务器上保存上传文件
+                                //string[] readFile = System.IO.File.ReadAllLines(filepath);//读取txt文档存放在字符数组中
+
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string sqlStr = "";
+            string sqlStr = "insert into dm_elec_pic (pic_name,pic_url,add_date,elec_id) values('" + filename + "','" + "/images/ElectricalPic/" + filename + ".png" + "','" + DateTime.Now.ToString() + "','" + Request.Form["id"] + "')";
             SqlCommand cmd = new SqlCommand(sqlStr, con);
             int check = cmd.ExecuteNonQuery();
             if (check == 1)
-                Response.Write("<script>alert('添加图片成功！！');window.location.href='Index';</script>");
+            {
+                Response.Write("<script>alert('添加图片成功！！');window.location.href='ElectricalPic?id=" + Request.Form["id"] + " '   ;</script>");
+            }
             else
                 Response.Write("<script>alert('添加图片失败！,请手动联系管理员~');</script>");
-            con.Close();*/
-            return View("Electrical_List");
+            con.Close();
+            //return RedirectToAction("Electrical_List"); //如果直接View就不会执行HttpGet的代码
+            //return ElectricalPic();
+        }
+        //删除对应的图片
+        public void DeletePic()
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "select elec_id from dm_elec_pic  where id =  '"+Request.Form["del_id"]+"'";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int id = Convert.ToInt32(cmd.ExecuteScalar());
+            string sqlStr = "delete from dm_elec_pic where id =  '"+Request.Form["del_id"]+"'";
+            SqlCommand cmd2 = new SqlCommand(sqlStr, con);
+            int check = cmd2.ExecuteNonQuery();
+            con.Close();
+            if (check == 1)
+            {
+                Response.Write("<script>alert('删除图片成功！！');window.location.href='ElectricalPic?id=" + id + " '   ;</script>");
+            }
+            else
+                Response.Write("<script>alert('删除失败！,请手动联系管理员~');</script>");
+
         }
     }
 
