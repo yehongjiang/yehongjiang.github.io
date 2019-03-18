@@ -1,0 +1,69 @@
+﻿@model List<SewagePlantIMS.Models.elec_pic>
+@{
+    ViewBag.Title = "添加电气图片";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+
+    $(function () {
+        $('#sub').click(function () {
+            if ($("#filename").text() == '') {
+                document.getElementById('fileerrorTip1').innerHTML = '您未选取任何需要要添加的图片！！';
+                document.getElementById('fileerrorTip1').style.color = "red";
+                return false;
+            }
+        });
+    });
+    /*function imgUrl() {
+        document.getElementById("imgInit").src = "/images/ElectricalPic/电脑性能测试.png";
+    }*/
+</script>
+
+<fieldset>
+    <legend style="color:#5b9bd1">添加电气图片</legend>
+</fieldset>
+<div class="row">
+    @foreach (var item in Model)
+    {
+
+        <div class=" col-md-3">
+            <div class="thumbnail">
+                    <img src=@item.pic_url id="imgInit" onerror="imgUrl()" widht="100"  height="100" />
+                
+
+                <div class="caption">
+                    @using (@Html.BeginForm("DeletePic", "ElectricManage", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                        <center><p><button href="" class="btn btn-danger" role="button" value=@item.id name="del_id">删除</button></p></center>
+                    }
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
+
+<hr />
+@using (@Html.BeginForm("ElectricalPicPost", "ElectricManage", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <!--<input id="File1" type="file" name="File"/>-->
+    <table>
+        <tr>
+            <td>
+                <a class="input-file input-fileup" href="javascript:;">
+                    + 选择文件<input size="100" type="file" name="file" id="file">
+                </a>
+            </td>
+            <td>
+                <button type="submit" value="@ViewBag.elec_id" name="id" class="btn btn-default btn-sm" id="sub">提交图片</button>
+            </td>
+        </tr>
+    </table>
+
+    <div class="fileerrorTip1" id="fileerrorTip1"></div>
+    <div class="showFileName1" id="filename"></div>
+    <input type="text" name="filename2" style="visibility: hidden;" id="filename2" />
+}
+
+
+

@@ -114,7 +114,7 @@ namespace SewagePlantIMS.Controllers
             string host = Request.Url.Host;
             var port = Request.Url.Port;
 
-            string str = "http://" + host + ":" + port + "/ElectricalManage/ShowElectrical?id=" + id;
+            string str = "http://" + host + ":" + port + "/ElectricManage/ShowElectrical?id=" + id;
             using (var memoryStream = QRCodeHelper.GetQRCode(str, 10))
             {
 
@@ -288,7 +288,7 @@ namespace SewagePlantIMS.Controllers
             float textWidth = text.Length * fontSize;  //文本的长度
                                                        //下面定义一个矩形区域，以后在这个矩形里画上白底黑字
 
-            float rectY = 390;
+            float rectY = 350;
             float rectX = rectY / 2 - rectY / 4;
             float rectWidth = text.Length * (fontSize + 40);
             float rectHeight = fontSize + 40;
@@ -322,13 +322,38 @@ namespace SewagePlantIMS.Controllers
             path = Server.MapPath("~/QRcode/ElectricQR/" + picname + "temp.png");
             System.IO.File.Delete(path);
         }
+        [HttpGet]
+        public ActionResult ShowElectrical(string id)
+        {
+            List<ShowElectrical> electrical = new List<ShowElectrical>();
 
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            string sqlStr = "select dm_electrical.id,title,elec_name,remarks,elec_power,pic_url from dm_electrical,dm_technology,dm_elec_pic where dm_electrical.id = '"+ id +"'and technology_id = dm_technology.id and dm_electrical.id = dm_elec_pic.elec_id; ";
+            SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            ShowElectrical[] E = new ShowElectrical[ds.Tables[0].Rows.Count];
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                E[mDr] = new ShowElectrical();
+                E[mDr].id = Convert.ToInt32(ds.Tables[0].Rows[mDr][0]);
+                E[mDr].technology_name = ds.Tables[0].Rows[mDr][1].ToString();
+                E[mDr].elec_name = ds.Tables[0].Rows[mDr][2].ToString();
+                E[mDr].remarks = ds.Tables[0].Rows[mDr][3].ToString();
+                E[mDr].elec_power = ds.Tables[0].Rows[mDr][4].ToString();
+                E[mDr].pic_url = ds.Tables[0].Rows[mDr][5].ToString();
+
+                electrical.Add(E[mDr]);
+            }
+            return View(electrical);
+        }
+        [HttpPost]
         public ActionResult ShowElectrical()
         {
             List<ShowElectrical> electrical = new List<ShowElectrical>();
 
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
-            string sqlStr = "select dm_electrical.id,title,elec_name,remarks,elec_power,pic_url from dm_electrical,dm_technology,dm_elec_pic where dm_electrical.id = '"+ Request.Form["show"] +"'and technology_id = dm_technology.id and dm_electrical.id = dm_elec_pic.elec_id; ";
+            string sqlStr = "select dm_electrical.id,title,elec_name,remarks,elec_power,pic_url from dm_electrical,dm_technology,dm_elec_pic where dm_electrical.id = '" + Request.Form["show"] + "'and technology_id = dm_technology.id and dm_electrical.id = dm_elec_pic.elec_id; ";
             SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
             DataSet ds = new DataSet();
             da.Fill(ds);

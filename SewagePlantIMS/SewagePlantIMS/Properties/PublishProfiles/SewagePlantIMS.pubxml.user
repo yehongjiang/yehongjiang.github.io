@@ -220,7 +220,7 @@
       <publishTime>06/18/2015 20:19:46</publishTime>
     </File>
     <File Include="bin/SewagePlantIMS.dll">
-      <publishTime>02/24/2019 21:03:34</publishTime>
+      <publishTime>03/18/2019 23:17:46</publishTime>
     </File>
     <File Include="bin/System.Web.Helpers.dll">
       <publishTime>01/28/2015 04:04:30</publishTime>
@@ -388,19 +388,22 @@
       <publishTime>02/19/2019 20:58:49</publishTime>
     </File>
     <File Include="Views/ElectricManage/AddElectrical.cshtml">
-      <publishTime>02/23/2019 20:09:41</publishTime>
+      <publishTime>03/17/2019 11:03:31</publishTime>
     </File>
     <File Include="Views/ElectricManage/ElectricalEquipment.cshtml">
       <publishTime>02/23/2019 11:45:08</publishTime>
     </File>
+    <File Include="Views/ElectricManage/ElectricalPic.cshtml">
+      <publishTime>03/17/2019 21:07:13</publishTime>
+    </File>
     <File Include="Views/ElectricManage/Electrical_List.cshtml">
-      <publishTime>02/24/2019 20:55:49</publishTime>
+      <publishTime>03/18/2019 21:46:39</publishTime>
     </File>
     <File Include="Views/ElectricManage/Index.cshtml">
       <publishTime>02/23/2019 11:51:43</publishTime>
     </File>
     <File Include="Views/ElectricManage/ShowElectrical.cshtml">
-      <publishTime>02/23/2019 17:26:54</publishTime>
+      <publishTime>03/18/2019 22:09:20</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
       <publishTime>02/19/2019 21:22:54</publishTime>
@@ -409,7 +412,7 @@
       <publishTime>02/19/2019 21:22:54</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>02/23/2019 22:27:15</publishTime>
+      <publishTime>03/17/2019 20:01:29</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>02/19/2019 20:38:48</publishTime>
