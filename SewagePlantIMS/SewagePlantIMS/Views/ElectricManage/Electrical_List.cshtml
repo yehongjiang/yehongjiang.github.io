@@ -24,16 +24,19 @@
                     <td>
                         @using (@Html.BeginForm("ElectricalPic", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
                         {
-                            <button class="btn btn-primary btn-xs" type="submit" value="@item.id" name="id" >添加图片</button>
+                            <button class="btn btn-primary btn-xs" type="submit" value="@item.id" name="id">添加图片</button>
                         }
                         @using (@Html.BeginForm("DeleteElectrical", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
                         {
-                            <button class="btn btn-danger btn-xs" type="submit" value="@item.id" name="del" id="del" onclick="return confirm('确定删除吗？？？')">删除</button>                          
+                            <button class="btn btn-danger btn-xs" type="submit" value="@item.id" name="del" id="del" onclick="return confirm('确定删除吗？？？')">删除</button>
                         }
-                        <button class="btn btn-default btn-xs"  onclick="javascrtpt:window.location.href='ShowElectrical'">展示页</button>
+                        @using (@Html.BeginForm("ShowElectrical", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
+                        {
+                            <button class="btn btn-default btn-xs" value="@item.id" name="show">展示页</button>
+                        }
                         @using (@Html.BeginForm("DownloadQRcode", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
                         {
-                            <button class="btn btn-warning btn-xs" value="@item.elec_name" name="qrcode" type="submit" >二维码</button>
+                            <button class="btn btn-warning btn-xs" value="@item.elec_name" name="qrcode" type="submit">二维码</button>
                         }
                     </td>
                 </tr>
@@ -45,8 +48,5 @@
 
 
 
-    
+
 </div>
-
-
-

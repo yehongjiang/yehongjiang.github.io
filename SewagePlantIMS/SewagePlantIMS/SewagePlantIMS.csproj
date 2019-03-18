@@ -205,6 +205,7 @@
     <Compile Include="Models\technology.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\ShowElectrical.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\css\admin.css" />
@@ -287,7 +288,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="images\ElectricalPic\" />
     <Folder Include="QRcode\ElectricQR\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

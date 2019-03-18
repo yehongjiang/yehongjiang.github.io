@@ -16,6 +16,7 @@ using Gma.QrCodeNet.Encoding;
 using Gma.QrCodeNet.Encoding.Windows.Render;
 using System.Drawing.Imaging;
 using System.Drawing;
+using SewagePlantIMS.ViewModels;
 
 
 namespace SewagePlantIMS.Controllers
@@ -324,7 +325,27 @@ namespace SewagePlantIMS.Controllers
 
         public ActionResult ShowElectrical()
         {
-            return View();
+            List<ShowElectrical> electrical = new List<ShowElectrical>();
+
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            string sqlStr = "select dm_electrical.id,title,elec_name,remarks,elec_power,pic_url from dm_electrical,dm_technology,dm_elec_pic where dm_electrical.id = '"+ Request.Form["show"] +"'and technology_id = dm_technology.id and dm_electrical.id = dm_elec_pic.elec_id; ";
+            SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            ShowElectrical[] E = new ShowElectrical[ds.Tables[0].Rows.Count];
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                E[mDr] = new ShowElectrical();
+                E[mDr].id = Convert.ToInt32(ds.Tables[0].Rows[mDr][0]);
+                E[mDr].technology_name = ds.Tables[0].Rows[mDr][1].ToString();
+                E[mDr].elec_name = ds.Tables[0].Rows[mDr][2].ToString();
+                E[mDr].remarks = ds.Tables[0].Rows[mDr][3].ToString();
+                E[mDr].elec_power = ds.Tables[0].Rows[mDr][4].ToString();
+                E[mDr].pic_url = ds.Tables[0].Rows[mDr][5].ToString();
+
+                electrical.Add(E[mDr]);
+            }
+            return View(electrical);
         }
         //前端下载二维码图片
         public void DownloadQRcode()
@@ -409,13 +430,13 @@ namespace SewagePlantIMS.Controllers
             string filename = Request.Form["filename2"];
             string[] filename_temp = filename.Split('.');
             filename = filename_temp[0];
-            string filepath = Server.MapPath("/images/ElectricalPic/" + filename + ".png");
+            string filepath = Server.MapPath("/images/ElectricalPic/" + filename + "_"+ Request.Form["id"] + ".png");
             ff.SaveAs(filepath);//在服务器上保存上传文件
                                 //string[] readFile = System.IO.File.ReadAllLines(filepath);//读取txt文档存放在字符数组中
 
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string sqlStr = "insert into dm_elec_pic (pic_name,pic_url,add_date,elec_id) values('" + filename + "','" + "/images/ElectricalPic/" + filename + ".png" + "','" + DateTime.Now.ToString() + "','" + Request.Form["id"] + "')";
+            string sqlStr = "insert into dm_elec_pic (pic_name,pic_url,add_date,elec_id) values('" + filename + "','" + "/images/ElectricalPic/" + filename + "_" + Request.Form["id"] + ".png" + "','" + DateTime.Now.ToString() + "','" + Request.Form["id"] + "')";
             SqlCommand cmd = new SqlCommand(sqlStr, con);
             int check = cmd.ExecuteNonQuery();
             if (check == 1)
@@ -433,6 +454,10 @@ namespace SewagePlantIMS.Controllers
         {
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
+            //先查出url
+            string pic_url = "select pic_url from dm_elec_pic  where id =  '" + Request.Form["del_id"] + "'";
+            SqlCommand cmd_url = new SqlCommand(pic_url, con);
+            pic_url = cmd_url.ExecuteScalar().ToString();
             string sql = "select elec_id from dm_elec_pic  where id =  '"+Request.Form["del_id"]+"'";
             SqlCommand cmd = new SqlCommand(sql, con);
             int id = Convert.ToInt32(cmd.ExecuteScalar());
@@ -440,6 +465,14 @@ namespace SewagePlantIMS.Controllers
             SqlCommand cmd2 = new SqlCommand(sqlStr, con);
             int check = cmd2.ExecuteNonQuery();
             con.Close();
+            //删除对应的实体文件
+            string filePath = Server.MapPath(pic_url);//路径 
+            FileInfo file = new FileInfo(filePath);
+            if (file.Exists)
+            {
+                file.Delete();
+            }
+                
             if (check == 1)
             {
                 Response.Write("<script>alert('删除图片成功！！');window.location.href='ElectricalPic?id=" + id + " '   ;</script>");
