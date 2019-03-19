@@ -1,4 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@{ 
+    if (Session["username"] == null)
+    {
+        Response.Redirect("/Home/Index");
+    }
+    else
+    {
+        ViewBag.real_name = Session["real_name"].ToString();
+    }
+}
+<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -81,7 +91,7 @@
 
                 <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
                     <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
-                        <span class="tpl-header-list-user-nick">叶泓江</span><span class="tpl-header-list-user-ico"><!-- <img src="#">--></span>
+                        <span class="tpl-header-list-user-nick">@ViewBag.real_name</span><span class="tpl-header-list-user-ico"><!-- <img src="#">--></span>
                     </a>
                     <ul class="am-dropdown-content">
                         <li><a href="#"><span class="am-icon-bell-o"></span> 资料</a></li>
