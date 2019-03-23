@@ -13,6 +13,8 @@ namespace SewagePlantIMS.Models
         public string elec_name { get; set; }
         public string remarks { get; set; }
         public string qrcode { get; set; }
-        public double elec_power { get; set; }
+        public string in_port { get; set; }
+        public string out_port { get; set; }
+        public string purpose { get; set; }
     }
 }

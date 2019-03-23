@@ -283,6 +283,7 @@
     <Content Include="Views\ElectricManage\ShowElectrical.cshtml" />
     <Content Include="Views\ElectricManage\Electrical_List.cshtml" />
     <Content Include="Views\ElectricManage\ElectricalPic.cshtml" />
+    <Content Include="Views\ElectricManage\ModifyElectrical.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

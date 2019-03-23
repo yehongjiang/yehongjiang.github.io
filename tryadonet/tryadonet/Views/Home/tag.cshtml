@@ -13,7 +13,10 @@
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-
+    @using (@Html.BeginForm("Ajax", "Home", FormMethod.Post))
+    {
+        <button class="btn btn-success btn-xs" type="submit" value="55555" name="id">修改</button>
+    }
     <ul id="myTab" class="nav nav-tabs">
         <li class="active">
             <a href="#home" data-toggle="tab">

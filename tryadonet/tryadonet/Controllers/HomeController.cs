@@ -418,6 +418,15 @@ namespace tryadonet.Controllers
         }
         public ActionResult Ajax()
         {
+            List<int> list = new List<int> { 1, 2, 3, 4 };
+            ViewBag.list = list;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Ajax(int id)
+        {
+            List<int> list = new List<int> { 8,9,6,5 };
+            ViewBag.list = list;
             return View();
         }
     }

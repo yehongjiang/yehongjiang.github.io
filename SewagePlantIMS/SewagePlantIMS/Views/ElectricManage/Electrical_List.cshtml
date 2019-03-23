@@ -5,7 +5,7 @@
 }
 
 <div>
-    <a href="AddElectrical">新增电器设备</a>
+    <a href="AddElectrical">新增仪表信息</a>
     <table class="table table-bordered table-hover table-striped" id="table_id_example">
         <thead>
             <tr>
@@ -22,6 +22,10 @@
                     <td>@item.elec_name</td>
 
                     <td>
+                        @using (@Html.BeginForm("ModifyElectrical", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
+                        {
+                            <button class="btn btn-success btn-xs" type="submit" value="@item.id" name="id">修改</button>
+                        }
                         @using (@Html.BeginForm("ElectricalPic", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
                         {
                             <button class="btn btn-primary btn-xs" type="submit" value="@item.id" name="id">添加图片</button>

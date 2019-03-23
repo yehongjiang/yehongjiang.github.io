@@ -61,7 +61,7 @@ namespace SewagePlantIMS.Controllers
             string selectID = "select id from dm_technology where title = '" + Request.Form["technology_name"] + "'";
             SqlCommand cmd2 = new SqlCommand(selectID, con);
             var id = cmd2.ExecuteScalar();
-            string sqlStr = "insert into dm_electrical(technology_id,elec_name,remarks,elec_power) values('" + id + "','" + Request.Form["elec_name"] + "','" + Request.Form["remarks"] + "','" + Convert.ToDouble(Request.Form["elec_power"]) + "');";
+            string sqlStr = "insert into dm_electrical(technology_id,elec_name,remarks,in_port,out_port,purpose) values('" + id + "','" + Request.Form["elec_name"] + "','" + Request.Form["remarks"] + "','" + Request.Form["in_port"] + "','" + Request.Form["out_port"] + "','" + Request.Form["purpose"] + "');";
             SqlCommand cmd = new SqlCommand(sqlStr, con);
             int check = cmd.ExecuteNonQuery();
             con.Close();
@@ -77,7 +77,7 @@ namespace SewagePlantIMS.Controllers
             List<Electrical> electrical = new List<Electrical>();
 
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
-            string sqlStr = "select * from dm_electrical";
+            string sqlStr = "select id,elec_name from dm_electrical";
             SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
             DataSet ds = new DataSet();
             da.Fill(ds);
@@ -86,7 +86,7 @@ namespace SewagePlantIMS.Controllers
             {
                 E[mDr] = new Electrical();
                 E[mDr].id = Convert.ToInt32(ds.Tables[0].Rows[mDr][0]);
-                E[mDr].elec_name = ds.Tables[0].Rows[mDr][2].ToString();
+                E[mDr].elec_name = ds.Tables[0].Rows[mDr][1].ToString();
 
                 electrical.Add(E[mDr]);
 
@@ -101,13 +101,34 @@ namespace SewagePlantIMS.Controllers
         {
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string sqlStr = "delete from dm_electrical where id = " + Request.Form["del"] + ";";
+            //先删除对应的图片
+            string del_pic = "select pic_url from dm_elec_pic where elec_id = " + Request.Form["del"];
+            SqlDataAdapter da = new SqlDataAdapter(del_pic, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            string path;
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                path = Server.MapPath(ds.Tables[0].Rows[mDr][0].ToString());
+                if (Directory.Exists(path))//如果存在
+                {
+                    System.IO.File.Delete(path);
+                }
+            }
+            //删除对应的二维码文件
+            string del_qrcode = "select qrcode from dm_electrical where id = " + Request.Form["del"];
+            SqlCommand cmd1 = new SqlCommand(del_qrcode, con);
+            string url = Server.MapPath(cmd1.ExecuteScalar().ToString());
+            FileInfo file = new FileInfo(url);
+            file.Delete();
+            
+            //最后删除相应的数据库数据
+            string sqlStr = "delete from dm_elec_pic where elec_id = " + Request.Form["del"] + "; delete from dm_electrical where id = " + Request.Form["del"] + ";";
             SqlCommand cmd = new SqlCommand(sqlStr, con);
             int check = cmd.ExecuteNonQuery();
             con.Close();
             return RedirectToAction("Electrical_List");
         }
-
         public ActionResult CreateQrCode(int id, string name)
 
         {
@@ -115,6 +136,11 @@ namespace SewagePlantIMS.Controllers
             var port = Request.Url.Port;
 
             string str = "http://" + host + ":" + port + "/ElectricManage/ShowElectrical?id=" + id;
+
+            //向数据库中存入二维码图片地址
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+
             using (var memoryStream = QRCodeHelper.GetQRCode(str, 10))
             {
 
@@ -124,6 +150,11 @@ namespace SewagePlantIMS.Controllers
 
                 AddTextToImg(savePath, name, name);
                 img.Dispose();
+
+                string sql = "update dm_electrical set qrcode = '" + "~/QRcode/ElectricQR/" + name + ".png' where id =" + id + ";";
+                SqlCommand cmd = new SqlCommand(sql, con);
+                int check = cmd.ExecuteNonQuery();
+                con.Close();
                 //img = Image.FromFile("~/QRcode/ElectricQR/" + name + ".png");
                 //下面这段是将image转换为流从而输出到页面的img标签上去
                 /*MemoryStream ms = new MemoryStream();
@@ -306,7 +337,6 @@ namespace SewagePlantIMS.Controllers
             string path = Server.MapPath("~/QRcode/ElectricQR/" + picname + ".png");
             Image img = bitmap;
             img.Save(path, ImageFormat.Png);
-
             //bitmap.Save(path, ImageFormat.Png);
 
             //输出方法二，显示在网页中，保存为Jpg类型
@@ -328,7 +358,7 @@ namespace SewagePlantIMS.Controllers
             List<ShowElectrical> electrical = new List<ShowElectrical>();
 
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
-            string sqlStr = "select dm_electrical.id,title,elec_name,remarks,elec_power,pic_url from dm_electrical,dm_technology,dm_elec_pic where dm_electrical.id = '"+ id +"'and technology_id = dm_technology.id and dm_electrical.id = dm_elec_pic.elec_id; ";
+            string sqlStr = "select dm_electrical.id,title,elec_name,remarks,in_port,pic_url,out_port,purpose from dm_electrical,dm_technology,dm_elec_pic where dm_electrical.id = '" + id + "'and technology_id = dm_technology.id and dm_electrical.id = dm_elec_pic.elec_id; ";
             SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
             DataSet ds = new DataSet();
             da.Fill(ds);
@@ -340,8 +370,10 @@ namespace SewagePlantIMS.Controllers
                 E[mDr].technology_name = ds.Tables[0].Rows[mDr][1].ToString();
                 E[mDr].elec_name = ds.Tables[0].Rows[mDr][2].ToString();
                 E[mDr].remarks = ds.Tables[0].Rows[mDr][3].ToString();
-                E[mDr].elec_power = ds.Tables[0].Rows[mDr][4].ToString();
+                E[mDr].in_port = ds.Tables[0].Rows[mDr][4].ToString();
                 E[mDr].pic_url = ds.Tables[0].Rows[mDr][5].ToString();
+                E[mDr].out_port = ds.Tables[0].Rows[mDr][6].ToString();
+                E[mDr].purpose = ds.Tables[0].Rows[mDr][7].ToString();
 
                 electrical.Add(E[mDr]);
             }
@@ -353,7 +385,7 @@ namespace SewagePlantIMS.Controllers
             List<ShowElectrical> electrical = new List<ShowElectrical>();
 
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
-            string sqlStr = "select dm_electrical.id,title,elec_name,remarks,elec_power,pic_url from dm_electrical,dm_technology,dm_elec_pic where dm_electrical.id = '" + Request.Form["show"] + "'and technology_id = dm_technology.id and dm_electrical.id = dm_elec_pic.elec_id; ";
+            string sqlStr = "select dm_electrical.id,title,elec_name,remarks,in_port,pic_url,out_port,purpose from dm_electrical,dm_technology,dm_elec_pic where dm_electrical.id = '" + Request.Form["show"] + "'and technology_id = dm_technology.id and dm_electrical.id = dm_elec_pic.elec_id; ";
             SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
             DataSet ds = new DataSet();
             da.Fill(ds);
@@ -365,8 +397,10 @@ namespace SewagePlantIMS.Controllers
                 E[mDr].technology_name = ds.Tables[0].Rows[mDr][1].ToString();
                 E[mDr].elec_name = ds.Tables[0].Rows[mDr][2].ToString();
                 E[mDr].remarks = ds.Tables[0].Rows[mDr][3].ToString();
-                E[mDr].elec_power = ds.Tables[0].Rows[mDr][4].ToString();
+                E[mDr].in_port = ds.Tables[0].Rows[mDr][4].ToString();
                 E[mDr].pic_url = ds.Tables[0].Rows[mDr][5].ToString();
+                E[mDr].out_port = ds.Tables[0].Rows[mDr][6].ToString();
+                E[mDr].purpose = ds.Tables[0].Rows[mDr][7].ToString();
 
                 electrical.Add(E[mDr]);
             }
@@ -455,13 +489,26 @@ namespace SewagePlantIMS.Controllers
             string filename = Request.Form["filename2"];
             string[] filename_temp = filename.Split('.');
             filename = filename_temp[0];
-            string filepath = Server.MapPath("/images/ElectricalPic/" + filename + "_"+ Request.Form["id"] + ".png");
+            //读取elec_pic表最后一个id号加1最为不重复图片名的依据
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "select max(id) from dm_elec_pic";
+            SqlCommand cmd1 = new SqlCommand(sql, con);
+            int max_id;
+            if (cmd1.ExecuteScalar()!= DBNull.Value)
+            {
+                max_id = Convert.ToInt32(cmd1.ExecuteScalar());
+                max_id++;
+            }
+            else
+            {
+                max_id = 1;
+            }
+            string filepath = Server.MapPath("/images/ElectricalPic/" + filename + "_" + Request.Form["id"] + "_" + max_id.ToString() + ".png");
             ff.SaveAs(filepath);//在服务器上保存上传文件
                                 //string[] readFile = System.IO.File.ReadAllLines(filepath);//读取txt文档存放在字符数组中
 
-            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
-            con.Open();
-            string sqlStr = "insert into dm_elec_pic (pic_name,pic_url,add_date,elec_id) values('" + filename + "','" + "/images/ElectricalPic/" + filename + "_" + Request.Form["id"] + ".png" + "','" + DateTime.Now.ToString() + "','" + Request.Form["id"] + "')";
+            string sqlStr = "insert into dm_elec_pic (pic_name,pic_url,add_date,elec_id) values('" + filename + "','" + "/images/ElectricalPic/" + filename + "_" + Request.Form["id"] + "_" + max_id.ToString() + ".png" + "','" + DateTime.Now.ToString() + "','" + Request.Form["id"] + "')";
             SqlCommand cmd = new SqlCommand(sqlStr, con);
             int check = cmd.ExecuteNonQuery();
             if (check == 1)
@@ -483,10 +530,10 @@ namespace SewagePlantIMS.Controllers
             string pic_url = "select pic_url from dm_elec_pic  where id =  '" + Request.Form["del_id"] + "'";
             SqlCommand cmd_url = new SqlCommand(pic_url, con);
             pic_url = cmd_url.ExecuteScalar().ToString();
-            string sql = "select elec_id from dm_elec_pic  where id =  '"+Request.Form["del_id"]+"'";
+            string sql = "select elec_id from dm_elec_pic  where id =  '" + Request.Form["del_id"] + "'";
             SqlCommand cmd = new SqlCommand(sql, con);
             int id = Convert.ToInt32(cmd.ExecuteScalar());
-            string sqlStr = "delete from dm_elec_pic where id =  '"+Request.Form["del_id"]+"'";
+            string sqlStr = "delete from dm_elec_pic where id =  '" + Request.Form["del_id"] + "'";
             SqlCommand cmd2 = new SqlCommand(sqlStr, con);
             int check = cmd2.ExecuteNonQuery();
             con.Close();
@@ -497,7 +544,7 @@ namespace SewagePlantIMS.Controllers
             {
                 file.Delete();
             }
-                
+
             if (check == 1)
             {
                 Response.Write("<script>alert('删除图片成功！！');window.location.href='ElectricalPic?id=" + id + " '   ;</script>");
@@ -505,6 +552,63 @@ namespace SewagePlantIMS.Controllers
             else
                 Response.Write("<script>alert('删除失败！,请手动联系管理员~');</script>");
 
+        }
+
+        [HttpPost]
+        public ActionResult ModifyElectrical()
+        {
+            //先把所有的工艺段名称和ID都找出来放到ViewBag.List
+            List<string> technologys = new List<string>();
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            string sqlStr = "select title from dm_technology;";
+            SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            technology tc = new technology();
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                tc.title = ds.Tables[0].Rows[mDr][0].ToString();
+                technologys.Add(tc.title);
+            }
+            ViewBag.List = technologys;
+            //然后把修改的部分查出来
+            sqlStr = "select elec_name,dm_technology.title,in_port,out_port,purpose,remarks from dm_electrical,dm_technology where dm_technology.id = dm_electrical.technology_id and dm_electrical.id =" + Request.Form["id"];
+            da = new SqlDataAdapter(sqlStr, con);
+            DataSet ds2 = new DataSet();
+            da.Fill(ds2);
+            Electrical elec = new Electrical();
+            elec.elec_name = ds2.Tables[0].Rows[0][0].ToString();
+            elec.technology_name = ds2.Tables[0].Rows[0][1].ToString();
+            elec.in_port = ds2.Tables[0].Rows[0][2].ToString();
+            elec.out_port = ds2.Tables[0].Rows[0][3].ToString();
+            elec.purpose = ds2.Tables[0].Rows[0][4].ToString();
+            elec.remarks = ds2.Tables[0].Rows[0][5].ToString();
+            con.Close();
+            return View(elec);
+        }
+        public void ModifyElectricl_Post()
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string selectID = "select id from dm_technology where title = '" + Request.Form["technology_name"] + "'";
+            SqlCommand cmd2 = new SqlCommand(selectID, con);
+            var id = cmd2.ExecuteScalar();
+            selectID = "select id from dm_electrical where elec_name = '" + Request.Form["elec_name"] + "'";
+            cmd2 = new SqlCommand(selectID, con);
+            var elec_id = cmd2.ExecuteScalar();
+            string sqlStr = "update dm_electrical set technology_id = '" + id + "' where id = '" + elec_id + "';" +
+                            "update dm_electrical set elec_name = '" + Request.Form["elec_name"] + "' where id = '" + elec_id + "';" +
+                            "update dm_electrical set remarks = '" + Request.Form["remarks"] + "' where id = '" + elec_id + "';" +
+                            "update dm_electrical set in_port = '" + Request.Form["in_port"] + "' where id = '" + elec_id + "';" +
+                            "update dm_electrical set out_port = '" + Request.Form["out_port"] + "' where id = '" + elec_id + "';" +
+                            "update dm_electrical set purpose = '" + Request.Form["purpose"] + "' where id = '" + elec_id + "';";
+            SqlCommand cmd = new SqlCommand(sqlStr, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check != 0)
+                Response.Write("<script>alert('修改数据成功！！');window.location.href='Electrical_List';</script>");
+            else
+                Response.Write("<script>alert('修改数据失败！,可能遭受宇宙原力的影响！');</script>");
         }
     }
 
