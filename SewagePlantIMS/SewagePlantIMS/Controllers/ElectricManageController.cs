@@ -106,13 +106,14 @@ namespace SewagePlantIMS.Controllers
             SqlDataAdapter da = new SqlDataAdapter(del_pic, con);
             DataSet ds = new DataSet();
             da.Fill(ds);
-            string path;
             for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
             {
-                path = Server.MapPath(ds.Tables[0].Rows[mDr][0].ToString());
-                if (Directory.Exists(path))//如果存在
+
+                string filePath = Server.MapPath(ds.Tables[0].Rows[mDr][0].ToString());
+                FileInfo file2 = new FileInfo(filePath);
+                if (file2.Exists)
                 {
-                    System.IO.File.Delete(path);
+                    file2.Delete();
                 }
             }
             //删除对应的二维码文件
