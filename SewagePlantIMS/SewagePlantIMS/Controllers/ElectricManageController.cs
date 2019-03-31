@@ -17,7 +17,7 @@ using Gma.QrCodeNet.Encoding.Windows.Render;
 using System.Drawing.Imaging;
 using System.Drawing;
 using SewagePlantIMS.ViewModels;
-
+using SewagePlantIMS.Function;
 
 namespace SewagePlantIMS.Controllers
 {
@@ -38,6 +38,7 @@ namespace SewagePlantIMS.Controllers
         {
             List<technology> technologys = new List<technology>();
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
             string sqlStr = "select id,title from dm_technology;";
             SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
             DataSet ds = new DataSet();
@@ -77,6 +78,7 @@ namespace SewagePlantIMS.Controllers
             List<Electrical> electrical = new List<Electrical>();
 
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
             string sqlStr = "select id,elec_name from dm_electrical";
             SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
             DataSet ds = new DataSet();
@@ -93,6 +95,7 @@ namespace SewagePlantIMS.Controllers
                 //直接生成二维码图片
                 CreateQrCode(E[mDr].id, E[mDr].elec_name);
             }
+            con.Close();
             return View(electrical);
         }
 
@@ -166,6 +169,7 @@ namespace SewagePlantIMS.Controllers
                 Response.OutputStream.Write(ms.GetBuffer(), 0, (int)ms.Length);
                 Response.End();*/
             }
+            con.Close();
             return null;
         }
 
@@ -320,8 +324,8 @@ namespace SewagePlantIMS.Controllers
             float textWidth = text.Length * fontSize;  //文本的长度
                                                        //下面定义一个矩形区域，以后在这个矩形里画上白底黑字
 
-            float rectY = 350;
-            float rectX = rectY / 2 - rectY / 4;
+            float rectY = 390;
+            float rectX = 15;
             float rectWidth = text.Length * (fontSize + 40);
             float rectHeight = fontSize + 40;
             //声明矩形域
@@ -359,6 +363,7 @@ namespace SewagePlantIMS.Controllers
             List<ShowElectrical> electrical = new List<ShowElectrical>();
 
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
             string sqlStr = "select dm_electrical.id,title,elec_name,remarks,in_port,pic_url,out_port,purpose from dm_electrical,dm_technology,dm_elec_pic where dm_electrical.id = '" + id + "'and technology_id = dm_technology.id and dm_electrical.id = dm_elec_pic.elec_id; ";
             SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
             DataSet ds = new DataSet();
@@ -378,6 +383,7 @@ namespace SewagePlantIMS.Controllers
 
                 electrical.Add(E[mDr]);
             }
+            con.Close();
             return View(electrical);
         }
         [HttpPost]
@@ -386,6 +392,7 @@ namespace SewagePlantIMS.Controllers
             List<ShowElectrical> electrical = new List<ShowElectrical>();
 
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
             string sqlStr = "select dm_electrical.id,title,elec_name,remarks,in_port,pic_url,out_port,purpose from dm_electrical,dm_technology,dm_elec_pic where dm_electrical.id = '" + Request.Form["show"] + "'and technology_id = dm_technology.id and dm_electrical.id = dm_elec_pic.elec_id; ";
             SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
             DataSet ds = new DataSet();
@@ -405,6 +412,7 @@ namespace SewagePlantIMS.Controllers
 
                 electrical.Add(E[mDr]);
             }
+            con.Close();
             return View(electrical);
         }
         //前端下载二维码图片
@@ -451,13 +459,14 @@ namespace SewagePlantIMS.Controllers
             con.Close();
             return View(elec_pics);
         }
-        //添加设备图片
+   
         [HttpPost]
         public ViewResult ElectricalPic()
         {
             ViewBag.elec_id = Request.Form["id"];
             List<elec_pic> elec_pics = new List<elec_pic>();
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
             string sqlStr = "select id,pic_url from dm_elec_pic where elec_id = " + ViewBag.elec_id + "; ";
             SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
             DataSet ds = new DataSet();
@@ -474,6 +483,7 @@ namespace SewagePlantIMS.Controllers
             con.Close();
             return View(elec_pics);
         }
+        //添加设备图片
         public void ElectricalPicPost()
         {
             elec_pic ep = new elec_pic();
@@ -505,9 +515,13 @@ namespace SewagePlantIMS.Controllers
             {
                 max_id = 1;
             }
-            string filepath = Server.MapPath("/images/ElectricalPic/" + filename + "_" + Request.Form["id"] + "_" + max_id.ToString() + ".png");
-            ff.SaveAs(filepath);//在服务器上保存上传文件
+            string filepath = Server.MapPath("/images/ElectricalPic_Pre/" + filename + "_" + Request.Form["id"] + "_" + max_id.ToString() + ".png");
+            ff.SaveAs(filepath);//在服务器上保存上传原图文件
                                 //string[] readFile = System.IO.File.ReadAllLines(filepath);//读取txt文档存放在字符数组中
+            string filepath2 = Server.MapPath("/images/ElectricalPic/" + filename + "_" + Request.Form["id"] + "_" + max_id.ToString() + ".png");
+            CompressPic cp = new CompressPic();
+            bool temp = cp.CompressImage(filepath, filepath2, 80, 150, true); //保存压缩完的文件到ElectricalPic文件夹
+
 
             string sqlStr = "insert into dm_elec_pic (pic_name,pic_url,add_date,elec_id) values('" + filename + "','" + "/images/ElectricalPic/" + filename + "_" + Request.Form["id"] + "_" + max_id.ToString() + ".png" + "','" + DateTime.Now.ToString() + "','" + Request.Form["id"] + "')";
             SqlCommand cmd = new SqlCommand(sqlStr, con);
@@ -561,6 +575,7 @@ namespace SewagePlantIMS.Controllers
             //先把所有的工艺段名称和ID都找出来放到ViewBag.List
             List<string> technologys = new List<string>();
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
             string sqlStr = "select title from dm_technology;";
             SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
             DataSet ds = new DataSet();

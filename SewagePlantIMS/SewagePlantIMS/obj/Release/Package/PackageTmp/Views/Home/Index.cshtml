@@ -43,10 +43,11 @@
             <p>Comprehensive Management System Of Sewage Plant</p>
         </div>
         <div class="jumbotron">
-            <form>
-                <input type="text" class="form-control" placeholder="请输入用户名" aria-describedby="basic-addon1">
+            @using (@Html.BeginForm("Login", "Home", FormMethod.Post, new { @class = "myform" }))
+            {
+                <input type="text" class="form-control" placeholder="请输入用户名" aria-describedby="basic-addon1" name="username">
                 <p></p>
-                <input type="password" class="form-control" placeholder="请输入密码" aria-describedby="basic-addon1">
+                <input type="password" class="form-control" placeholder="请输入密码" aria-describedby="basic-addon1" name="password">
 
                 <label>
                     <input type="checkbox" value="remenber-me" />
@@ -54,18 +55,19 @@
                         是否记住登录状态
                     </font>
                 </label>
-                <button type="button" class="btn btn-warning btn-block"><strong>登录</strong></button>
-                <div class="dropdown">
-                    <button class="btn btn-default dropdown-toggle  btn-block " type="button" data-toggle="dropdown">
-                        更多More
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu btn-block text-center" role="menu" aria-labelledby="dropdownMenu1">
-                        <li><a href="Register.aspx" role="menuitem">申请注册</a></li>
-                        <li><a href="#" role="menuitem">密码找回</a></li>
-                    </ul>
-                </div>
-            </form>
+
+                <button type="submit" class="btn btn-warning btn-block"><strong>登录</strong></button>
+            }
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle  btn-block " type="button" data-toggle="dropdown">
+                    更多More
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu btn-block text-center" role="menu" aria-labelledby="dropdownMenu1">
+                    <li><a href="Register.aspx" role="menuitem">申请注册</a></li>
+                    <li><a href="#" role="menuitem">密码找回</a></li>
+                </ul>
+            </div>
         </div>
 
     </div>

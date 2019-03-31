@@ -20,8 +20,9 @@ namespace SewagePlantIMS.Controllers
         {
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string password = Request.Form["password"];
-            string sql = "select count(*) from dm_user where name = '" + Request.Form["username"] + "' and password = '" + getMd5Hash(password) + "';";
+            string username = Request.Form["username"].Replace("'", "");
+            string password = Request.Form["password"].Replace("'","");
+            string sql = "select count(*) from dm_user where name = '" + username  + "' and password = '" + getMd5Hash(password) + "';";
             SqlCommand cmd = new SqlCommand(sql, con);
             int result = (int)cmd.ExecuteScalar();
             con.Close();
@@ -29,18 +30,19 @@ namespace SewagePlantIMS.Controllers
             if (result > 0)
             {
                 Session["username"] = Request.Form["username"];
-                Response.Redirect("/ElectricManage/Index");
                 con.Open();
                 sql = "select real_name from dm_user where name = '" + Request.Form["username"] + "' and password = '" + getMd5Hash(password) + "';";
                 cmd = new SqlCommand(sql, con);
                 Session["real_name"] = cmd.ExecuteScalar().ToString();
-                con.Close();
+                con.Close();             
+                Response.Redirect("/ElectricManage/Index");
             }
             else
             {
                 Response.Write("<script>alert('用户名或密码错误！！');window.location.href('Index');</script>");
             }
             
+
         }
         /// MD5加密
         public  string getMd5Hash(string input)

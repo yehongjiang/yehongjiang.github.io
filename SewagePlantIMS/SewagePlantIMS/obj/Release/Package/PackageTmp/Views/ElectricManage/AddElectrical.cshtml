@@ -10,7 +10,7 @@
         <legend style="color:#5b9bd1">基本信息</legend>
     </fieldset>
     <div class="am-form-group">
-        <label for="elec_name">电气名称</label>
+        <label for="elec_name">仪表名称</label>
         <input type="text" placeholder="请输入电气名称" class="form-control" name="elec_name">
     </div>
 
@@ -24,8 +24,16 @@
         </select>
     </div>
     <div class="am-form-group">
-        <label for="elec_power">功率(kw)</label>
-        <input type="text" placeholder="请输入电气功率" class="form-control" name="elec_power">
+        <label for="in_port">进线端</label>
+        <input type="text" placeholder="请输入仪表进线端名称" class="form-control" name="in_port">
+    </div>
+    <div class="am-form-group">
+        <label for="out_port">出线端</label>
+        <input type="text" placeholder="请输入仪表出线端名称" class="form-control" name="out_port">
+    </div>
+    <div class="am-form-group">
+        <label>用途</label>
+        <textarea class="form-control" rows="4" name="purpose" placeholder="请输入仪表的用途"></textarea>
     </div>
     <div class="am-form-group">
         <label>添加备注</label>

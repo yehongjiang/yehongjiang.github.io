@@ -29,6 +29,7 @@ using Gma.QrCodeNet.Encoding.Windows.Render;
 using ThoughtWorks.QRCode.Codec;
 using System.Web.Script.Serialization;
 using System.Text;
+using tryadonet.ViewModel;
 
 namespace tryadonet.Controllers
 {
@@ -428,6 +429,27 @@ namespace tryadonet.Controllers
             List<int> list = new List<int> { 8,9,6,5 };
             ViewBag.list = list;
             return View();
+        }
+
+        public ActionResult UpdateHtml()
+        {
+            return View();
+        }
+        //分部页面
+        
+        [HttpGet]
+        public PartialViewResult AllStudent()
+        {
+                
+          
+            temp ss = new temp();
+            ss.FirstName = "叶泓江";
+            ss.LastName = "hehe";
+            ss.MobileNo = "22222";
+            ss.Address = "上楼";
+
+            var objAllStudent = ss;
+                return PartialView("AllStudent", objAllStudent);
         }
     }
 }
