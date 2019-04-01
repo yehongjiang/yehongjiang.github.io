@@ -18,10 +18,11 @@ using System.Drawing.Imaging;
 using System.Drawing;
 using SewagePlantIMS.ViewModels;
 using SewagePlantIMS.Function;
+using SewagePlantIMS.Filter;
 
 namespace SewagePlantIMS.Controllers
 {
-
+    [LoginAttribute(isNeed = true)]
     public class ElectricManageController : Controller
     {
         public ActionResult Index()
@@ -357,6 +358,7 @@ namespace SewagePlantIMS.Controllers
             path = Server.MapPath("~/QRcode/ElectricQR/" + picname + "temp.png");
             System.IO.File.Delete(path);
         }
+        [LoginAttribute(isNeed = false)]
         [HttpGet]
         public ActionResult ShowElectrical(string id)
         {

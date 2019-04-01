@@ -1,12 +1,5 @@
 ﻿@{ 
-    if (Session["username"] == null)
-    {
-        Response.Redirect("/Home/Index");
-    }
-    else
-    {
-        ViewBag.real_name = Session["real_name"].ToString();
-    }
+
 }
 <!DOCTYPE html>
 <html>

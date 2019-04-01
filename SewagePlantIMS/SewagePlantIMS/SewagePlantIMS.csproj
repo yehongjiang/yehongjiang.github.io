@@ -197,6 +197,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ElectricManageController.cs" />
+    <Compile Include="Filter\LoginAttribute.cs" />
     <Compile Include="Function\CompressPic.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -290,6 +291,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="images\ElectricalPic\" />
     <Folder Include="QRcode\ElectricQR\" />
+    <Folder Include="Views\LoginAttribute\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

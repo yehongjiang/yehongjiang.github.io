@@ -35,7 +35,7 @@ namespace SewagePlantIMS.Controllers
                 cmd = new SqlCommand(sql, con);
                 Session["real_name"] = cmd.ExecuteScalar().ToString();
                 con.Close();             
-                Response.Redirect("/ElectricManage/Index");
+                Response.Redirect("/ElectricManage/Index",false);
             }
             else
             {
