@@ -1,4 +1,4 @@
-#基本设置
+# 基本设置
 ### 1.下载
 ---  
 在visual studio code的[官网](https://code.visualstudio.com/)就可以下载安装最新的软件 。 
