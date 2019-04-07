@@ -154,6 +154,10 @@
     <Content Include="Content\footable.bootstrap.css" />
     <Content Include="Content\footable.bootstrap.min.css" />
     <Content Include="Content\jquery.dataTables.min.css" />
+    <Content Include="Content\sweetalert\bootstrap-sweetalert.png" />
+    <Content Include="Content\sweetalert\docs.css" />
+    <Content Include="Content\sweetalert\sweet-alert.css" />
+    <Content Include="Content\sweetalert\thumbs-up.jpg" />
     <Content Include="Global.asax" />
     <Content Include="scripts\bootstrap-table-export.js" />
     <Content Include="scripts\bootstrap-table.js" />
@@ -161,6 +165,11 @@
     <Content Include="scripts\footable.js" />
     <Content Include="scripts\footable.min.js" />
     <Content Include="scripts\jquery-1.11.0.min.js" />
+    <Content Include="Content\sweetalert\sweet-alert.less" />
+    <Content Include="Content\sweetalert\sweet-alert-combine.less" />
+    <Content Include="Content\sweetalert\sweet-alert-animations.less" />
+    <Content Include="Content\bootstrap\variables.less" />
+    <Content Include="Content\bootstrap\mixins.less" />
     <None Include="scripts\jquery-2.1.1.intellisense.js" />
     <Content Include="scripts\jquery-2.1.1.js" />
     <Content Include="scripts\jquery-2.1.1.min.js" />
@@ -173,12 +182,14 @@
     <Content Include="scripts\nugetexample.js" />
     <Content Include="scripts\paginathing.js" />
     <Content Include="scripts\paginathing.min.js" />
+    <Content Include="scripts\sweetalert.js" />
     <Content Include="scripts\tableExport.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SweetController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -204,6 +215,8 @@
     <Content Include="Views\Home\Ajax.cshtml" />
     <Content Include="Views\Home\UpdateHtml.cshtml" />
     <Content Include="Views\Home\AllStudent.cshtml" />
+    <Content Include="Views\Home\motaikuang.cshtml" />
+    <Content Include="Views\Sweet\Alert.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

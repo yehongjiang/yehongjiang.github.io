@@ -18,8 +18,6 @@
     <link rel="stylesheet" href="~/assets/css/app.css">
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
-
-    <script src="~/assets/js/echarts.min.js"></script>
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
 
 
@@ -61,10 +59,8 @@
     </style>
 
 </head>
-<body data-type="index">
-
-
-    <header class="am-topbar am-topbar-inverse admin-header">
+<body data-type="index"style="background-color:white;">
+    <<header class="am-topbar am-topbar-inverse admin-header" >
         <div class="am-topbar-brand">
             <a href="javascript:;" class="tpl-logo">
                 <img src="~/assets/img/logo.png" alt="">
@@ -80,11 +76,12 @@
 
             <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list tpl-header-list">
 
+
                 <li class="am-hide-sm-only"><a href="javascript:;" id="admin-fullscreen" class="tpl-header-list-link"><span class="am-icon-arrows-alt"></span> <span class="admin-fullText">开启全屏</span></a></li>
 
                 <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
                     <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
-                        <span class="tpl-header-list-user-nick">@ViewBag.real_name</span><span class="tpl-header-list-user-ico"><!-- <img src="#">--></span>
+                        <span class="tpl-header-list-user-nick">@ViewBag.real_name</span><span class="tpl-header-list-user-ico"><!-- <img src="assets/img/user01.png">--></span>
                     </a>
                     <ul class="am-dropdown-content">
                         <li><a href="#"><span class="am-icon-bell-o"></span> 资料</a></li>
@@ -97,13 +94,7 @@
         </div>
     </header>
 
-
-
-
-
-
-
-    <div class="tpl-page-container tpl-page-header-fixed">
+    <div style="margin-top:60px">
 
 
         <div class="tpl-left-nav tpl-left-nav-hover">
@@ -113,7 +104,7 @@
             <div class="tpl-left-nav-list">
                 <ul class="tpl-left-nav-menu">
                     <li class="tpl-left-nav-item">
-                        <a href="#" class="nav-link active">
+                        <a href="~/ElectricManage/Index" class="nav-link active">
                             <i class="am-icon-home"></i>
                             <span>首页</span>
                         </a>
@@ -125,13 +116,13 @@
                             <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
                         </a>
                         <ul class="tpl-left-nav-sub-menu">
-                            <li >
+                            <li>
                                 <a href="#">
                                     <i class="am-icon-angle-right"></i>
                                     <span>电表抄度</span>
 
                                 </a>
-                    
+
 
                                 <a href="~/ElectricManage/Electrical_List">
                                     <i class="am-icon-angle-right"></i>
@@ -147,24 +138,18 @@
 
 
 
+        <div class="row" style="margin-left:10px;margin-right:10px;">
+            <div class="tpl-content">
 
-        <div class="tpl-content-wrapper">
-            <div class="row">
-                <div class="am-u-md-12">
-                        @RenderBody()
+                <div class="am-u-md-24" style="background-color:white;">
+                    @RenderBody()
                 </div>
             </div>
 
         </div>
 
 
-
-
-
     </div>
-
-
-
 
 </body>
 </html>
@@ -215,9 +200,9 @@
             if (filePath.indexOf("jpg") != -1 || filePath.indexOf("png") != -1 || filePath.indexOf("JPG") != -1 || filePath.indexOf("PNG") != -1) {
                 $(".fileerrorTip1").html("").hide();
                 var arr = filePath.split('\\');
-                var fileName = arr[arr.length - 1];            
+                var fileName = arr[arr.length - 1];
                 $(".showFileName1").html(fileName);
-                document.getElementById('filename2').value =fileName;
+                document.getElementById('filename2').value = fileName;
             } else {
                 $(".showFileName1").html("");
                 $(".fileerrorTip1").html("您未上传文件，或者您上传文件类型有误！").show();
@@ -237,6 +222,26 @@
 <!-- DataTables -->
 <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.13/js/jquery.dataTables.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
-<!--第三步：初始化Datatables-->
+<!--AjaxJS-->
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<!--弹出框JS-->
+<script src="~/Scripts/sweetalert.js"></script>
+<script>
+    function swal_success() {
+        swal("", "操作成功!", "success", {
+            buttons: false,
+            timer: 1600,
+        });
+    }
+    function swal_error() {
+        swal("", "操作失败!", "error", {
+            buttons: false,
+            timer: 1600,
+        });
+    }
+    function jump_electrical_list() {
 
+        window.setTimeout("window.location='Electrical_List'", 2000);
+    }
+</script>
 

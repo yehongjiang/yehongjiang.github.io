@@ -13,4 +13,5 @@
 2. 是因为没有下载[.net core sdk](https://dotnet.microsoft.com/download) 的原因  
   
 之后用dotnet run就可以运行程序了  
-dotnet -h 可以弹出帮助菜单
+dotnet -h 可以弹出帮助菜单  
+可以选择添加Extensions还有snippets来扩展还有列入auto-using for C#这个是在编写代码的时候自动添加相应的引用

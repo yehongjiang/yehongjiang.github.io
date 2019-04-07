@@ -5,7 +5,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@using (@Html.BeginForm("ModifyElectricl_Post", "ElectricManage", FormMethod.Post))
+
+@using (Ajax.BeginForm("ModifyElectricl_Post", "ElectricManage", new AjaxOptions
+{
+    HttpMethod = "POST",
+    InsertionMode = InsertionMode.Replace,
+
+}))
 {
     <fieldset>
         <legend style="color:#5b9bd1">修改基本信息</legend>
@@ -18,7 +24,7 @@
     <div class="am-form-group">
         <label for="name">所属工艺段</label>
         <select class="form-control" name="technology_name">
-           @foreach (var item in ViewBag.List)
+            @foreach (var item in ViewBag.List)
             {
                 if (!@item.Equals(@Model.technology_name))
                 {
@@ -41,7 +47,7 @@
     </div>
     <div class="am-form-group">
         <label>用途</label>
-        <textarea class="form-control" rows="4" name="purpose" placeholder="请输入仪表的用途" >@Model.purpose</textarea>
+        <textarea class="form-control" rows="4" name="purpose" placeholder="请输入仪表的用途">@Model.purpose</textarea>
     </div>
     <div class="am-form-group">
         <label>添加备注</label>

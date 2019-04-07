@@ -19,6 +19,7 @@ using System.Drawing;
 using SewagePlantIMS.ViewModels;
 using SewagePlantIMS.Function;
 using SewagePlantIMS.Filter;
+using System.Web.UI;
 
 namespace SewagePlantIMS.Controllers
 {
@@ -56,7 +57,7 @@ namespace SewagePlantIMS.Controllers
             con.Close();
             return View(technologys);
         }
-        public ActionResult AddElectrical_Post()
+        public JavaScriptResult AddElectrical_Post()
         {
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
@@ -68,10 +69,9 @@ namespace SewagePlantIMS.Controllers
             int check = cmd.ExecuteNonQuery();
             con.Close();
             if (check == 1)
-                Response.Write("<script>alert('添加数据成功！！');window.location.href='Index';</script>");
+                return JavaScript("swal_success();jump_electrical_list();");
             else
-                Response.Write("<script>alert('添加数据失败！,请手动联系管理员~');</script>");
-            return RedirectToAction("Electrical_List");
+                return JavaScript("swal_error();");
         }
         [HttpGet]
         public ActionResult Electrical_List()
@@ -604,7 +604,7 @@ namespace SewagePlantIMS.Controllers
             con.Close();
             return View(elec);
         }
-        public void ModifyElectricl_Post()
+        public JavaScriptResult ModifyElectricl_Post()
         {
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
@@ -623,12 +623,13 @@ namespace SewagePlantIMS.Controllers
             SqlCommand cmd = new SqlCommand(sqlStr, con);
             int check = cmd.ExecuteNonQuery();
             con.Close();
-            if (check != 0)
-                Response.Write("<script>alert('修改数据成功！！');window.location.href='Electrical_List';</script>");
+            if (check !=0)
+                return JavaScript("swal_success();jump_electrical_list();");
             else
-                Response.Write("<script>alert('修改数据失败！,可能遭受宇宙原力的影响！');</script>");
+                return JavaScript("swal_error();");
         }
     }
 
 }
 
+///////////下面是电表超度分割线///////////////////////////////////////////////////////////////////////////

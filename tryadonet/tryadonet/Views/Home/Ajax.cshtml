@@ -13,42 +13,57 @@
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 </head>
 <body>
-    <div class="userWrap">
-        <ul class="userMenu">
-            <li class="current" data-id="Index">用户中心</li>
-            <li data-id="account">账户信息</li>
-            <li data-id="trade">交易记录</li>
-            <li data-id="info">消息中心</li>
-        </ul>
-        <div id="content">@foreach (var i in ViewBag.list)
-        {
-            <p>@i</p>
-        }
+    @using (Ajax.BeginForm("Ajax", "Home", new { ID = 1, Name = "2" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        InsertionMode = InsertionMode.Replace,
+        /*OnBegin = "OnBeginPost()",
+        OnComplete = "OnEndPost()",
+        OnSuccess = "OnSuccessPost",*/
+        /*UpdateTargetId = "content"*/
+    }
+                 ))
+    {
+        <div id="content">
+            <table>
+                <tr>
+                    <td>
+                        @Html.Label("lblName", "姓名")
+                    </td>
+                    <td>
+                        @Html.TextBox("TxtName")
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Label("lblAge", "年龄")
+                    </td>
+                    <td>
+                        @Html.TextBox("TxtAge")
+                    </td>
+                </tr>
+            </table>
+            <input type="submit" value="提交" />
         </div>
-    </div>
+    }
+    <input type="text" id="haha2"/>
 </body>
 </html>
-<script>
-$(function(){
-    $(".userMenu").on("click", "li", function(){
-        var sId = $(this).data("id");  //获取data-id的值
-        window.location.hash = sId;  //设置锚点
-        loadInner(sId);
-    });
-    function loadInner(sId){
-        var sId = window.location.hash;
-        var pathn, i;
-        switch(sId){
-            case "center": pathn = "user_center.html"; i = 0; break;
-　　　　　　　case "account": pathn = "user_account.html"; i = 1; break;
-            case "trade": pathn = "user_trade.html"; i = 2; break;
-            case "info": pathn = "user_info.html"; i = 3; break;
-　　　　　　  default: pathn = "user_center.html"; i = 0; break;
-        }
-        $("#content").load(pathn); //加载相对应的内容
-        $(".userMenu li").eq(i).addClass("current").siblings().removeClass("current"); //当前列表高亮
+<script type="text/javascript">
+    function OnBeginPost() {
+        alert("开始提交");
     }
-    var sId = window.location.hash;
-    loadInner(sId);
-});
+    function OnEndPost() {
+        alert("提交完成!");
+    }
+    function OnSuccessPost(e) {
+        alert(e + "提交成功!");
+    }
 </script>
+<script>
+    function haha() {
+        document.getElementById('haha2').value = '修改成功';
+    }
+    
+    </script>
+<script src="~/scripts/jquery.unobtrusive-ajax.js"></script>

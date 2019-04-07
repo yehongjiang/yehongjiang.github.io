@@ -98,7 +98,6 @@ G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\zh-Hans\Microsoft.Owi
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\zh-Hans\Microsoft.Owin.Security.MicrosoftAccount.resources.dll
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\obj\Debug\SewagePlantIMS.dll
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\obj\Debug\SewagePlantIMS.pdb
-G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\obj\Debug\SewagePlantIMS.csprojResolveAssemblyReference.cache
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\Gma.QrCodeNet.Encoding.dll
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\Gma.QrCodeNet.Encoding.pdb
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\Gma.QrCodeNet.Encoding.xml

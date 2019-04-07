@@ -31,6 +31,7 @@ using System.Web.Script.Serialization;
 using System.Text;
 using tryadonet.ViewModel;
 
+
 namespace tryadonet.Controllers
 {
     public class HomeController : Controller
@@ -212,10 +213,10 @@ namespace tryadonet.Controllers
 
         {
             string host = Request.Url.Host;
-            var  port = Request.Url.Port;
+            var port = Request.Url.Port;
 
-            string str ="http://" + host + ":" +port +"/Home/Detail?id=100";
-            using (var memoryStream = QRCodeHelper.GetQRCode(str,10))
+            string str = "http://" + host + ":" + port + "/Home/Detail?id=100";
+            using (var memoryStream = QRCodeHelper.GetQRCode(str, 10))
             {
                 /*Response.ContentType = "image/jpeg";
                 Response.OutputStream.Write(memoryStream.GetBuffer(), 0, (int)memoryStream.Length);
@@ -375,10 +376,10 @@ namespace tryadonet.Controllers
         {
 
             //判断指定图片是否存在
-           /* if (!File.Exists(Server.MapPath(fileName)))
-            {
-                throw new FileNotFoundException("The file don't exist!");
-            }*/
+            /* if (!File.Exists(Server.MapPath(fileName)))
+             {
+                 throw new FileNotFoundException("The file don't exist!");
+             }*/
             if (text == string.Empty)
             {
                 return;
@@ -390,9 +391,9 @@ namespace tryadonet.Controllers
             float fontSize = 10.0f;             //字体大小
             float textWidth = text.Length * fontSize;  //文本的长度
                                                        //下面定义一个矩形区域，以后在这个矩形里画上白底黑字
-            
+
             float rectY = 310;
-            float rectX = rectY/3;
+            float rectX = rectY / 3;
             float rectWidth = text.Length * (fontSize + 40);
             float rectHeight = fontSize + 40;
             //声明矩形域
@@ -400,8 +401,8 @@ namespace tryadonet.Controllers
             Font font = new Font("微软雅黑", fontSize, FontStyle.Bold);   //定义字体
                                                                       //font.Bold = true;
             Brush whiteBrush = new SolidBrush(Color.Black);   //白笔刷，画文字用
-                                                                   //Brush blackBrush = new SolidBrush(Color.Black);   //黑笔刷，画背景用
-                                                                   //g.FillRectangle(blackBrush, rectX, rectY, rectWidth, rectHeight);
+                                                              //Brush blackBrush = new SolidBrush(Color.Black);   //黑笔刷，画背景用
+                                                              //g.FillRectangle(blackBrush, rectX, rectY, rectWidth, rectHeight);
             g.DrawString(text, font, whiteBrush, textArea);
             MemoryStream ms = new MemoryStream();
             //输出方法一：将文件生成并保存到C盘
@@ -424,11 +425,11 @@ namespace tryadonet.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Ajax(int id)
+        public JavaScriptResult Ajax(int id, string name)
         {
-            List<int> list = new List<int> { 8,9,6,5 };
-            ViewBag.list = list;
-            return View();
+            return JavaScript("haha()");
+
+
         }
 
         public ActionResult UpdateHtml()
@@ -436,12 +437,12 @@ namespace tryadonet.Controllers
             return View();
         }
         //分部页面
-        
+
         [HttpGet]
         public PartialViewResult AllStudent()
         {
-                
-          
+
+
             temp ss = new temp();
             ss.FirstName = "叶泓江";
             ss.LastName = "hehe";
@@ -449,7 +450,16 @@ namespace tryadonet.Controllers
             ss.Address = "上楼";
 
             var objAllStudent = ss;
-                return PartialView("AllStudent", objAllStudent);
+            return PartialView("AllStudent", objAllStudent);
+        }
+
+        public ActionResult motaikuang()
+        {
+            return View();
+        }
+        public JavaScriptResult temp()
+        {
+            return JavaScript("swal_success();jump();");
         }
     }
 }
