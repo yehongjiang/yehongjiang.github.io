@@ -8,6 +8,8 @@ namespace tryadonet.Models
     public class Student
     {
         public string stu_id { get; set; }
+        [Display(Name = "学生姓名")]
+        [Required(ErrorMessage = "学生名不能为空哦~")]
         public string stu_name { get; set; }
         public string stu_sex { get; set; }
 

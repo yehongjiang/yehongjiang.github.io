@@ -461,5 +461,33 @@ namespace tryadonet.Controllers
         {
             return JavaScript("swal_success();jump();");
         }
+
+        public ActionResult VerificationModel(int i)
+        {
+
+            return View();
+        }
+        public void Verification()
+        {
+
+        }
+        public ActionResult tablechecks()
+        {
+            return View();
+        }
+        public string JsToControl(string value0, string value1, string value2, string symbol)
+        {
+
+            //return JavaScript("window.location.href='Detail?id='" + Request["id"].ToString() + ";");
+            return value0;
+
+        }
+        public string JsToControl2(string list)
+        {
+            string[] array = list.Split(',');
+            //return JavaScript("window.location.href='Detail?id='" + Request["id"].ToString() + ";");
+            return array[0];
+
+        }
     }
 }

@@ -1,0 +1,122 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>tablechecks</title>
+</head>
+<body>
+    <div>
+        <table>
+            <tr>
+                <th><input type="checkbox" onclick="selectall()" id="selectall" /></th>
+                <th>学生ID</th>
+                <th>学生姓名</th>
+            </tr>
+            <tr>
+                <td><input id="chk1" name="chk2" type="checkbox" value="4" /></td>
+                <td>1</td>
+                <td>叶泓江</td>
+            </tr>
+            <tr>
+                <td><input id="chk1" name="chk2" type="checkbox" value="3" /></td>
+                <td>2</td>
+                <td>阮声然</td>
+            </tr>
+            <tr>
+                <td><input id="chk1" name="chk2" type="checkbox" value="2" /></td>
+                <td>3</td>
+                <td>李新瑞</td>
+            </tr>
+            <tr>
+                <td><input id="chk1" name="chk2" type="checkbox" value="1" /></td>
+                <td>4</td>
+                <td>项炳泽</td>
+            </tr>
+        </table>
+    </div>
+    <!--JS传值到Controller测试-->
+    <button type="button" onclick="toControl()">传值到控制器</button>
+    <button type="button" onclick="checkvalue()">显示选中的列的值</button>
+    <button type="button" onclick="toControl2()">测试一下传列表到控制器</button>
+</body>
+</html>
+<script src="~/scripts/jquery-2.1.1.min.js"></script>
+<script>
+
+    function selectall() {
+        var nn = $("#selectall").is(":checked"); //判断th中的checkbox是否被选中，如果被选中则nn为true，反之为false
+        if (nn == true) {
+            var namebox = $("input[name^='chk2']");  //获取name值为chk2的所有input
+            for (i = 0; i < namebox.length; i++) {
+                namebox[i].checked = true;    //js操作选中checkbox
+            }
+        }
+        if (nn == false) {
+            var namebox = $("input[name^='chk2']");
+            for (i = 0; i < namebox.length; i++) {
+                namebox[i].checked = false;
+            }
+        }
+    }
+    //下面这个function作用是获取被选中的checkbox的值
+    function checkvalue() {
+        var myArray = new Array();
+        var namebox = $("input[name^='chk2']");
+        for (i = 0; i < namebox.length; i++) {
+            if (namebox[i].checked) {
+                myArray.push(namebox[i].value);
+            }
+        }
+        alert(myArray);
+    }
+    //下面这个function作用是传选中的值到后台Controller
+    function toControl() {
+        var value0 = "100";
+
+        var o0 = "200";
+
+        var grade0 = "300";
+
+        var checkValue = "400";
+        $.ajax({
+            type: 'post',
+            url: '/Home/JsToControl',
+            data: "{value2:'" + value0 + "','value1':'" + o0 + "','value0':'" + grade0 + "','symbol':'" + checkValue + "'}",
+            contentType: "application/json",
+            //dataType: "json",
+            success: function (result) {
+                alert("传值成功！");
+                window.location.href = 'Detail?id=' + result ;
+            },
+            error: function () {
+                alert("传值失败~");
+            }
+        })
+    }
+    function toControl2() {
+        var myArray = new Array();
+        myArray.push(100);
+        myArray.push(200);
+        var value0 = "100";
+        $.ajax({
+            type: 'post',
+            url: '/Home/JsToControl2',
+            data: "{list:'" + myArray + "'}",
+            contentType: "application/json",
+            //dataType: "json",
+            success: function (result) {
+                alert("传值成功！");
+                window.location.href = 'Detail?id=' + result;
+            },
+            error: function () {
+                alert("传值失败~");
+            }
+        })
+    }
+</script>

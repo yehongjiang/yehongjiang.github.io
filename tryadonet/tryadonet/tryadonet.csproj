@@ -217,6 +217,8 @@
     <Content Include="Views\Home\AllStudent.cshtml" />
     <Content Include="Views\Home\motaikuang.cshtml" />
     <Content Include="Views\Sweet\Alert.cshtml" />
+    <Content Include="Views\Home\VerificationModel.cshtml" />
+    <Content Include="Views\Home\tablechecks.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

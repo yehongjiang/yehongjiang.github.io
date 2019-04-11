@@ -1,0 +1,56 @@
+﻿@model tryadonet.Models.Student
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>VerificationModel</title>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    @using (Ajax.BeginForm("Verification", "Home", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        InsertionMode = InsertionMode.Replace,
+        /*OnBegin = "OnBeginPost()",
+        OnComplete = "OnEndPost()",
+        OnSuccess = "OnSuccessPost",*/
+        /*UpdateTargetId = "content"*/
+    }
+                                 ))
+    {
+        <div id="content">
+            <table>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model=>model.stu_name)
+                        <span class="field-validation-error" data-valmsg-replace="true" data-valmsg-for="stu_name" style="color:red;"></span>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.stu_name, new { @class = "form-control"})
+                        <!--后台用参数RegisterViewModel model获取类-->
+                        <!--<input name="stu_name" type="text"/>-->
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Label("lblAge", "年龄")
+                    </td>
+                    <td>
+                        @Html.TextBox("TxtAge")
+                    </td>
+                </tr>
+            </table>
+            <input type="submit" value="提交" />
+        </div>
+    }
+</body>
+</html>
+<script src="~/scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/jquery.validate.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/mvc/3.0/jquery.validate.unobtrusive.min.js"></script>
