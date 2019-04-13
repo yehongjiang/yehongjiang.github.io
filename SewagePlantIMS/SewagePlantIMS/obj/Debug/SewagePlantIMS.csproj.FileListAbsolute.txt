@@ -101,3 +101,4 @@ G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\obj\Debug\SewagePlantIMS.
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\Gma.QrCodeNet.Encoding.dll
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\Gma.QrCodeNet.Encoding.pdb
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\Gma.QrCodeNet.Encoding.xml
+G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\obj\Debug\SewagePlantIMS.csprojResolveAssemblyReference.cache

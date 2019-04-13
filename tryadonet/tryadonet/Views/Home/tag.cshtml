@@ -14,6 +14,7 @@
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <script src="~/scripts/jquery.min.js"></script>
     <script src="~/scripts/sweetalert.js"></script>
+
 </head>
 <body>
     @using (@Html.BeginForm("Ajax", "Home", FormMethod.Post))
@@ -22,11 +23,15 @@
     }
     <ul id="myTab" class="nav nav-tabs">
         <li class="active">
-            <a href="#home" data-toggle="tab">
+            <a href="#home" data-toggle="tab" id="cnjc_tag" aria-expanded="true">
                 菜鸟教程
             </a>
         </li>
-        <li><a href="#ios" data-toggle="tab">iOS</a></li>
+        <li>
+            <a href="#ios" data-toggle="tab" id="ios_tag" aria-expanded="false">
+                iOS
+            </a>
+        </li>
         <li class="dropdown">
             <a href="#" id="myTabDrop1" class="dropdown-toggle"
                data-toggle="dropdown">
@@ -42,6 +47,9 @@
     <div id="myTabContent" class="tab-content">
         <div class="tab-pane fade in active" id="home">
             <p>菜鸟教程是一个提供最新的web技术站点，本站免费提供了建站相关的技术文档，帮助广大web技术爱好者快速入门并建立自己的网站。菜鸟先飞早入行——学的不仅是技术，更是梦想。</p>
+            <button type="submit" id="home_btn" class="btn btn-primary" onclick="home_btn()">点击按钮跳转tag</button>
+            <button type="submit" id="jump2" class="btn btn-danger" onclick="jump2()">修改子对象测试</button>
+            <button type="submit" id="jump3" class="btn btn-warning" onclick="jump3()">跳转到IOS页面</button>
         </div>
         <div class="tab-pane fade" id="ios">
             <p>
@@ -71,6 +79,12 @@
             <li><a href="">如果为假就显示文本</a></li>
         </ul>
     }
+
+    <div id="father">
+        <div>获取子元素并修改其内容1</div>
+        <div>获取子元素并修改其内容2</div>
+        <button class="btn btn-danger">看看能不能修改一个按钮的样式</button>
+    </div>
 </body>
 </html>
 <script src="~/scripts/jquery.unobtrusive-ajax.js"></script>
@@ -88,4 +102,32 @@
         });
     }
 
+</script>
+<script>
+    var time = 0;
+    function home_btn(){
+        if(time%2==0)
+            $("#home_btn").html("修改以后的button内容")  ;
+        else
+            $("#home_btn").html("还未修改前的内容")  ;
+        time++;
+    }
+    function jump2(){
+        //getElementsByTagName获取的是一个数组！
+        var getChildren = document.getElementById("father").getElementsByTagName("div");
+        getChildren[0].innerHTML = "我已成功获取相应的成员对象1";
+        getChildren[1].innerHTML = "我已成功获取相应的成员对象2";
+        var getButton = document.getElementById("father").getElementsByTagName("button");
+        getButton[0].className="btn btn-success";
+    }
+    function jump3(){
+        /*var getChildren = document.getElementById("myTab").getElementsByTagName("li");
+        getChildren[0].className = "";
+        getChildren[1].className = "avtive";
+        document.getElementById("home").className = "tab-pane fade";
+        document.getElementById("ios").className = "tab-pane fade in active";
+        $("#cnjc_tag").attr('aria-expanded',false) ;
+        $("#ios_tag").attr('aria-expanded',true);*/
+        document.getElementById("ios_tag").click();
+    }
 </script>

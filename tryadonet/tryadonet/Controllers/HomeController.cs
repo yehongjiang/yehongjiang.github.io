@@ -479,7 +479,7 @@ namespace tryadonet.Controllers
         {
 
             //return JavaScript("window.location.href='Detail?id='" + Request["id"].ToString() + ";");
-            return value0;
+            return value2;
 
         }
         public string JsToControl2(string list)

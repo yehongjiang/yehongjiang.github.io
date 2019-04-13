@@ -26,6 +26,10 @@ namespace SewagePlantIMS.Controllers
     [LoginAttribute(isNeed = true)]
     public class ElectricManageController : Controller
     {
+        /// <summary>
+        /// 下面是仪表二维码的内容和方法
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             return View();
@@ -126,7 +130,7 @@ namespace SewagePlantIMS.Controllers
             string url = Server.MapPath(cmd1.ExecuteScalar().ToString());
             FileInfo file = new FileInfo(url);
             file.Delete();
-            
+
             //最后删除相应的数据库数据
             string sqlStr = "delete from dm_elec_pic where elec_id = " + Request.Form["del"] + "; delete from dm_electrical where id = " + Request.Form["del"] + ";";
             SqlCommand cmd = new SqlCommand(sqlStr, con);
@@ -461,7 +465,7 @@ namespace SewagePlantIMS.Controllers
             con.Close();
             return View(elec_pics);
         }
-   
+
         [HttpPost]
         public ViewResult ElectricalPic()
         {
@@ -508,7 +512,7 @@ namespace SewagePlantIMS.Controllers
             string sql = "select max(id) from dm_elec_pic";
             SqlCommand cmd1 = new SqlCommand(sql, con);
             int max_id;
-            if (cmd1.ExecuteScalar()!= DBNull.Value)
+            if (cmd1.ExecuteScalar() != DBNull.Value)
             {
                 max_id = Convert.ToInt32(cmd1.ExecuteScalar());
                 max_id++;
@@ -623,13 +627,49 @@ namespace SewagePlantIMS.Controllers
             SqlCommand cmd = new SqlCommand(sqlStr, con);
             int check = cmd.ExecuteNonQuery();
             con.Close();
-            if (check !=0)
+            if (check != 0)
                 return JavaScript("swal_success();jump_electrical_list();");
             else
                 return JavaScript("swal_error();");
+        }
+
+
+        /// <summary>
+        /// 下面是电表抄度的内容和方法
+        /// </summary>
+        /// <returns></returns>
+
+        public ActionResult ElecReadingList()
+        {
+            List<ElectricReading> electrical = new List<ElectricReading>();
+
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sqlStr = "select id,add_time,user_name,remark from dm_electric_inspection order by add_time desc;";
+            SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            ElectricReading[] E = new ElectricReading[ds.Tables[0].Rows.Count];
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                E[mDr] = new ElectricReading();
+                E[mDr].total_id = Convert.ToInt32(ds.Tables[0].Rows[mDr][0]);
+                E[mDr].add_time = Convert.ToDateTime(ds.Tables[0].Rows[mDr][1]);
+                E[mDr].user_name = ds.Tables[0].Rows[mDr][2].ToString();
+                E[mDr].remark = ds.Tables[0].Rows[mDr][3].ToString();
+                electrical.Add(E[mDr]);
+            }
+            con.Close();
+            return View(electrical);
+        }
+        public ActionResult AddElecReading()
+        {
+            return View();
         }
     }
 
 }
 
-///////////下面是电表超度分割线///////////////////////////////////////////////////////////////////////////
+
+
+

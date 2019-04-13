@@ -207,6 +207,7 @@
     <Compile Include="Models\technology.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\ElectricReading.cs" />
     <Compile Include="ViewModels\ShowElectrical.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +235,7 @@
     <Content Include="assets\js\echarts.min.js" />
     <Content Include="assets\js\iscroll.js" />
     <Content Include="assets\js\jquery.min.js" />
+    <Content Include="Content\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="favicon.ico" />
@@ -245,6 +247,7 @@
     <Content Include="images\oujiangkou.png" />
     <Content Include="Scripts\ai.0.22.9-build00167.js" />
     <Content Include="Scripts\ai.0.22.9-build00167.min.js" />
+    <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -288,6 +291,8 @@
     <Content Include="Views\ElectricManage\Electrical_List.cshtml" />
     <Content Include="Views\ElectricManage\ElectricalPic.cshtml" />
     <Content Include="Views\ElectricManage\ModifyElectrical.cshtml" />
+    <Content Include="Views\ElectricManage\ElecReadingList.cshtml" />
+    <Content Include="Views\ElectricManage\AddElecReading.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

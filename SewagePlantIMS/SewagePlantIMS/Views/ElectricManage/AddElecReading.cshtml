@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewBag.Title = "新增电力抄表信息";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+<fieldset>
+    <legend style="color:#5b9bd1">新增电力抄表信息</legend>
+</fieldset>
+
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#home" data-toggle="tab" id="ksxc_tag">
+            开始巡查
+        </a>
+    </li>
+    <li>
+        <a href="#db1x" data-toggle="tab" id="db1x_tag">
+            电表1#线
+        </a>
+    </li>
+    <li>
+        <a href="#db2x" data-toggle="tab" id="db2x_tag">
+            电表2#线
+        </a>
+    </li>
+    <li>
+        <a href="#gy1x" data-toggle="tab" id="gy1x_tag">
+            高压1#线
+        </a>
+    </li>
+    <li>
+        <a href="#gy2x" data-toggle="tab" id="gy2x_tag">
+            高压2#线
+        </a>
+    </li>
+    <li>
+        <a href="#dyml" data-toggle="tab" id="dyml_tag">
+            低压母联
+        </a>
+    </li>
+    <li>
+        <a href="#dy1x" data-toggle="tab" id="dy1x_tag">
+            低压1#线
+        </a>
+    </li>
+    <li>
+        <a href="#dy2x" data-toggle="tab" id="dy2x_tag">
+            低压2#线
+        </a>
+    </li>
+    <li>
+        <a href="#qtjc" data-toggle="tab" id="qtjc_tag">
+            其他检查
+        </a>
+    </li>
+</ul>
+<div id="myTabContent" class="tab-content" style="border-right-style:none;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-width:1px;border-color:#dddddd;text-align:center;">
+    <div class="tab-pane fade in active" id="home">
+            <input size="22" type="text" value="" readonly class="form_datetime">
+     </div>
+    <div class="tab-pane fade" id="db1x">
+        
+                    iOS 是一个由苹果公司开发和发布的手机操作系统。最初是于 2007 年首次发布 iPhone、iPod Touch 和 Apple
+                    TV。iOS 派生自 OS X，它们共享 Darwin 基础。OS X 操作系统是用在苹果电脑上，iOS 是苹果的移动版本。
+
+
+    </div>
+    <div class="tab-pane fade" id="db2x">
+        2
+    </div>
+    <div class="tab-pane fade" id="gy1x">
+        3
+    </div>
+    <div class="tab-pane fade" id="gy2x">
+       4
+    </div>
+    <div class="tab-pane fade" id="dyml">
+        5
+    </div>
+    <div class="tab-pane fade" id="dy1x">
+        6
+    </div>
+    <div class="tab-pane fade" id="dy2x">
+        7
+    </div>
+    <div class="tab-pane fade" id="qtjc">
+       8
+    </div>
+</div>
+<script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">
+    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
+</script>

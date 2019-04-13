@@ -1,0 +1,42 @@
+﻿@model List<SewagePlantIMS.ViewModels.ElectricReading>
+@{
+    ViewBag.Title = "电力巡查";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<fieldset>
+    <legend style="color:#5b9bd1">电力巡查</legend>
+</fieldset>
+<a href="AddElecReading">新增抄表信息</a>
+<table class="table table-bordered table-hover table-striped" id="table_id_example">
+    <thead>
+        <tr>
+            <th>批量</th>
+            <th>巡查时间</th>
+            <th>巡查人</th>
+            <th>备注</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td width="20px"><input type="checkbox" value="@item.total_id" name="check_id"/></td>
+                <td>@item.add_time.ToLongDateString().ToString()</td>
+                <td>@item.user_name</td>
+                <td>@item.remark</td>
+                <td>
+                    @using (@Html.BeginForm("", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
+                    {
+                        <button class="btn btn-success btn-xs" type="submit" value="@item.total_id" name="erl_id">修改</button>
+                    }
+                    @using (@Html.BeginForm("", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
+                    {
+                        <button class="btn btn-danger btn-xs" type="submit" value="@item.total_id" name="erl_del" id="erl_del" onclick="return confirm('确定删除吗？？？')">删除</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
