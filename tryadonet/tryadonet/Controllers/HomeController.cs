@@ -427,7 +427,8 @@ namespace tryadonet.Controllers
         [HttpPost]
         public JavaScriptResult Ajax(int id, string name)
         {
-            return JavaScript("haha()");
+            int i = 66666;
+            return JavaScript("haha("+ i +")");
 
 
         }

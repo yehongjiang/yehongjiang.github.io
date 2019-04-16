@@ -56,6 +56,12 @@
                 opacity: 0;
                 filter: alpha(opacity=0);
             }
+            legend{
+                color:#5b9bd1;padding-top:20px;
+                padding-bottom:20px;
+                font-weight:bold;
+                font-size:18px;
+            }
     </style>
 
 </head>
@@ -126,6 +132,21 @@
                                 <a href="~/ElectricManage/Electrical_List">
                                     <i class="am-icon-angle-right"></i>
                                     <span>仪表管理</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="tpl-left-nav-item">
+                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
+                            <i class="am-icon-flask"></i>
+                            <span>化验室管理</span>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
+                        </a>
+                        <ul class="tpl-left-nav-sub-menu">
+                            <li>
+                                <a href="~/Chemical/ChemicalDeviceList">
+                                    <i class="am-icon-angle-right"></i>
+                                    <span>化验仪器管理</span>
                                 </a>
                             </li>
                         </ul>
@@ -243,6 +264,10 @@
     function jump_electrical_list() {
 
         window.setTimeout("window.location='Electrical_List'", 2000);
+    }
+    function jump_ChemicalDeviceList() {
+
+        window.setTimeout("window.location='ChemicalDeviceList'", 2000);
     }
 </script>
 

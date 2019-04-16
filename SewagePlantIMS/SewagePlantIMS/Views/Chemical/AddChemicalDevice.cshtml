@@ -1,0 +1,75 @@
+﻿@model SewagePlantIMS.Models.chemical_device
+
+@{
+    ViewBag.Title = "添加仪表信息";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<fieldset>
+    <legend style="color:#5b9bd1">添加仪表信息</legend>
+</fieldset>
+
+@using (Ajax.BeginForm("AddChemicalDevice_Post", "Chemical", new AjaxOptions
+{
+    HttpMethod = "POST",
+    InsertionMode = InsertionMode.Replace,
+
+}))
+{
+
+        <div class="am-form-group">
+            @Html.LabelFor(model => model.cd_name, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.cd_name, new { htmlAttributes = new { @class = "form-control" ,@placeholder="请输入仪器名称"}})
+            @Html.ValidationMessageFor(model => model.cd_name, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="am-form-group">
+            @Html.LabelFor(model => model.cd_model, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.cd_model, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入仪器型号" } })
+            @Html.ValidationMessageFor(model => model.cd_model, "", new { @class = "text-danger" })
+
+        </div>
+
+        <div class="am-form-group">
+            @Html.LabelFor(model => model.cd_quantity, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.cd_quantity, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入仪器数量" } })
+            @Html.ValidationMessageFor(model => model.cd_quantity, "", new { @class = "text-danger" })
+
+        </div>
+
+        <div class="am-form-group">
+            @Html.LabelFor(model => model.cd_num, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.cd_num, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入仪器编号" } })
+            @Html.ValidationMessageFor(model => model.cd_num, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="am-form-group">
+            @Html.LabelFor(model => model.cd_manufacturer, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.cd_manufacturer, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入厂家名称" } })
+            @Html.ValidationMessageFor(model => model.cd_manufacturer, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="am-form-group">
+            @Html.LabelFor(model => model.cd_preserver, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.cd_preserver, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入保管人" } })
+            @Html.ValidationMessageFor(model => model.cd_preserver, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="am-form-group">
+            @Html.LabelFor(model => model.cd_begin_time, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.cd_begin_time, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入启用时间", type = "date" } })
+            @Html.ValidationMessageFor(model => model.cd_begin_time, "", new { @class = "text-danger" })
+
+        </div>
+
+        <div class="am-form-group">
+            @Html.LabelFor(model => model.cd_remark, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.cd_remark, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入其他需要补充的信息" }  })
+            @Html.ValidationMessageFor(model => model.cd_remark, "", new { @class = "text-danger" })
+        </div>
+        
+            <button type="submit" class="btn btn-primary btn-block">添加仪器</button>
+           
+
+}
+<button class="btn btn-default btn-block" onclick="javascrtpt: window.location.href = 'ChemicalDeviceList'">返回</button>

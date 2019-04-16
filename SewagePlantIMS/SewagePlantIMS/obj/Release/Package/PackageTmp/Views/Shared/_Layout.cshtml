@@ -56,6 +56,12 @@
                 opacity: 0;
                 filter: alpha(opacity=0);
             }
+            legend{
+                color:#5b9bd1;padding-top:20px;
+                padding-bottom:20px;
+                font-weight:bold;
+                font-size:18px;
+            }
     </style>
 
 </head>
@@ -117,10 +123,9 @@
                         </a>
                         <ul class="tpl-left-nav-sub-menu">
                             <li>
-                                <a href="#">
+                                <a href="~/ElectricManage/ElecReadingList">
                                     <i class="am-icon-angle-right"></i>
-                                    <span>电表抄度</span>
-
+                                    <span>电力巡查</span>
                                 </a>
 
 
@@ -226,6 +231,8 @@
 <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
 <!--弹出框JS-->
 <script src="~/Scripts/sweetalert.js"></script>
+<!--tag页补充JS-->
+<script src="~/Scripts/bootstrap.min.js"></script>
 <script>
     function swal_success() {
         swal("", "操作成功!", "success", {

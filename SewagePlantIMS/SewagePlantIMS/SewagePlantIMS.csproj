@@ -195,6 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ChemicalController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ElectricManageController.cs" />
     <Compile Include="Filter\LoginAttribute.cs" />
@@ -202,6 +203,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\chemical_device.cs" />
+    <Compile Include="Models\chemical_device_pic.cs" />
     <Compile Include="Models\Electrical.cs" />
     <Compile Include="Models\elec_pic.cs" />
     <Compile Include="Models\technology.cs" />
@@ -293,6 +296,8 @@
     <Content Include="Views\ElectricManage\ModifyElectrical.cshtml" />
     <Content Include="Views\ElectricManage\ElecReadingList.cshtml" />
     <Content Include="Views\ElectricManage\AddElecReading.cshtml" />
+    <Content Include="Views\Chemical\ChemicalDeviceList.cshtml" />
+    <Content Include="Views\Chemical\AddChemicalDevice.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
