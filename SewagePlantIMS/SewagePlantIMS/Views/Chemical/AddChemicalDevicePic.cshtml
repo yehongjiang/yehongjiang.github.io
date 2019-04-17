@@ -1,6 +1,6 @@
-﻿@model List<SewagePlantIMS.Models.elec_pic>
+﻿@model List<SewagePlantIMS.Models.chemical_device_pic>
 @{
-    ViewBag.Title = "添加电气图片";
+    ViewBag.Title = "添加化验仪器图片";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <script type="text/javascript">
@@ -20,7 +20,7 @@
 </script>
 
 <fieldset>
-    <legend style="color:#5b9bd1">添加电气图片</legend>
+    <legend style="color:#5b9bd1">添加仪器图片</legend>
 </fieldset>
 <div class="row">
     @foreach (var item in Model)
@@ -28,11 +28,11 @@
 
         <div class="col-md-3">
             <div class="thumbnail">
-                    <img src=@item.pic_url id="imgInit" onerror="imgUrl()" width="100"  height="100" />
-                
+                <img src=@item.cd_picurl id="imgInit" onerror="imgUrl()" width="100" height="100" />
+
 
                 <div class="caption">
-                    @using (@Html.BeginForm("DeletePic", "ElectricManage", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    @using (@Html.BeginForm("DeletePic", "Chemical", FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
                         <center><p><button href="" class="btn btn-danger" role="button" value=@item.id name="del_id">删除</button></p></center>
                     }
@@ -44,7 +44,7 @@
 </div>
 
 <hr />
-@using (@Html.BeginForm("ElectricalPicPost", "ElectricManage", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (@Html.BeginForm("ElectricalPicPost", "Chemical", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <!--<input id="File1" type="file" name="File"/>-->
     <table>
@@ -55,7 +55,7 @@
                 </a>
             </td>
             <td>
-                <button type="submit" value="@ViewBag.elec_id" name="id" class="btn btn-default btn-sm" id="sub">提交图片</button>
+                <button type="submit" value="@ViewBag.cd_id" name="id" class="btn btn-default btn-sm" id="sub">提交图片</button>
             </td>
         </tr>
     </table>
@@ -64,6 +64,8 @@
     <div class="showFileName1" id="filename"></div>
     <input type="text" name="filename2" style="visibility: hidden;" id="filename2" />
 }
+
+
 
 
 

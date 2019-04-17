@@ -26,11 +26,11 @@
                 <td>@item.cd_name</td>
                 <td>@item.cd_preserver</td>
                 <td>
-                    @using (@Html.BeginForm("AddChemicalDevice", "Chemical", FormMethod.Post, new { @class = "myform" }))
+                    @using (@Html.BeginForm("ModifyChemicalDevice", "Chemical", FormMethod.Post, new { @class = "myform" }))
                     {
                         <button class="btn btn-success btn-xs" type="submit" value="@item.id" name="id">修改</button>
                     }
-                    @using (@Html.BeginForm("ElectricalPic", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
+                    @using (@Html.BeginForm("AddChemicalDevicePic", "Chemical", FormMethod.Post, new { @class = "myform" }))
                     {
                         <button class="btn btn-primary btn-xs" type="submit" value="@item.id" name="id">添加图片</button>
                     }

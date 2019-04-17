@@ -298,6 +298,8 @@
     <Content Include="Views\ElectricManage\AddElecReading.cshtml" />
     <Content Include="Views\Chemical\ChemicalDeviceList.cshtml" />
     <Content Include="Views\Chemical\AddChemicalDevice.cshtml" />
+    <Content Include="Views\Chemical\ModifyChemicalDevice.cshtml" />
+    <Content Include="Views\Chemical\AddChemicalDevicePic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
