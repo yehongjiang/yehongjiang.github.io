@@ -211,6 +211,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\ElectricReading.cs" />
+    <Compile Include="ViewModels\ShowChemicalDevice.cs" />
     <Compile Include="ViewModels\ShowElectrical.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -300,10 +301,12 @@
     <Content Include="Views\Chemical\AddChemicalDevice.cshtml" />
     <Content Include="Views\Chemical\ModifyChemicalDevice.cshtml" />
     <Content Include="Views\Chemical\AddChemicalDevicePic.cshtml" />
+    <Content Include="Views\Chemical\ShowChemicalDevice.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="images\ElectricalPic\" />
+    <Folder Include="QRcode\ChemicalDeviceQR\" />
     <Folder Include="QRcode\ElectricQR\" />
     <Folder Include="Views\LoginAttribute\" />
   </ItemGroup>

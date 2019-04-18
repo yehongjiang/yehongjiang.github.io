@@ -220,7 +220,7 @@
       <publishTime>03/25/2019 08:50:38</publishTime>
     </File>
     <File Include="bin/SewagePlantIMS.dll">
-      <publishTime>04/14/2019 20:59:16</publishTime>
+      <publishTime>04/18/2019 21:52:44</publishTime>
     </File>
     <File Include="bin/System.Web.Helpers.dll">
       <publishTime>03/25/2019 08:50:38</publishTime>
@@ -399,6 +399,18 @@
     <File Include="Scripts/_references.js">
       <publishTime>04/13/2019 23:19:42</publishTime>
     </File>
+    <File Include="Views/Chemical/AddChemicalDevice.cshtml">
+      <publishTime>04/17/2019 20:35:08</publishTime>
+    </File>
+    <File Include="Views/Chemical/AddChemicalDevicePic.cshtml">
+      <publishTime>04/18/2019 21:13:46</publishTime>
+    </File>
+    <File Include="Views/Chemical/ChemicalDeviceList.cshtml">
+      <publishTime>04/17/2019 21:21:25</publishTime>
+    </File>
+    <File Include="Views/Chemical/ModifyChemicalDevice.cshtml">
+      <publishTime>04/17/2019 21:00:21</publishTime>
+    </File>
     <File Include="Views/ElectricManage/AddElecReading.cshtml">
       <publishTime>04/14/2019 18:07:04</publishTime>
     </File>
@@ -412,7 +424,7 @@
       <publishTime>03/25/2019 08:50:36</publishTime>
     </File>
     <File Include="Views/ElectricManage/ElectricalPic.cshtml">
-      <publishTime>03/25/2019 08:50:36</publishTime>
+      <publishTime>04/17/2019 21:32:50</publishTime>
     </File>
     <File Include="Views/ElectricManage/Electrical_List.cshtml">
       <publishTime>04/13/2019 20:35:04</publishTime>
@@ -433,7 +445,7 @@
       <publishTime>02/19/2019 21:22:54</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>04/14/2019 18:07:44</publishTime>
+      <publishTime>04/16/2019 20:42:00</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>03/25/2019 08:50:36</publishTime>

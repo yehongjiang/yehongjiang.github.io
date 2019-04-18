@@ -34,11 +34,11 @@
                     {
                         <button class="btn btn-primary btn-xs" type="submit" value="@item.id" name="id">添加图片</button>
                     }
-                    @using (@Html.BeginForm("DeleteElectrical", "Chemical", FormMethod.Post, new { @class = "myform" }))
+                    @using (@Html.BeginForm("DeleteElectrical", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
                     {
                         <button class="btn btn-danger btn-xs" type="submit" value="@item.id" name="del" id="del" onclick="return confirm('确定删除吗？？？')">删除</button>
                     }
-                    @using (@Html.BeginForm("ShowChemicalDevice", "Chemical", FormMethod.Post, new { @class = "myform" }))
+                    @using (@Html.BeginForm("ShowElectrical", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
                     {
                         <button class="btn btn-default btn-xs" value="@item.id" name="show">展示页</button>
                     }
