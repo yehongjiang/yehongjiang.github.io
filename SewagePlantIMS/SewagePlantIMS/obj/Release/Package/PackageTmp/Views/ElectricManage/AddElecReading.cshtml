@@ -1,10 +1,9 @@
-﻿
+﻿@model SewagePlantIMS.ViewModels.ElectricReading
 @{
     ViewBag.Title = "新增电力抄表信息";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
-
 <fieldset>
     <legend>新增电力抄表信息</legend>
 </fieldset>
@@ -78,11 +77,130 @@
     </div>
 
     <div class="tab-pane fade" id="db1x">
+        <div class="form-horizontal">
 
-        iOS 是一个由苹果公司开发和发布的手机操作系统。最初是于 2007 年首次发布 iPhone、iPod Touch 和 Apple
-        TV。iOS 派生自 OS X，它们共享 Darwin 基础。OS X 操作系统是用在苹果电脑上，iOS 是苹果的移动版本。
+                @using (Ajax.BeginForm("", "ElectricManage", new AjaxOptions
+            {
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
 
+            }))
+            {
+                    <h5 style="color:#5b9bd1;text-align:center;">正向有功(kwh)</h5>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.emr1_postive_active_all, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.emr1_postive_active_all, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.emr1_postive_active_all, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
 
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.emr1_postive_active_sharp, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.emr1_postive_active_sharp, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.emr1_postive_active_sharp, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.emr1_postive_active_peak, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.emr1_postive_active_peak, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.emr1_postive_active_peak, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.emr1_postive_active_shoulder, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.emr1_postive_active_shoulder, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.emr1_postive_active_shoulder, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.emr1_postive_active_offpeak, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.emr1_postive_active_offpeak, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.emr1_postive_active_offpeak, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <h5 style="color:#5b9bd1;text-align:center;">正向无功(kvarh)</h5>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.emr1_postive_reactive_all, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.emr1_postive_reactive_all, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.emr1_postive_reactive_all, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.emr1_postive_reactive_sharp, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.emr1_postive_reactive_sharp, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.emr1_postive_reactive_sharp, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.emr1_postive_reactive_peak, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.emr1_postive_reactive_peak, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.emr1_postive_reactive_peak, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.emr1_postive_reactive_shoulder, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.emr1_postive_reactive_shoulder, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.emr1_postive_reactive_shoulder, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.emr1_postive_reactive_offpeak, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.emr1_postive_reactive_offpeak, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.emr1_postive_reactive_offpeak, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <h5 style="color:#5b9bd1;text-align:center;">功率因素(%)</h5>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.emr1_pf_all, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.emr1_pf_all, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.emr1_pf_all, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.emr1_pf_a, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.emr1_pf_a, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.emr1_pf_a, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.emr1_pf_b, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.emr1_pf_b, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.emr1_pf_b, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.emr1_pf_c, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.emr1_pf_c, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.emr1_pf_c, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                }
+ 
+        </div>
     </div>
     <div class="tab-pane fade" id="db2x">
         2

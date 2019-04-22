@@ -200,6 +200,7 @@
     <Compile Include="Controllers\ElectricManageController.cs" />
     <Compile Include="Filter\LoginAttribute.cs" />
     <Compile Include="Function\CompressPic.cs" />
+    <Compile Include="Function\QRCodeHepler.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -302,11 +303,11 @@
     <Content Include="Views\Chemical\ModifyChemicalDevice.cshtml" />
     <Content Include="Views\Chemical\AddChemicalDevicePic.cshtml" />
     <Content Include="Views\Chemical\ShowChemicalDevice.cshtml" />
+    <Content Include="Views\ElectricManage\temp.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="images\ElectricalPic\" />
-    <Folder Include="QRcode\ChemicalDeviceQR\" />
     <Folder Include="QRcode\ElectricQR\" />
     <Folder Include="Views\LoginAttribute\" />
   </ItemGroup>

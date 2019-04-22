@@ -23,7 +23,7 @@ using System.Web.UI;
 
 namespace SewagePlantIMS.Controllers
 {
-    [LoginAttribute(isNeed = true)]
+   // [LoginAttribute(isNeed = true)]
     public class ElectricManageController : Controller
     {
         /// <summary>
@@ -663,6 +663,10 @@ namespace SewagePlantIMS.Controllers
             return View(electrical);
         }
         public ActionResult AddElecReading()
+        {
+            return View();
+        }
+        public ActionResult temp()
         {
             return View();
         }

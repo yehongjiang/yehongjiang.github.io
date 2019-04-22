@@ -7,13 +7,15 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 namespace SewagePlantIMS.Controllers
 {
-    //[LoginAttribute(isNeed = true)]
+    [LoginAttribute(isNeed = true)]
     public class ChemicalController : Controller
     {
         // GET: Chemical
@@ -36,12 +38,35 @@ namespace SewagePlantIMS.Controllers
                 E[mDr].cd_name = ds.Tables[0].Rows[mDr][2].ToString();
                 E[mDr].cd_preserver = ds.Tables[0].Rows[mDr][3].ToString();
                 model.Add(E[mDr]);
-
-                //直接生成二维码图片
-                // CreateQrCode(E[mDr].id, E[mDr].elec_name);
             }
             con.Close();
             return View(model);
+        }
+        public void CreateQrCode()
+        {
+            string host = Request.Url.Host;
+            var port = Request.Url.Port;
+            string str = "http://" + host + ":" + port + "/Chemical/ShowChemicalDevice?id=" + Request.Form["qrcode"];
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sqlStr = "select cd_name from dm_chemical_device where id = "+ Request.Form["qrcode"] + ";";
+            SqlCommand cmd = new SqlCommand(sqlStr, con);
+            string cd_name = cmd.ExecuteScalar().ToString();
+            con.Close();
+            using (var memoryStream = QRCodeHelper.GetQRCode(str, 10))
+            {
+                System.Drawing.Image img = Image.FromStream(memoryStream);
+                img = QRCodeHelper.AddTextToImg(img, cd_name, cd_name);
+                
+                System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                Response.ContentType = "application/octet-stream";
+                //文件名+文件格式 （这里编码采用的是utf-8）
+                Response.AddHeader("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(cd_name + ".png", System.Text.Encoding.UTF8));
+                Response.BinaryWrite(ms.ToArray());
+                ms.Dispose();
+                img.Dispose();
+            }
         }
         public ActionResult AddChemicalDevice()
         {
@@ -242,10 +267,9 @@ namespace SewagePlantIMS.Controllers
         public ActionResult ShowChemicalDevice(string id)
         {
             List<ShowChemicalDevice> model = new List<ShowChemicalDevice>();
-
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string sqlStr = "select dm_chemical_device.id,cd_name,cd_model,cd_quantity,cd_num,cd_manufacturer,cd_preserver,cd_begin_time,cd_remark ,cd_picurl from dm_chemical_device,dm_chemical_device_pic where dm_chemical_device.id = '" + Request.Form["show"] + "'and  dm_chemical_device.id = dm_chemical_device_pic.cd_id; ";
+            string sqlStr = "select dm_chemical_device.id,cd_name,cd_model,cd_quantity,cd_num,cd_manufacturer,cd_preserver,cd_begin_time,cd_remark ,cd_picurl from dm_chemical_device,dm_chemical_device_pic where dm_chemical_device.id = '" + id + "'and  dm_chemical_device.id = dm_chemical_device_pic.cd_id; ";
             SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
             DataSet ds = new DataSet();
             da.Fill(ds);
@@ -297,6 +321,50 @@ namespace SewagePlantIMS.Controllers
             }
             con.Close();
             return View(model);
+        }
+        public JavaScriptResult DeleteChemicalDevice()
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //先删除对应的图片
+            string del_pic = "select cd_picurl from dm_chemical_device_pic where cd_id = " + Request.Form["del"];
+            SqlDataAdapter da = new SqlDataAdapter(del_pic, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+
+                string filePath = Server.MapPath(ds.Tables[0].Rows[mDr][0].ToString());
+                FileInfo file2 = new FileInfo(filePath);
+                if (file2.Exists)
+                {
+                    file2.Delete();
+                }
+            }
+            //删除图片原图
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+
+                string filePath = Server.MapPath(ds.Tables[0].Rows[mDr][0].ToString().Insert(25,"_Pre"));
+                FileInfo file2 = new FileInfo(filePath);
+                if (file2.Exists)
+                {
+                    file2.Delete();
+                }
+            }
+            //最后删除相应的数据库数据
+            string sqlStr = "delete from dm_chemical_device_pic where cd_id = " + Request.Form["del"] + "; delete from dm_chemical_device where id = " + Request.Form["del"] + ";";
+            SqlCommand cmd = new SqlCommand(sqlStr, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check != 0)
+            {
+                return JavaScript("swal_success();jump_ChemicalDeviceList()");
+            }
+            else
+            {
+                return JavaScript("swal_error();");
+            }
         }
     }
 }

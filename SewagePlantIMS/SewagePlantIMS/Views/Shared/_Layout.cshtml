@@ -56,17 +56,29 @@
                 opacity: 0;
                 filter: alpha(opacity=0);
             }
-            legend{
-                color:#5b9bd1;padding-top:20px;
-                padding-bottom:20px;
-                font-weight:bold;
-                font-size:18px;
-            }
+
+        legend {
+            color: #5b9bd1;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .bgcolor{
+            background-color:white;
+        }
+        #select_button{
+            background-color:#5b9bd1;
+            border-radius:3px;
+            border-color:none;
+            border:none;
+        }
     </style>
 
 </head>
-<body data-type="index"style="background-color:white;">
-    <<header class="am-topbar am-topbar-inverse admin-header" >
+<body data-type="index">
+
+    <header class="am-topbar am-topbar-inverse admin-header">
         <div class="am-topbar-brand">
             <a href="javascript:;" class="tpl-logo">
                 <img src="~/assets/img/logo.png" alt="">
@@ -76,7 +88,7 @@
 
         </div>
 
-        <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+        <button id="select_button" class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
 
         <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
 
@@ -100,7 +112,7 @@
         </div>
     </header>
 
-    <div style="margin-top:60px">
+    <div style="padding-top:70px;" class="bgcolor">
 
 
         <div class="tpl-left-nav tpl-left-nav-hover">
