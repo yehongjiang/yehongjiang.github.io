@@ -22,13 +22,14 @@ namespace SewagePlantIMS.Controllers
             con.Open();
             string username = Request.Form["username"].Replace("'", "");
             string password = Request.Form["password"].Replace("'","");
-            string sql = "select count(*) from dm_user where name = '" + username  + "' and password = '" + getMd5Hash(password) + "';";
+            string sql = "select id from dm_user where name = '" + username  + "' and password = '" + getMd5Hash(password) + "';";
             SqlCommand cmd = new SqlCommand(sql, con);
             int result = (int)cmd.ExecuteScalar();
             con.Close();
 
             if (result > 0)
             {
+                Session["user_id"] = result;
                 Session["username"] = Request.Form["username"];
                 con.Open();
                 sql = "select real_name from dm_user where name = '" + Request.Form["username"] + "' and password = '" + getMd5Hash(password) + "';";

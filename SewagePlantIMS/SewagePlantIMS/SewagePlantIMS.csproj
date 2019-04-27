@@ -303,7 +303,6 @@
     <Content Include="Views\Chemical\ModifyChemicalDevice.cshtml" />
     <Content Include="Views\Chemical\AddChemicalDevicePic.cshtml" />
     <Content Include="Views\Chemical\ShowChemicalDevice.cshtml" />
-    <Content Include="Views\ElectricManage\temp.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -23,7 +23,7 @@ using System.Web.UI;
 
 namespace SewagePlantIMS.Controllers
 {
-   // [LoginAttribute(isNeed = true)]
+     [LoginAttribute(isNeed = true)]
     public class ElectricManageController : Controller
     {
         /// <summary>
@@ -666,9 +666,18 @@ namespace SewagePlantIMS.Controllers
         {
             return View();
         }
-        public ActionResult temp()
+        public JavaScriptResult BeginElecReading(ElectricReading Model)
         {
-            return View();
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string select = "insert into dm_electric_inspection (add_time, user_id, user_name,remark)values('" + Request.Form["aer_check_time"] + "'," + Session["user_id"] + ", '" + Session["real_name"] + "','" + Request.Form["aer_remark"] + "');select @@IDENTITY;";
+            SqlCommand cmd = new SqlCommand(select, con);
+            var pre_id = Convert.ToInt32(cmd.ExecuteScalar());
+            con.Close();
+            if (pre_id > 0)
+                return JavaScript("swal_success();GetPreId("+pre_id+")");
+            else
+                return JavaScript("swal_error();");
         }
     }
 

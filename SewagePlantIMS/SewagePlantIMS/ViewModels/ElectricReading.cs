@@ -41,6 +41,7 @@ namespace SewagePlantIMS.ViewModels
         [Required(ErrorMessage = "该字段不能为空！")]
         public int safe_appliance_state { get; set; }
         [Display(Name = "其他")]
+        [DataType(DataType.MultilineText)]
         public string mark { get; set; }
         //低压1#线
         [Display(Name = "A")]

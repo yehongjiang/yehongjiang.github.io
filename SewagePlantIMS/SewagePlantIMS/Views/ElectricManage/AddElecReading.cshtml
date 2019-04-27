@@ -3,6 +3,11 @@
     ViewBag.Title = "新增电力抄表信息";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    #temp {
+        width: 100px;
+    }
+</style>
 <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 <fieldset>
     <legend>新增电力抄表信息</legend>
@@ -57,23 +62,23 @@
 </ul>
 <div id="myTabContent" class="tab-content" style="border-right-style:none;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-width:1px;border-color:#dddddd;padding: 50px;">
     <div class="tab-pane fade in active" id="home">
-        @using (Ajax.BeginForm("", "ElectricManage", new AjaxOptions
+        @using (Ajax.BeginForm("BeginElecReading", "ElectricManage", new AjaxOptions
         {
             HttpMethod = "POST",
             InsertionMode = InsertionMode.Replace,
-        }))
+        },new { onsubmit = "check_begin()" }))
         {
             <div class="am-form-group">
                 <label>巡查时间：</label>
-                <input size="22" type="text" value="" readonly class="form_datetime form-control" name="aer_check_time">
+                <input size="22" type="datetime" value="" readonly class="form_datetime form-control" name="aer_check_time" id="date_info">
             </div>
             <div class="am-form-group">
                 <label>巡查问题备注：</label>
                 <textarea class="form-control" rows="4" name="aer_remark" placeholder="请简述巡查过程中出现的问题"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">开始巡查</button>
-            <button class="btn btn-default btn-block" onclick="javascrtpt:window.location.href='ElecReadingList'">返回</button>
+            <button type="submit" class="btn btn-primary btn-block" id="begincheck" onclick="check_begin()">开始巡查</button>
         }
+        <button class="btn btn-default btn-block" onclick="javascrtpt:window.location.href='ElecReadingList'">返回</button>
     </div>
 
     <div class="tab-pane fade" id="db1x">
@@ -135,29 +140,29 @@
                     </div>
                 </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_postive_reactive_sharp, htmlAttributes: new { @class = "control-label col-md-1" })
-                        <div class="col-md-11">
-                            @Html.EditorFor(model => model.emr1_postive_reactive_sharp, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.emr1_postive_reactive_sharp, "", new { @class = "text-danger" })
-                        </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr1_postive_reactive_sharp, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr1_postive_reactive_sharp, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr1_postive_reactive_sharp, "", new { @class = "text-danger" })
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_postive_reactive_peak, htmlAttributes: new { @class = "control-label col-md-1" })
-                        <div class="col-md-11">
-                            @Html.EditorFor(model => model.emr1_postive_reactive_peak, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.emr1_postive_reactive_peak, "", new { @class = "text-danger" })
-                        </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr1_postive_reactive_peak, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr1_postive_reactive_peak, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr1_postive_reactive_peak, "", new { @class = "text-danger" })
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_postive_reactive_shoulder, htmlAttributes: new { @class = "control-label col-md-1" })
-                        <div class="col-md-11">
-                            @Html.EditorFor(model => model.emr1_postive_reactive_shoulder, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.emr1_postive_reactive_shoulder, "", new { @class = "text-danger" })
-                        </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr1_postive_reactive_shoulder, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr1_postive_reactive_shoulder, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr1_postive_reactive_shoulder, "", new { @class = "text-danger" })
                     </div>
+                </div>
 
                     <div class="form-group">
                         @Html.LabelFor(model => model.emr1_postive_reactive_offpeak, htmlAttributes: new { @class = "control-label col-md-1" })
@@ -198,7 +203,7 @@
                             @Html.ValidationMessageFor(model => model.emr1_pf_c, "", new { @class = "text-danger" })
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" id="db1x_button" name="pre_id" style="display:block;margin:0 auto">提交</button>
+                    <button type="submit" class="btn btn-primary" id="db1x_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()" >提交</button>
             }
 
         </div>
@@ -325,7 +330,7 @@
                         @Html.ValidationMessageFor(model => model.emr2_pf_c, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary" id="db2x_button" name="pre_id" style="display:block;margin:0 auto">提交</button>
+                <button type="submit" class="btn btn-primary" id="db2x_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()">提交</button>
             }
         </div>
 
@@ -412,7 +417,7 @@
                         @Html.ValidationMessageFor(model => model.ehvd1_transformer_temp_c, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary" id="gy1x_button" name="pre_id" style="display:block;margin:0 auto">提交</button>
+                <button type="submit" class="btn btn-primary" id="gy1x_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()">提交</button>
             }
         </div>
     </div>
@@ -498,7 +503,7 @@
                         @Html.ValidationMessageFor(model => model.ehvd2_transformer_temp_c, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary" id="gy2x_button" name="pre_id" style="display:block;margin:0 auto">提交</button>
+                <button type="submit" class="btn btn-primary" id="gy2x_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()">提交</button>
             }
         </div>
     </div>
@@ -560,7 +565,7 @@
                         @Html.ValidationMessageFor(model => model.elvs_e_c, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary" id="dyml_button" name="pre_id" style="display:block;margin:0 auto">提交</button>
+                <button type="submit" class="btn btn-primary" id="dyml_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()">提交</button>
             }
         </div>
     </div>
@@ -630,7 +635,7 @@
                         @Html.ValidationMessageFor(model => model.elvd1_pf, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary" id="dy1x_button" name="pre_id" style="display:block;margin:0 auto">提交</button>
+                <button type="submit" class="btn btn-primary" id="dy1x_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()">提交</button>
             }
         </div>
     </div>
@@ -700,24 +705,100 @@
                         @Html.ValidationMessageFor(model => model.elvd2_pf, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary" id="dy2x_button" name="pre_id" style="display:block;margin:0 auto">提交</button>
+                <button type="submit" class="btn btn-primary" id="dy2x_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()">提交</button>
             }
         </div>
     </div>
     <div class="tab-pane fade" id="qtjc">
-        <div class="form-group">
-            @Html.LabelFor(model => model.direct_current_state, htmlAttributes: new { @class = "control-label col-md-1" })
-            @Html.RadioButtonFor(model => model.direct_current_state, 1, new { @checked = "checked" })正常
-            @Html.RadioButtonFor(model => model.direct_current_state, 0, new { })异常
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.control_room_state, htmlAttributes: new { @class = "control-label col-md-1" })
-            @Html.RadioButtonFor(model => model.control_room_state, 1, new { @checked = "checked" })正常
-            @Html.RadioButtonFor(model => model.control_room_state, 0, new { })异常
+        <div class="form-horizontal">
+
+            @using (Ajax.BeginForm("", "ElectricManage", new AjaxOptions
+            {
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+
+            }))
+            {
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.direct_current_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.direct_current_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.direct_current_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.control_room_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.control_room_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.control_room_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.distributor_door_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.distributor_door_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.distributor_door_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.electric_room_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.electric_room_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.electric_room_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.light_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.light_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.light_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.wash_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.wash_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.wash_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.fire_epuip_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.fire_epuip_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.fire_epuip_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.safe_appliance_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.safe_appliance_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.safe_appliance_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.mark, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.mark, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入其他需要补充的信息" } })
+                    @Html.ValidationMessageFor(model => model.mark, "", new { @class = "text-danger" })
+                </div>
+                <button type="submit" class="btn btn-primary" id="qtjc_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()">提交</button>
+            }
         </div>
     </div>
 </div>
 <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+
 <script type="text/javascript">
+    var ii = 0;
     $(".form_datetime").datetimepicker({ format: 'yyyy-mm-dd hh:ii' });
+    function check_begin() {
+        if (ii != 0) {
+            alert("亲，您已经添加过一次了~");
+            return false;
+        }
+        ii = ii + 1;
+    }
+    
+    function btn_click_pre() {             
+        var btn = $("button[name^='pre_id']");
+        for (var i = 0; i < btn.length; i++) {
+            if (btn[i].value == '') {
+                alert("还未添加新的巡查信息哦！！！");
+                return false;
+            }
+            else {
+                break;
+            }
+
+        }
+    }
+    function GetPreId(pre_id) {
+        var btn = $("button[name^='pre_id']");
+        for (var i = 0; i < btn.length; i++) {
+            btn[i].value = pre_id;
+        }
+    }
 </script>
