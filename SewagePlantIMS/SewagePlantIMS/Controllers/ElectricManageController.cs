@@ -675,7 +675,7 @@ namespace SewagePlantIMS.Controllers
             var pre_id = Convert.ToInt32(cmd.ExecuteScalar());
             con.Close();
             if (pre_id > 0)
-                return JavaScript("swal_success();GetPreId("+pre_id+")");
+                return JavaScript("swal_success();GetPreId(" + pre_id + ");jump_to_db1x()");
             else
                 return JavaScript("swal_error();");
         }

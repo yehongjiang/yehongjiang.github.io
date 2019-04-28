@@ -66,7 +66,7 @@
         {
             HttpMethod = "POST",
             InsertionMode = InsertionMode.Replace,
-        },new { onsubmit = "check_begin()" }))
+        }))
         {
             <div class="am-form-group">
                 <label>巡查时间：</label>
@@ -774,12 +774,20 @@
 <script type="text/javascript">
     var ii = 0;
     $(".form_datetime").datetimepicker({ format: 'yyyy-mm-dd hh:ii' });
-    function check_begin() {
-        if (ii != 0) {
-            alert("亲，您已经添加过一次了~");
+
+    var begincheck = document.getElementById("begincheck");
+    begincheck.onclick = function check_begin() {
+        if (document.getElementById("date_info").value == "") {
+            alert("亲，您还未选择巡查时间呢!!!");
             return false;
         }
-        ii = ii + 1;
+        else {
+            if (ii != 0) {
+                alert("亲，您已经添加过一次了~");
+                return false;
+            }
+            ii = ii + 1;
+        }        
     }
     
     function btn_click_pre() {             
@@ -800,5 +808,8 @@
         for (var i = 0; i < btn.length; i++) {
             btn[i].value = pre_id;
         }
+    }
+    function jump_to_db1x() {      
+        document.getElementById("db1x_tag").click();
     }
 </script>

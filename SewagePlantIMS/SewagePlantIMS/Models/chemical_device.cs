@@ -16,7 +16,7 @@ namespace SewagePlantIMS.Models
         [Display(Name = "数量")]
         [Range(typeof(decimal), "0.00", "99999999.99", ErrorMessage = "输入的数据格式不正确！")]
         public int cd_quantity { get; set; }
-        [Display(Name = "编号")]
+        [Display(Name = "出厂编号")]
         public string cd_num { get; set; }
         [Display(Name = "厂家")]
         public string cd_manufacturer { get; set; }
