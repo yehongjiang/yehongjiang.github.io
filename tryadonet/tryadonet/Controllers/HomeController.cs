@@ -54,7 +54,7 @@ namespace tryadonet.Controllers
                 S[mDr].stu_id = ds.Tables[0].Rows[mDr][0].ToString();
                 S[mDr].stu_name = ds.Tables[0].Rows[mDr][1].ToString();
                 S[mDr].stu_sex = ds.Tables[0].Rows[mDr][2].ToString();
-                S[mDr].stu_age = ds.Tables[0].Rows[mDr][3].ToString();
+                S[mDr].stu_age = Convert.ToDouble(ds.Tables[0].Rows[mDr][3]);
                 S[mDr].stu_dept = ds.Tables[0].Rows[mDr][4].ToString();
                 students.Add(S[mDr]);
             }
@@ -183,7 +183,7 @@ namespace tryadonet.Controllers
             s.stu_id = ds.Tables[0].Rows[0][0].ToString();
             s.stu_name = ds.Tables[0].Rows[0][1].ToString();
             s.stu_sex = ds.Tables[0].Rows[0][2].ToString();
-            s.stu_age = ds.Tables[0].Rows[0][3].ToString();
+            s.stu_age = Convert.ToDouble(ds.Tables[0].Rows[0][3]);
             s.stu_dept = ds.Tables[0].Rows[0][4].ToString();
             return View(s);
         }
@@ -200,7 +200,7 @@ namespace tryadonet.Controllers
             s.stu_id = ds.Tables[0].Rows[0][0].ToString();
             s.stu_name = ds.Tables[0].Rows[0][1].ToString();
             s.stu_sex = ds.Tables[0].Rows[0][2].ToString();
-            s.stu_age = ds.Tables[0].Rows[0][3].ToString();
+            s.stu_age = Convert.ToDouble(ds.Tables[0].Rows[0][3]);
             s.stu_dept = ds.Tables[0].Rows[0][4].ToString();
             return View(s);
         }
@@ -463,7 +463,7 @@ namespace tryadonet.Controllers
             return JavaScript("swal_success();jump();");
         }
 
-        public ActionResult VerificationModel(int i)
+        public ActionResult VerificationModel()
         {
 
             return View();
@@ -489,6 +489,10 @@ namespace tryadonet.Controllers
             //return JavaScript("window.location.href='Detail?id='" + Request["id"].ToString() + ";");
             return array[0];
 
+        }
+        public ActionResult temp22()
+        {
+            return View();
         }
     }
 }

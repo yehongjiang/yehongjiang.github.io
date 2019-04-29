@@ -673,11 +673,99 @@ namespace SewagePlantIMS.Controllers
             string select = "insert into dm_electric_inspection (add_time, user_id, user_name,remark)values('" + Request.Form["aer_check_time"] + "'," + Session["user_id"] + ", '" + Session["real_name"] + "','" + Request.Form["aer_remark"] + "');select @@IDENTITY;";
             SqlCommand cmd = new SqlCommand(select, con);
             var pre_id = Convert.ToInt32(cmd.ExecuteScalar());
+            //插入其他表
+            string select2 = "insert into dm_elec_inspection_info(electric_id) values(" + pre_id + ");" +
+                             "insert into dm_elec_low_voltage_distributor_1(electric_id) values(" + pre_id + ");" +
+                             "insert into dm_elec_low_voltage_distributor_2(electric_id) values(" + pre_id + ");" +
+                             "insert into dm_elec_low_voltage_switcher(electric_id) values(" + pre_id + ");" +
+                             "insert into dm_elec_high_voltage_distributor_1(electric_id) values(" + pre_id + ");" +
+                             "insert into dm_elec_high_voltage_distributor_2(electric_id) values(" + pre_id + ");" +
+                             "insert into dm_elec_meter_reading_1(electric_id) values(" + pre_id + ");" +
+                             "insert into dm_elec_meter_reading_2(electric_id) values(" + pre_id + ");";
+            cmd = new SqlCommand(select2, con);
+            var check = Convert.ToInt32(cmd.ExecuteNonQuery());
             con.Close();
-            if (pre_id > 0)
+            if (pre_id > 0&&check == 8)
                 return JavaScript("swal_success();GetPreId(" + pre_id + ");jump_to_db1x()");
             else
                 return JavaScript("swal_error();");
+        }
+        //插入电表1#线的数据
+        public JavaScriptResult Insert_db1x(ElectricReading Model)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string select = "update dm_elec_meter_reading_1 set postive_active_all = " + Model.emr1_postive_active_all + "where electric_id =" + Request.Form["pre_id"] +";" +
+                            "update dm_elec_meter_reading_1 set postive_active_sharp = " + Model.emr1_postive_active_sharp + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_1 set postive_active_peak = " + Model.emr1_postive_active_peak + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_1 set postive_active_shoulder = " + Model.emr1_postive_active_shoulder + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_1 set postive_active_offpeak = " + Model.emr1_postive_active_offpeak + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_1 set postive_reactive_all = " + Model.emr1_postive_reactive_all + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_1 set postive_reactive_sharp = " + Model.emr1_postive_reactive_sharp + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_1 set postive_reactive_peak = " + Model.emr1_postive_reactive_peak + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_1 set postive_reactive_shoulder = " + Model.emr1_postive_reactive_shoulder + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_1 set postive_reactive_offpeak = " + Model.emr1_postive_reactive_offpeak + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_1 set pf_all = " + Model.emr1_pf_all + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_1 set pf_a = " + Model.emr1_pf_a + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_1 set pf_b = " + Model.emr1_pf_b + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_1 set pf_c = " + Model.emr1_pf_c + "where electric_id =" + Request.Form["pre_id"] + ";";
+            SqlCommand cmd = new SqlCommand(select, con);
+            int check = Convert.ToInt32(cmd.ExecuteNonQuery());
+            if (check > 0)
+                return JavaScript("swal_success();jump_to_db2x()");
+            else
+                return JavaScript("swal_error();");
+        }
+        //插入电表2#线的数据
+        public JavaScriptResult Insert_db2x(ElectricReading Model)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string select = "update dm_elec_meter_reading_2 set postive_active_all = " + Model.emr2_postive_active_all + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_2 set postive_active_sharp = " + Model.emr2_postive_active_sharp + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_2 set postive_active_peak = " + Model.emr2_postive_active_peak + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_2 set postive_active_shoulder = " + Model.emr2_postive_active_shoulder + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_2 set postive_active_offpeak = " + Model.emr2_postive_active_offpeak + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_2 set postive_reactive_all = " + Model.emr2_postive_reactive_all + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_2 set postive_reactive_sharp = " + Model.emr2_postive_reactive_sharp + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_2 set postive_reactive_peak = " + Model.emr2_postive_reactive_peak + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_2 set postive_reactive_shoulder = " + Model.emr2_postive_reactive_shoulder + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_2 set postive_reactive_offpeak = " + Model.emr2_postive_reactive_offpeak + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_2 set pf_all = " + Model.emr2_pf_all + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_2 set pf_a = " + Model.emr2_pf_a + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_2 set pf_b = " + Model.emr2_pf_b + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_meter_reading_2 set pf_c = " + Model.emr2_pf_c + "where electric_id =" + Request.Form["pre_id"] + ";";
+            SqlCommand cmd = new SqlCommand(select, con);
+            int check = Convert.ToInt32(cmd.ExecuteNonQuery());
+            if (check > 0)
+                return JavaScript("swal_success();jump_to_gy1x()");
+            else
+                return JavaScript("swal_error();");
+        }
+        //插入高压1#线的数据
+        public JavaScriptResult Insert_gy1x(ElectricReading Model)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string select = "update dm_elec_high_voltage_distributor_1 set v_a = " + Model.ehvd1_v_a + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_1 set v_b = " + Model.ehvd1_v_b + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_1 set v_c = " + Model.ehvd1_v_c + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_1 set e_a = " + Model.ehvd1_e_a + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_1 set e_b = " + Model.ehvd1_e_b + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_1 set e_c = " + Model.ehvd1_e_c + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_1 set transformer_temp_a = " + Model.ehvd1_transformer_temp_a + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_1 set transformer_temp_b = " + Model.ehvd1_transformer_temp_b + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_1 set transformer_temp_c = " + Model.ehvd1_transformer_temp_c + "where electric_id =" + Request.Form["pre_id"] + ";";
+            SqlCommand cmd = new SqlCommand(select, con);
+            int check = Convert.ToInt32(cmd.ExecuteNonQuery());
+            if (check > 0)
+                return JavaScript("swal_success();jump_to_gy2x()");
+            else
+                return JavaScript("swal_error();");
+        }
+        public ActionResult temp()
+        {
+            return View();
         }
     }
 

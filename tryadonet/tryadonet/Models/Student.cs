@@ -12,8 +12,8 @@ namespace tryadonet.Models
         [Required(ErrorMessage = "学生名不能为空哦~")]
         public string stu_name { get; set; }
         public string stu_sex { get; set; }
-
-        public string stu_age { get; set; }
+        [Range(typeof(decimal), "0.00", "99999999.99", ErrorMessage = "输入的数据格式不正确！")]
+        public double stu_age { get; set; }
         public string stu_dept { get; set; }
     }
 }

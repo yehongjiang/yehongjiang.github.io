@@ -219,6 +219,7 @@
     <Content Include="Views\Sweet\Alert.cshtml" />
     <Content Include="Views\Home\VerificationModel.cshtml" />
     <Content Include="Views\Home\tablechecks.cshtml" />
+    <Content Include="Views\Home\temp22.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

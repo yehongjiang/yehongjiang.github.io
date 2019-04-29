@@ -30,6 +30,7 @@
                     <td>
                         @Html.LabelFor(model=>model.stu_name)
                         <span class="field-validation-error" data-valmsg-replace="true" data-valmsg-for="stu_name" style="color:red;"></span>
+                        @Html.ValidationMessageFor(model=>model.stu_name)
                     </td>
                     <td>
                         @Html.TextBoxFor(model => model.stu_name, new { @class = "form-control"})
@@ -42,9 +43,11 @@
                         @Html.Label("lblAge", "年龄")
                     </td>
                     <td>
-                        @Html.TextBox("TxtAge")
+                        @Html.EditorFor( model => model.stu_age)
+                        @Html.ValidationMessageFor(model => model.stu_age)
                     </td>
                 </tr>
+
             </table>
             <input type="submit" value="提交" />
         </div>
