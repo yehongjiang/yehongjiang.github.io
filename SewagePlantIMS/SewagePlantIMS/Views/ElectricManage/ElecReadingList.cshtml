@@ -7,11 +7,11 @@
 <fieldset>
     <legend style="color:#5b9bd1">电力巡查</legend>
 </fieldset>
-<a href="AddElecReading">新增抄表信息</a>
+<a href="AddElecReading">新增抄表信息</a> &#47; <a href="AddElecReading">导出EXCEL表格</a>
 <table class="table table-bordered table-hover table-striped" id="table_id_example">
     <thead>
         <tr>
-            <th>批量</th>
+            <th><input type="checkbox"/></th>
             <th>巡查时间</th>
             <th>巡查人</th>
             <th>备注</th>
@@ -27,13 +27,17 @@
                 <td>@item.user_name</td>
                 <td>@item.remark</td>
                 <td>
-                    @using (@Html.BeginForm("", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
+                    @using (@Html.BeginForm("ModifyElectricReading", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
                     {
                         <button class="btn btn-success btn-xs" type="submit" value="@item.total_id" name="erl_id">修改</button>
                     }
-                    @using (@Html.BeginForm("", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
+                    @using (@Html.BeginForm("DeleteElecReading", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
                     {
                         <button class="btn btn-danger btn-xs" type="submit" value="@item.total_id" name="erl_del" id="erl_del" onclick="return confirm('确定删除吗？？？')">删除</button>
+                    }
+                    @using (@Html.BeginForm("ExcelElecReading", "ElectricManage", FormMethod.Post, new { @class = "myform" }))
+                    {
+                        <button class="btn btn-default btn-xs" type="submit" value="@item.total_id" name="erl_id" id="erl_excel" >Excel</button>
                     }
                 </td>
             </tr>

@@ -21,9 +21,16 @@ using SewagePlantIMS.Function;
 using SewagePlantIMS.Filter;
 using System.Web.UI;
 
+//Excel操作
+using NPOI;
+using NPOI.HSSF.UserModel;
+using NPOI.XSSF.UserModel;
+using NPOI.XSSF.Util;
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
 namespace SewagePlantIMS.Controllers
 {
-     [LoginAttribute(isNeed = true)]
+    [LoginAttribute(isNeed = true)]
     public class ElectricManageController : Controller
     {
         /// <summary>
@@ -685,7 +692,7 @@ namespace SewagePlantIMS.Controllers
             cmd = new SqlCommand(select2, con);
             var check = Convert.ToInt32(cmd.ExecuteNonQuery());
             con.Close();
-            if (pre_id > 0&&check == 8)
+            if (pre_id > 0 && check == 8)
                 return JavaScript("swal_success();GetPreId(" + pre_id + ");jump_to_db1x()");
             else
                 return JavaScript("swal_error();");
@@ -695,7 +702,7 @@ namespace SewagePlantIMS.Controllers
         {
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string select = "update dm_elec_meter_reading_1 set postive_active_all = " + Model.emr1_postive_active_all + "where electric_id =" + Request.Form["pre_id"] +";" +
+            string select = "update dm_elec_meter_reading_1 set postive_active_all = " + Model.emr1_postive_active_all + "where electric_id =" + Request.Form["pre_id"] + ";" +
                             "update dm_elec_meter_reading_1 set postive_active_sharp = " + Model.emr1_postive_active_sharp + "where electric_id =" + Request.Form["pre_id"] + ";" +
                             "update dm_elec_meter_reading_1 set postive_active_peak = " + Model.emr1_postive_active_peak + "where electric_id =" + Request.Form["pre_id"] + ";" +
                             "update dm_elec_meter_reading_1 set postive_active_shoulder = " + Model.emr1_postive_active_shoulder + "where electric_id =" + Request.Form["pre_id"] + ";" +
@@ -711,6 +718,7 @@ namespace SewagePlantIMS.Controllers
                             "update dm_elec_meter_reading_1 set pf_c = " + Model.emr1_pf_c + "where electric_id =" + Request.Form["pre_id"] + ";";
             SqlCommand cmd = new SqlCommand(select, con);
             int check = Convert.ToInt32(cmd.ExecuteNonQuery());
+            con.Close();
             if (check > 0)
                 return JavaScript("swal_success();jump_to_db2x()");
             else
@@ -737,6 +745,7 @@ namespace SewagePlantIMS.Controllers
                             "update dm_elec_meter_reading_2 set pf_c = " + Model.emr2_pf_c + "where electric_id =" + Request.Form["pre_id"] + ";";
             SqlCommand cmd = new SqlCommand(select, con);
             int check = Convert.ToInt32(cmd.ExecuteNonQuery());
+            con.Close();
             if (check > 0)
                 return JavaScript("swal_success();jump_to_gy1x()");
             else
@@ -758,14 +767,491 @@ namespace SewagePlantIMS.Controllers
                             "update dm_elec_high_voltage_distributor_1 set transformer_temp_c = " + Model.ehvd1_transformer_temp_c + "where electric_id =" + Request.Form["pre_id"] + ";";
             SqlCommand cmd = new SqlCommand(select, con);
             int check = Convert.ToInt32(cmd.ExecuteNonQuery());
+            con.Close();
             if (check > 0)
                 return JavaScript("swal_success();jump_to_gy2x()");
             else
                 return JavaScript("swal_error();");
         }
-        public ActionResult temp()
+        //插入高压2#线的数据
+        public JavaScriptResult Insert_gy2x(ElectricReading Model)
         {
-            return View();
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string select = "update dm_elec_high_voltage_distributor_2 set v_a = " + Model.ehvd2_v_a + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_2 set v_b = " + Model.ehvd2_v_b + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_2 set v_c = " + Model.ehvd2_v_c + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_2 set e_a = " + Model.ehvd2_e_a + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_2 set e_b = " + Model.ehvd2_e_b + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_2 set e_c = " + Model.ehvd2_e_c + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_2 set transformer_temp_a = " + Model.ehvd2_transformer_temp_a + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_2 set transformer_temp_b = " + Model.ehvd2_transformer_temp_b + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_high_voltage_distributor_2 set transformer_temp_c = " + Model.ehvd2_transformer_temp_c + "where electric_id =" + Request.Form["pre_id"] + ";";
+            SqlCommand cmd = new SqlCommand(select, con);
+            int check = Convert.ToInt32(cmd.ExecuteNonQuery());
+            con.Close();
+            if (check > 0)
+                return JavaScript("swal_success();jump_to_dyml()");
+            else
+                return JavaScript("swal_error();");
+        }
+        //插入低压母联的数据
+        public JavaScriptResult Insert_dyml(ElectricReading Model)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string select = "update dm_elec_low_voltage_switcher set v_a = " + Model.elvs_v_a + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_switcher set v_b = " + Model.elvs_v_b + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_switcher set v_c = " + Model.elvs_v_c + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_switcher set e_a = " + Model.elvs_e_a + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_switcher set e_b = " + Model.elvs_e_b + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_switcher set e_c = " + Model.elvs_e_c + "where electric_id =" + Request.Form["pre_id"] + ";";
+            SqlCommand cmd = new SqlCommand(select, con);
+            int check = Convert.ToInt32(cmd.ExecuteNonQuery());
+            con.Close();
+            if (check > 0)
+                return JavaScript("swal_success();jump_to_dy1x();");
+            else
+                return JavaScript("swal_error();");
+        }
+        //插入低压1线的数据
+        public JavaScriptResult Insert_dy1x(ElectricReading Model)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string select = "update dm_elec_low_voltage_distributor_1 set v_a = " + Model.elvd1_v_a + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_distributor_1 set v_b = " + Model.elvd1_v_b + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_distributor_1 set v_c = " + Model.elvd1_v_c + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_distributor_1 set e_a = " + Model.elvd1_e_a + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_distributor_1 set e_b = " + Model.elvd1_e_b + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_distributor_1 set e_c = " + Model.elvd1_e_c + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_distributor_1 set pf = " + Model.elvd1_pf + "where electric_id =" + Request.Form["pre_id"] + ";";
+            SqlCommand cmd = new SqlCommand(select, con);
+            int check = Convert.ToInt32(cmd.ExecuteNonQuery());
+            con.Close();
+            if (check > 0)
+                return JavaScript("swal_success();jump_to_dy2x();");
+            else
+                return JavaScript("swal_error();");
+        }
+        //插入低压2线的数据
+        public JavaScriptResult Insert_dy2x(ElectricReading Model)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string select = "update dm_elec_low_voltage_distributor_2 set v_a = " + Model.elvd2_v_a + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_distributor_2 set v_b = " + Model.elvd2_v_b + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_distributor_2 set v_c = " + Model.elvd2_v_c + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_distributor_2 set e_a = " + Model.elvd2_e_a + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_distributor_2 set e_b = " + Model.elvd2_e_b + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_distributor_2 set e_c = " + Model.elvd2_e_c + "where electric_id =" + Request.Form["pre_id"] + ";" +
+                            "update dm_elec_low_voltage_distributor_2 set pf = " + Model.elvd2_pf + "where electric_id =" + Request.Form["pre_id"] + ";";
+            SqlCommand cmd = new SqlCommand(select, con);
+            int check = Convert.ToInt32(cmd.ExecuteNonQuery());
+            con.Close();
+            if (check > 0)
+                return JavaScript("swal_success();jump_to_qtjc();");
+            else
+                return JavaScript("swal_error();");
+        }
+        //插入其他检查的数据
+        public JavaScriptResult Insert_qtjc(ElectricReading Model)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string select = "update dm_elec_inspection_info set direct_current_state = " + Model.direct_current_state + " where electric_id =" + Request.Form["pre_id"] + ";" +
+            "update dm_elec_inspection_info set control_room_state = " + Model.control_room_state + " where electric_id =" + Request.Form["pre_id"] + ";" +
+            "update dm_elec_inspection_info set distributor_door_state = " + Model.distributor_door_state + " where electric_id =" + Request.Form["pre_id"] + ";" +
+            "update dm_elec_inspection_info set electric_room_state = " + Model.electric_room_state + " where electric_id =" + Request.Form["pre_id"] + ";" +
+            "update dm_elec_inspection_info set light_state = " + Model.light_state + " where electric_id =" + Request.Form["pre_id"] + ";" +
+            "update dm_elec_inspection_info set wash_state = " + Model.wash_state + " where electric_id =" + Request.Form["pre_id"] + ";" +
+            "update dm_elec_inspection_info set fire_epuip_state = " + Model.fire_epuip_state + " where electric_id =" + Request.Form["pre_id"] + ";" +
+            "update dm_elec_inspection_info set safe_appliance_state = " + Model.safe_appliance_state + " where electric_id =" + Request.Form["pre_id"] + ";" + 
+            "update dm_elec_inspection_info set mark = '" + Model.mark + "' where electric_id =" + Request.Form["pre_id"] + ";";
+
+            SqlCommand cmd = new SqlCommand(select, con);
+            int check = Convert.ToInt32(cmd.ExecuteNonQuery());
+            con.Close();
+            if (check > 0)
+                return JavaScript("swal_success();");
+            else
+                return JavaScript("swal_error();");
+        }
+
+        //进入修改电量抄表的页面
+        [HttpPost]
+        public ActionResult ModifyElectricReading()
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string select = "select dm_electric_inspection.remark, " +
+        "direct_current_state,control_room_state,distributor_door_state,electric_room_state,light_state,wash_state,fire_epuip_state,safe_appliance_state,mark, " +
+        "dm_elec_low_voltage_distributor_1.v_a,dm_elec_low_voltage_distributor_1.v_b,dm_elec_low_voltage_distributor_1.v_c,dm_elec_low_voltage_distributor_1.e_a,dm_elec_low_voltage_distributor_1.e_b,dm_elec_low_voltage_distributor_1.e_c,dm_elec_low_voltage_distributor_1.pf," +
+        "dm_elec_low_voltage_distributor_2.v_a,dm_elec_low_voltage_distributor_2.v_b,dm_elec_low_voltage_distributor_2.v_c,dm_elec_low_voltage_distributor_2.e_a,dm_elec_low_voltage_distributor_2.e_b,dm_elec_low_voltage_distributor_2.e_c,dm_elec_low_voltage_distributor_2.pf," +
+        "dm_elec_low_voltage_switcher.v_a,dm_elec_low_voltage_switcher.v_b,dm_elec_low_voltage_switcher.v_c,dm_elec_low_voltage_switcher.e_a,dm_elec_low_voltage_switcher.e_b,dm_elec_low_voltage_switcher.e_c," +
+        "dm_elec_high_voltage_distributor_1.v_a,dm_elec_high_voltage_distributor_1.v_b,dm_elec_high_voltage_distributor_1.v_c,dm_elec_high_voltage_distributor_1.e_a,dm_elec_high_voltage_distributor_1.e_b,dm_elec_high_voltage_distributor_1.e_c,dm_elec_high_voltage_distributor_1.transformer_temp_a,dm_elec_high_voltage_distributor_1.transformer_temp_b,dm_elec_high_voltage_distributor_1.transformer_temp_c," +
+        "dm_elec_high_voltage_distributor_2.v_a,dm_elec_high_voltage_distributor_2.v_b,dm_elec_high_voltage_distributor_2.v_c,dm_elec_high_voltage_distributor_2.e_a,dm_elec_high_voltage_distributor_2.e_b,dm_elec_high_voltage_distributor_2.e_c,dm_elec_high_voltage_distributor_2.transformer_temp_a,dm_elec_high_voltage_distributor_2.transformer_temp_b,dm_elec_high_voltage_distributor_2.transformer_temp_c," +
+        "dm_elec_meter_reading_1.postive_active_all,dm_elec_meter_reading_1.postive_active_sharp,dm_elec_meter_reading_1.postive_active_peak,dm_elec_meter_reading_1.postive_active_shoulder,dm_elec_meter_reading_1.postive_active_offpeak,dm_elec_meter_reading_1.postive_reactive_all,dm_elec_meter_reading_1.postive_reactive_sharp,dm_elec_meter_reading_1.postive_reactive_peak,dm_elec_meter_reading_1.postive_reactive_shoulder,dm_elec_meter_reading_1.postive_reactive_offpeak,dm_elec_meter_reading_1.pf_all,dm_elec_meter_reading_1.pf_a,dm_elec_meter_reading_1.pf_b,dm_elec_meter_reading_1.pf_c," +
+        "dm_elec_meter_reading_2.postive_active_all,dm_elec_meter_reading_2.postive_active_sharp,dm_elec_meter_reading_2.postive_active_peak,dm_elec_meter_reading_2.postive_active_shoulder,dm_elec_meter_reading_2.postive_active_offpeak,dm_elec_meter_reading_2.postive_reactive_all,dm_elec_meter_reading_2.postive_reactive_sharp,dm_elec_meter_reading_2.postive_reactive_peak,dm_elec_meter_reading_2.postive_reactive_shoulder,dm_elec_meter_reading_2.postive_reactive_offpeak,dm_elec_meter_reading_2.pf_all,dm_elec_meter_reading_2.pf_a,dm_elec_meter_reading_2.pf_b,dm_elec_meter_reading_2.pf_c" +
+        " ,dm_electric_inspection.id from dm_electric_inspection,dm_elec_inspection_info,dm_elec_low_voltage_distributor_1,dm_elec_low_voltage_distributor_2,dm_elec_low_voltage_switcher,dm_elec_high_voltage_distributor_1,dm_elec_high_voltage_distributor_2,dm_elec_meter_reading_1,dm_elec_meter_reading_2 " +
+        "where dm_electric_inspection.id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_inspection_info.electric_id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_low_voltage_distributor_1.electric_id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_low_voltage_distributor_2.electric_id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_low_voltage_switcher.electric_id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_high_voltage_distributor_1.electric_id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_high_voltage_distributor_2.electric_id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_meter_reading_1.electric_id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_meter_reading_2.electric_id =" + Convert.ToInt32(Request.Form["erl_id"]) + ";";
+            ElectricReading Model = new ElectricReading();
+            SqlDataAdapter da = new SqlDataAdapter(select, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+
+            if (ds.Tables[0].Rows[0][0] != System.DBNull.Value) Model.remark = ds.Tables[0].Rows[0][0].ToString(); else Model.remark = null;
+            if (ds.Tables[0].Rows[0][1] != System.DBNull.Value) Model.direct_current_state = Convert.ToInt32(ds.Tables[0].Rows[0][1]); else Model.direct_current_state = null;
+           if (ds.Tables[0].Rows[0][2] != System.DBNull.Value) Model.control_room_state = Convert.ToInt32(ds.Tables[0].Rows[0][2]); else Model.control_room_state = null;
+            if (ds.Tables[0].Rows[0][3] != System.DBNull.Value) Model.distributor_door_state = Convert.ToInt32(ds.Tables[0].Rows[0][3]); else Model.distributor_door_state = null;
+            if (ds.Tables[0].Rows[0][4] != System.DBNull.Value) Model.electric_room_state = Convert.ToInt32(ds.Tables[0].Rows[0][4]); else Model.electric_room_state = null;
+            if (ds.Tables[0].Rows[0][5] != System.DBNull.Value) Model.light_state = Convert.ToInt32(ds.Tables[0].Rows[0][5]); else Model.light_state = null;
+            if (ds.Tables[0].Rows[0][6] != System.DBNull.Value) Model.wash_state = Convert.ToInt32(ds.Tables[0].Rows[0][6]); else Model.wash_state = null;
+            if (ds.Tables[0].Rows[0][7] != System.DBNull.Value) Model.fire_epuip_state = Convert.ToInt32(ds.Tables[0].Rows[0][7]); else Model.fire_epuip_state = null;
+            if (ds.Tables[0].Rows[0][8] != System.DBNull.Value) Model.safe_appliance_state = Convert.ToInt32(ds.Tables[0].Rows[0][8]); else Model.safe_appliance_state = null;
+            if (ds.Tables[0].Rows[0][9] != System.DBNull.Value) Model.mark = ds.Tables[0].Rows[0][9].ToString(); else Model.mark = null;
+            if (ds.Tables[0].Rows[0][10] != System.DBNull.Value) Model.elvd1_v_a = Convert.ToDouble(ds.Tables[0].Rows[0][10]); else Model.elvd1_v_a = null;
+            if (ds.Tables[0].Rows[0][11] != System.DBNull.Value) Model.elvd1_v_b = Convert.ToDouble(ds.Tables[0].Rows[0][11]); else Model.elvd1_v_b = null;
+            if (ds.Tables[0].Rows[0][12] != System.DBNull.Value) Model.elvd1_v_c = Convert.ToDouble(ds.Tables[0].Rows[0][12]); else Model.elvd1_v_c = null;
+            if (ds.Tables[0].Rows[0][13] != System.DBNull.Value) Model.elvd1_e_a = Convert.ToDouble(ds.Tables[0].Rows[0][13]); else Model.elvd1_e_a = null;
+            if (ds.Tables[0].Rows[0][14] != System.DBNull.Value) Model.elvd1_e_b = Convert.ToDouble(ds.Tables[0].Rows[0][14]); else Model.elvd1_e_b = null;
+            if (ds.Tables[0].Rows[0][15] != System.DBNull.Value) Model.elvd1_e_c = Convert.ToDouble(ds.Tables[0].Rows[0][15]); else Model.elvd1_e_c = null;
+            if (ds.Tables[0].Rows[0][16] != System.DBNull.Value) Model.elvd1_pf = Convert.ToDouble(ds.Tables[0].Rows[0][16]); else Model.elvd1_pf = null;
+            if (ds.Tables[0].Rows[0][17] != System.DBNull.Value) Model.elvd2_v_a = Convert.ToDouble(ds.Tables[0].Rows[0][17]); else Model.elvd2_v_a = null;
+            if (ds.Tables[0].Rows[0][18] != System.DBNull.Value) Model.elvd2_v_b = Convert.ToDouble(ds.Tables[0].Rows[0][18]); else Model.elvd2_v_b = null;
+            if (ds.Tables[0].Rows[0][19] != System.DBNull.Value) Model.elvd2_v_c = Convert.ToDouble(ds.Tables[0].Rows[0][19]); else Model.elvd2_v_c = null;
+            if (ds.Tables[0].Rows[0][20] != System.DBNull.Value) Model.elvd2_e_a = Convert.ToDouble(ds.Tables[0].Rows[0][20]); else Model.elvd2_e_a = null;
+            if (ds.Tables[0].Rows[0][21] != System.DBNull.Value) Model.elvd2_e_b = Convert.ToDouble(ds.Tables[0].Rows[0][21]); else Model.elvd2_e_b = null;
+            if (ds.Tables[0].Rows[0][22] != System.DBNull.Value) Model.elvd2_e_c = Convert.ToDouble(ds.Tables[0].Rows[0][22]); else Model.elvd2_e_c = null;
+            if (ds.Tables[0].Rows[0][23] != System.DBNull.Value) Model.elvd2_pf = Convert.ToDouble(ds.Tables[0].Rows[0][23]); else Model.elvd2_pf = null;
+            if (ds.Tables[0].Rows[0][24] != System.DBNull.Value) Model.elvs_v_a = Convert.ToDouble(ds.Tables[0].Rows[0][24]); else Model.elvs_v_a = null;
+            if (ds.Tables[0].Rows[0][25] != System.DBNull.Value) Model.elvs_v_b = Convert.ToDouble(ds.Tables[0].Rows[0][25]); else Model.elvs_v_b = null;
+            if (ds.Tables[0].Rows[0][26] != System.DBNull.Value) Model.elvs_v_c = Convert.ToDouble(ds.Tables[0].Rows[0][26]); else Model.elvs_v_c = null;
+            if (ds.Tables[0].Rows[0][27] != System.DBNull.Value) Model.elvs_e_a = Convert.ToDouble(ds.Tables[0].Rows[0][27]); else Model.elvs_e_a = null;
+            if (ds.Tables[0].Rows[0][28] != System.DBNull.Value) Model.elvs_e_b = Convert.ToDouble(ds.Tables[0].Rows[0][28]); else Model.elvs_e_b = null;
+            if (ds.Tables[0].Rows[0][29] != System.DBNull.Value) Model.elvs_e_c = Convert.ToDouble(ds.Tables[0].Rows[0][29]); else Model.elvs_e_c = null;
+            if (ds.Tables[0].Rows[0][30] != System.DBNull.Value) Model.ehvd1_v_a = Convert.ToDouble(ds.Tables[0].Rows[0][30]); else Model.ehvd1_v_a = null;
+            if (ds.Tables[0].Rows[0][31] != System.DBNull.Value) Model.ehvd1_v_b = Convert.ToDouble(ds.Tables[0].Rows[0][31]); else Model.ehvd1_v_b = null;
+            if (ds.Tables[0].Rows[0][32] != System.DBNull.Value) Model.ehvd1_v_c = Convert.ToDouble(ds.Tables[0].Rows[0][32]); else Model.ehvd1_v_c = null;
+            if (ds.Tables[0].Rows[0][33] != System.DBNull.Value) Model.ehvd1_e_a = Convert.ToDouble(ds.Tables[0].Rows[0][33]); else Model.ehvd1_e_a = null;
+            if (ds.Tables[0].Rows[0][34] != System.DBNull.Value) Model.ehvd1_e_b = Convert.ToDouble(ds.Tables[0].Rows[0][34]); else Model.ehvd1_e_b = null;
+            if (ds.Tables[0].Rows[0][35] != System.DBNull.Value) Model.ehvd1_e_c = Convert.ToDouble(ds.Tables[0].Rows[0][35]); else Model.ehvd1_e_c = null;
+            if (ds.Tables[0].Rows[0][36] != System.DBNull.Value) Model.ehvd1_transformer_temp_a = Convert.ToDouble(ds.Tables[0].Rows[0][36]); else Model.ehvd1_transformer_temp_a = null;
+            if (ds.Tables[0].Rows[0][37] != System.DBNull.Value) Model.ehvd1_transformer_temp_b = Convert.ToDouble(ds.Tables[0].Rows[0][37]); else Model.ehvd1_transformer_temp_b = null;
+            if (ds.Tables[0].Rows[0][38] != System.DBNull.Value) Model.ehvd1_transformer_temp_c = Convert.ToDouble(ds.Tables[0].Rows[0][38]); else Model.ehvd1_transformer_temp_c = null;
+            if (ds.Tables[0].Rows[0][39] != System.DBNull.Value) Model.ehvd2_v_a = Convert.ToDouble(ds.Tables[0].Rows[0][39]); else Model.ehvd2_v_a = null;
+            if (ds.Tables[0].Rows[0][40] != System.DBNull.Value) Model.ehvd2_v_b = Convert.ToDouble(ds.Tables[0].Rows[0][40]); else Model.ehvd2_v_b = null;
+            if (ds.Tables[0].Rows[0][41] != System.DBNull.Value) Model.ehvd2_v_c = Convert.ToDouble(ds.Tables[0].Rows[0][41]); else Model.ehvd2_v_c = null;
+            if (ds.Tables[0].Rows[0][42] != System.DBNull.Value) Model.ehvd2_e_a = Convert.ToDouble(ds.Tables[0].Rows[0][42]); else Model.ehvd2_e_a = null;
+            if (ds.Tables[0].Rows[0][43] != System.DBNull.Value) Model.ehvd2_e_b = Convert.ToDouble(ds.Tables[0].Rows[0][43]); else Model.ehvd2_e_b = null;
+            if (ds.Tables[0].Rows[0][44] != System.DBNull.Value) Model.ehvd2_e_c = Convert.ToDouble(ds.Tables[0].Rows[0][44]); else Model.ehvd2_e_c = null;
+            if (ds.Tables[0].Rows[0][45] != System.DBNull.Value) Model.ehvd2_transformer_temp_a = Convert.ToDouble(ds.Tables[0].Rows[0][45]); else Model.ehvd2_transformer_temp_a = null;
+            if (ds.Tables[0].Rows[0][46] != System.DBNull.Value) Model.ehvd2_transformer_temp_b = Convert.ToDouble(ds.Tables[0].Rows[0][46]); else Model.ehvd2_transformer_temp_b = null;
+            if (ds.Tables[0].Rows[0][47] != System.DBNull.Value) Model.ehvd2_transformer_temp_c = Convert.ToDouble(ds.Tables[0].Rows[0][47]); else Model.ehvd2_transformer_temp_c = null;
+            if (ds.Tables[0].Rows[0][48] != System.DBNull.Value) Model.emr1_postive_active_all = Convert.ToDouble(ds.Tables[0].Rows[0][48]); else Model.emr1_postive_active_all = null;
+            if (ds.Tables[0].Rows[0][49] != System.DBNull.Value) Model.emr1_postive_active_sharp = Convert.ToDouble(ds.Tables[0].Rows[0][49]); else Model.emr1_postive_active_sharp = null;
+            if (ds.Tables[0].Rows[0][50] != System.DBNull.Value) Model.emr1_postive_active_peak = Convert.ToDouble(ds.Tables[0].Rows[0][50]); else Model.emr1_postive_active_peak = null;
+            if (ds.Tables[0].Rows[0][51] != System.DBNull.Value) Model.emr1_postive_active_shoulder = Convert.ToDouble(ds.Tables[0].Rows[0][51]); else Model.emr1_postive_active_shoulder = null;
+            if (ds.Tables[0].Rows[0][52] != System.DBNull.Value) Model.emr1_postive_active_offpeak = Convert.ToDouble(ds.Tables[0].Rows[0][52]); else Model.emr1_postive_active_offpeak = null;
+            if (ds.Tables[0].Rows[0][53] != System.DBNull.Value) Model.emr1_postive_reactive_all = Convert.ToDouble(ds.Tables[0].Rows[0][53]); else Model.emr1_postive_reactive_all = null;
+            if (ds.Tables[0].Rows[0][54] != System.DBNull.Value) Model.emr1_postive_reactive_sharp = Convert.ToDouble(ds.Tables[0].Rows[0][54]); else Model.emr1_postive_reactive_sharp = null;
+            if (ds.Tables[0].Rows[0][55] != System.DBNull.Value) Model.emr1_postive_reactive_peak = Convert.ToDouble(ds.Tables[0].Rows[0][55]); else Model.emr1_postive_reactive_peak = null;
+            if (ds.Tables[0].Rows[0][56] != System.DBNull.Value) Model.emr1_postive_reactive_shoulder = Convert.ToDouble(ds.Tables[0].Rows[0][56]); else Model.emr1_postive_reactive_shoulder = null;
+            if (ds.Tables[0].Rows[0][57] != System.DBNull.Value) Model.emr1_postive_reactive_offpeak = Convert.ToDouble(ds.Tables[0].Rows[0][57]); else Model.emr1_postive_reactive_offpeak = null;
+            if (ds.Tables[0].Rows[0][58] != System.DBNull.Value) Model.emr1_pf_all = Convert.ToDouble(ds.Tables[0].Rows[0][58]); else Model.emr1_pf_all = null;
+            if (ds.Tables[0].Rows[0][59] != System.DBNull.Value) Model.emr1_pf_a = Convert.ToDouble(ds.Tables[0].Rows[0][59]); else Model.emr1_pf_a = null;
+            if (ds.Tables[0].Rows[0][60] != System.DBNull.Value) Model.emr1_pf_b = Convert.ToDouble(ds.Tables[0].Rows[0][60]); else Model.emr1_pf_b = null;
+            if (ds.Tables[0].Rows[0][61] != System.DBNull.Value) Model.emr1_pf_c = Convert.ToDouble(ds.Tables[0].Rows[0][61]); else Model.emr1_pf_c = null;
+            if (ds.Tables[0].Rows[0][62] != System.DBNull.Value) Model.emr2_postive_active_all = Convert.ToDouble(ds.Tables[0].Rows[0][62]); else Model.emr2_postive_active_all = null;
+            if (ds.Tables[0].Rows[0][63] != System.DBNull.Value) Model.emr2_postive_active_sharp = Convert.ToDouble(ds.Tables[0].Rows[0][63]); else Model.emr2_postive_active_sharp = null;
+            if (ds.Tables[0].Rows[0][64] != System.DBNull.Value) Model.emr2_postive_active_peak = Convert.ToDouble(ds.Tables[0].Rows[0][64]); else Model.emr2_postive_active_peak = null;
+            if (ds.Tables[0].Rows[0][65] != System.DBNull.Value) Model.emr2_postive_active_shoulder = Convert.ToDouble(ds.Tables[0].Rows[0][65]); else Model.emr2_postive_active_shoulder = null;
+            if (ds.Tables[0].Rows[0][66] != System.DBNull.Value) Model.emr2_postive_active_offpeak = Convert.ToDouble(ds.Tables[0].Rows[0][66]); else Model.emr2_postive_active_offpeak = null;
+            if (ds.Tables[0].Rows[0][67] != System.DBNull.Value) Model.emr2_postive_reactive_all = Convert.ToDouble(ds.Tables[0].Rows[0][67]); else Model.emr2_postive_reactive_all = null;
+            if (ds.Tables[0].Rows[0][68] != System.DBNull.Value) Model.emr2_postive_reactive_sharp = Convert.ToDouble(ds.Tables[0].Rows[0][68]); else Model.emr2_postive_reactive_sharp = null;
+            if (ds.Tables[0].Rows[0][69] != System.DBNull.Value) Model.emr2_postive_reactive_peak = Convert.ToDouble(ds.Tables[0].Rows[0][69]); else Model.emr2_postive_reactive_peak = null;
+            if (ds.Tables[0].Rows[0][70] != System.DBNull.Value) Model.emr2_postive_reactive_shoulder = Convert.ToDouble(ds.Tables[0].Rows[0][70]); else Model.emr2_postive_reactive_shoulder = null;
+            if (ds.Tables[0].Rows[0][71] != System.DBNull.Value) Model.emr2_postive_reactive_offpeak = Convert.ToDouble(ds.Tables[0].Rows[0][71]); else Model.emr2_postive_reactive_offpeak = null;
+            if (ds.Tables[0].Rows[0][72] != System.DBNull.Value) Model.emr2_pf_all = Convert.ToDouble(ds.Tables[0].Rows[0][72]); else Model.emr2_pf_all = null;
+            if (ds.Tables[0].Rows[0][73] != System.DBNull.Value) Model.emr2_pf_a = Convert.ToDouble(ds.Tables[0].Rows[0][73]); else Model.emr2_pf_a = null;
+            if (ds.Tables[0].Rows[0][74] != System.DBNull.Value) Model.emr2_pf_b = Convert.ToDouble(ds.Tables[0].Rows[0][74]); else Model.emr2_pf_b = null;
+            if (ds.Tables[0].Rows[0][75] != System.DBNull.Value) Model.emr2_pf_c = Convert.ToDouble(ds.Tables[0].Rows[0][75]); else Model.emr2_pf_c = null;
+            if (ds.Tables[0].Rows[0][76] != System.DBNull.Value) Model.total_id = Convert.ToInt32(ds.Tables[0].Rows[0][76]); else Model.total_id = null;
+            con.Close();
+            return View(Model);
+        }
+
+        public JavaScriptResult ModifyBeginElecReading()
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string select = "update dm_electric_inspection set remark = '" + Request.Form["aer_remark"] + "' where id = " + Request.Form["total_id"] + ";" +
+                            "update dm_electric_inspection set user_id = '" + Session["user_id"] + "' where id = " + Request.Form["total_id"] + ";" +
+                            "update dm_electric_inspection set user_name = '" + Session["real_name"] + "' where id = " + Request.Form["total_id"] + ";";
+            SqlCommand cmd = new SqlCommand(select, con);
+            var check = Convert.ToInt32(cmd.ExecuteNonQuery());
+            con.Close();
+            if (check > 0)
+                return JavaScript("swal_success();jump_to_db1x()");
+            else
+                return JavaScript("swal_error();");
+        }
+
+        //删除电力数据
+        public void DeleteElecReading()
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string select = "delete dm_elec_inspection_info where electric_id = " + Request.Form["erl_del"] + ";" +
+                            "delete dm_elec_low_voltage_distributor_1 where electric_id = " + Request.Form["erl_del"] + ";" +
+                            "delete dm_elec_low_voltage_distributor_2 where electric_id = " + Request.Form["erl_del"] + ";" +
+                            "delete dm_elec_low_voltage_switcher where electric_id = " + Request.Form["erl_del"] + ";" +
+                            "delete dm_elec_high_voltage_distributor_1 where electric_id = " + Request.Form["erl_del"] + ";" +
+                            "delete dm_elec_high_voltage_distributor_2 where electric_id = " + Request.Form["erl_del"] + ";" +
+                            "delete dm_elec_meter_reading_1 where electric_id = " + Request.Form["erl_del"] + ";" +
+                            "delete dm_elec_meter_reading_2 where electric_id = " + Request.Form["erl_del"] + ";" + 
+                            "delete dm_electric_inspection where id = " + Request.Form["erl_del"] + ";";
+            SqlCommand cmd = new SqlCommand(select, con);
+            int check = Convert.ToInt32(cmd.ExecuteNonQuery());
+            con.Close();
+            if (check > 0)
+            {
+                Response.Write("<script>alert('以成功删除巡查记录！！');window.location.href='ElecReadingList';</script>");
+            }
+            else
+                Response.Write("<script>alert('删除失败！,请手动联系管理员~');</script>");
+        }
+        //导出电力巡查Excel文本
+        public void ExcelElecReading()
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string select = "select dm_electric_inspection.remark, " +
+        "direct_current_state,control_room_state,distributor_door_state,electric_room_state,light_state,wash_state,fire_epuip_state,safe_appliance_state,mark, " +
+        "dm_elec_low_voltage_distributor_1.v_a,dm_elec_low_voltage_distributor_1.v_b,dm_elec_low_voltage_distributor_1.v_c,dm_elec_low_voltage_distributor_1.e_a,dm_elec_low_voltage_distributor_1.e_b,dm_elec_low_voltage_distributor_1.e_c,dm_elec_low_voltage_distributor_1.pf," +
+        "dm_elec_low_voltage_distributor_2.v_a,dm_elec_low_voltage_distributor_2.v_b,dm_elec_low_voltage_distributor_2.v_c,dm_elec_low_voltage_distributor_2.e_a,dm_elec_low_voltage_distributor_2.e_b,dm_elec_low_voltage_distributor_2.e_c,dm_elec_low_voltage_distributor_2.pf," +
+        "dm_elec_low_voltage_switcher.v_a,dm_elec_low_voltage_switcher.v_b,dm_elec_low_voltage_switcher.v_c,dm_elec_low_voltage_switcher.e_a,dm_elec_low_voltage_switcher.e_b,dm_elec_low_voltage_switcher.e_c," +
+        "dm_elec_high_voltage_distributor_1.v_a,dm_elec_high_voltage_distributor_1.v_b,dm_elec_high_voltage_distributor_1.v_c,dm_elec_high_voltage_distributor_1.e_a,dm_elec_high_voltage_distributor_1.e_b,dm_elec_high_voltage_distributor_1.e_c,dm_elec_high_voltage_distributor_1.transformer_temp_a,dm_elec_high_voltage_distributor_1.transformer_temp_b,dm_elec_high_voltage_distributor_1.transformer_temp_c," +
+        "dm_elec_high_voltage_distributor_2.v_a,dm_elec_high_voltage_distributor_2.v_b,dm_elec_high_voltage_distributor_2.v_c,dm_elec_high_voltage_distributor_2.e_a,dm_elec_high_voltage_distributor_2.e_b,dm_elec_high_voltage_distributor_2.e_c,dm_elec_high_voltage_distributor_2.transformer_temp_a,dm_elec_high_voltage_distributor_2.transformer_temp_b,dm_elec_high_voltage_distributor_2.transformer_temp_c," +
+        "dm_elec_meter_reading_1.postive_active_all,dm_elec_meter_reading_1.postive_active_sharp,dm_elec_meter_reading_1.postive_active_peak,dm_elec_meter_reading_1.postive_active_shoulder,dm_elec_meter_reading_1.postive_active_offpeak,dm_elec_meter_reading_1.postive_reactive_all,dm_elec_meter_reading_1.postive_reactive_sharp,dm_elec_meter_reading_1.postive_reactive_peak,dm_elec_meter_reading_1.postive_reactive_shoulder,dm_elec_meter_reading_1.postive_reactive_offpeak,dm_elec_meter_reading_1.pf_all,dm_elec_meter_reading_1.pf_a,dm_elec_meter_reading_1.pf_b,dm_elec_meter_reading_1.pf_c," +
+        "dm_elec_meter_reading_2.postive_active_all,dm_elec_meter_reading_2.postive_active_sharp,dm_elec_meter_reading_2.postive_active_peak,dm_elec_meter_reading_2.postive_active_shoulder,dm_elec_meter_reading_2.postive_active_offpeak,dm_elec_meter_reading_2.postive_reactive_all,dm_elec_meter_reading_2.postive_reactive_sharp,dm_elec_meter_reading_2.postive_reactive_peak,dm_elec_meter_reading_2.postive_reactive_shoulder,dm_elec_meter_reading_2.postive_reactive_offpeak,dm_elec_meter_reading_2.pf_all,dm_elec_meter_reading_2.pf_a,dm_elec_meter_reading_2.pf_b,dm_elec_meter_reading_2.pf_c" +
+        " ,dm_electric_inspection.id,dm_electric_inspection.add_time,dm_electric_inspection.user_name from dm_electric_inspection,dm_elec_inspection_info,dm_elec_low_voltage_distributor_1,dm_elec_low_voltage_distributor_2,dm_elec_low_voltage_switcher,dm_elec_high_voltage_distributor_1,dm_elec_high_voltage_distributor_2,dm_elec_meter_reading_1,dm_elec_meter_reading_2 " +
+        "where dm_electric_inspection.id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_inspection_info.electric_id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_low_voltage_distributor_1.electric_id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_low_voltage_distributor_2.electric_id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_low_voltage_switcher.electric_id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_high_voltage_distributor_1.electric_id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_high_voltage_distributor_2.electric_id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_meter_reading_1.electric_id = " + Convert.ToInt32(Request.Form["erl_id"]) + " and " +
+              "dm_elec_meter_reading_2.electric_id =" + Convert.ToInt32(Request.Form["erl_id"]) + ";";
+            ElectricReading Model = new ElectricReading();
+            SqlDataAdapter da = new SqlDataAdapter(select, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            if (ds.Tables[0].Rows[0][0] != System.DBNull.Value) Model.remark = ds.Tables[0].Rows[0][0].ToString(); else Model.remark = null;
+            if (ds.Tables[0].Rows[0][1] != System.DBNull.Value) Model.direct_current_state = Convert.ToInt32(ds.Tables[0].Rows[0][1]); else Model.direct_current_state = null;
+            if (ds.Tables[0].Rows[0][2] != System.DBNull.Value) Model.control_room_state = Convert.ToInt32(ds.Tables[0].Rows[0][2]); else Model.control_room_state = null;
+            if (ds.Tables[0].Rows[0][3] != System.DBNull.Value) Model.distributor_door_state = Convert.ToInt32(ds.Tables[0].Rows[0][3]); else Model.distributor_door_state = null;
+            if (ds.Tables[0].Rows[0][4] != System.DBNull.Value) Model.electric_room_state = Convert.ToInt32(ds.Tables[0].Rows[0][4]); else Model.electric_room_state = null;
+            if (ds.Tables[0].Rows[0][5] != System.DBNull.Value) Model.light_state = Convert.ToInt32(ds.Tables[0].Rows[0][5]); else Model.light_state = null;
+            if (ds.Tables[0].Rows[0][6] != System.DBNull.Value) Model.wash_state = Convert.ToInt32(ds.Tables[0].Rows[0][6]); else Model.wash_state = null;
+            if (ds.Tables[0].Rows[0][7] != System.DBNull.Value) Model.fire_epuip_state = Convert.ToInt32(ds.Tables[0].Rows[0][7]); else Model.fire_epuip_state = null;
+            if (ds.Tables[0].Rows[0][8] != System.DBNull.Value) Model.safe_appliance_state = Convert.ToInt32(ds.Tables[0].Rows[0][8]); else Model.safe_appliance_state = null;
+            if (ds.Tables[0].Rows[0][9] != System.DBNull.Value) Model.mark = ds.Tables[0].Rows[0][9].ToString(); else Model.mark = null;
+            if (ds.Tables[0].Rows[0][10] != System.DBNull.Value) Model.elvd1_v_a = Convert.ToDouble(ds.Tables[0].Rows[0][10]); else Model.elvd1_v_a = null;
+            if (ds.Tables[0].Rows[0][11] != System.DBNull.Value) Model.elvd1_v_b = Convert.ToDouble(ds.Tables[0].Rows[0][11]); else Model.elvd1_v_b = null;
+            if (ds.Tables[0].Rows[0][12] != System.DBNull.Value) Model.elvd1_v_c = Convert.ToDouble(ds.Tables[0].Rows[0][12]); else Model.elvd1_v_c = null;
+            if (ds.Tables[0].Rows[0][13] != System.DBNull.Value) Model.elvd1_e_a = Convert.ToDouble(ds.Tables[0].Rows[0][13]); else Model.elvd1_e_a = null;
+            if (ds.Tables[0].Rows[0][14] != System.DBNull.Value) Model.elvd1_e_b = Convert.ToDouble(ds.Tables[0].Rows[0][14]); else Model.elvd1_e_b = null;
+            if (ds.Tables[0].Rows[0][15] != System.DBNull.Value) Model.elvd1_e_c = Convert.ToDouble(ds.Tables[0].Rows[0][15]); else Model.elvd1_e_c = null;
+            if (ds.Tables[0].Rows[0][16] != System.DBNull.Value) Model.elvd1_pf = Convert.ToDouble(ds.Tables[0].Rows[0][16]); else Model.elvd1_pf = null;
+            if (ds.Tables[0].Rows[0][17] != System.DBNull.Value) Model.elvd2_v_a = Convert.ToDouble(ds.Tables[0].Rows[0][17]); else Model.elvd2_v_a = null;
+            if (ds.Tables[0].Rows[0][18] != System.DBNull.Value) Model.elvd2_v_b = Convert.ToDouble(ds.Tables[0].Rows[0][18]); else Model.elvd2_v_b = null;
+            if (ds.Tables[0].Rows[0][19] != System.DBNull.Value) Model.elvd2_v_c = Convert.ToDouble(ds.Tables[0].Rows[0][19]); else Model.elvd2_v_c = null;
+            if (ds.Tables[0].Rows[0][20] != System.DBNull.Value) Model.elvd2_e_a = Convert.ToDouble(ds.Tables[0].Rows[0][20]); else Model.elvd2_e_a = null;
+            if (ds.Tables[0].Rows[0][21] != System.DBNull.Value) Model.elvd2_e_b = Convert.ToDouble(ds.Tables[0].Rows[0][21]); else Model.elvd2_e_b = null;
+            if (ds.Tables[0].Rows[0][22] != System.DBNull.Value) Model.elvd2_e_c = Convert.ToDouble(ds.Tables[0].Rows[0][22]); else Model.elvd2_e_c = null;
+            if (ds.Tables[0].Rows[0][23] != System.DBNull.Value) Model.elvd2_pf = Convert.ToDouble(ds.Tables[0].Rows[0][23]); else Model.elvd2_pf = null;
+            if (ds.Tables[0].Rows[0][24] != System.DBNull.Value) Model.elvs_v_a = Convert.ToDouble(ds.Tables[0].Rows[0][24]); else Model.elvs_v_a = null;
+            if (ds.Tables[0].Rows[0][25] != System.DBNull.Value) Model.elvs_v_b = Convert.ToDouble(ds.Tables[0].Rows[0][25]); else Model.elvs_v_b = null;
+            if (ds.Tables[0].Rows[0][26] != System.DBNull.Value) Model.elvs_v_c = Convert.ToDouble(ds.Tables[0].Rows[0][26]); else Model.elvs_v_c = null;
+            if (ds.Tables[0].Rows[0][27] != System.DBNull.Value) Model.elvs_e_a = Convert.ToDouble(ds.Tables[0].Rows[0][27]); else Model.elvs_e_a = null;
+            if (ds.Tables[0].Rows[0][28] != System.DBNull.Value) Model.elvs_e_b = Convert.ToDouble(ds.Tables[0].Rows[0][28]); else Model.elvs_e_b = null;
+            if (ds.Tables[0].Rows[0][29] != System.DBNull.Value) Model.elvs_e_c = Convert.ToDouble(ds.Tables[0].Rows[0][29]); else Model.elvs_e_c = null;
+            if (ds.Tables[0].Rows[0][30] != System.DBNull.Value) Model.ehvd1_v_a = Convert.ToDouble(ds.Tables[0].Rows[0][30]); else Model.ehvd1_v_a = null;
+            if (ds.Tables[0].Rows[0][31] != System.DBNull.Value) Model.ehvd1_v_b = Convert.ToDouble(ds.Tables[0].Rows[0][31]); else Model.ehvd1_v_b = null;
+            if (ds.Tables[0].Rows[0][32] != System.DBNull.Value) Model.ehvd1_v_c = Convert.ToDouble(ds.Tables[0].Rows[0][32]); else Model.ehvd1_v_c = null;
+            if (ds.Tables[0].Rows[0][33] != System.DBNull.Value) Model.ehvd1_e_a = Convert.ToDouble(ds.Tables[0].Rows[0][33]); else Model.ehvd1_e_a = null;
+            if (ds.Tables[0].Rows[0][34] != System.DBNull.Value) Model.ehvd1_e_b = Convert.ToDouble(ds.Tables[0].Rows[0][34]); else Model.ehvd1_e_b = null;
+            if (ds.Tables[0].Rows[0][35] != System.DBNull.Value) Model.ehvd1_e_c = Convert.ToDouble(ds.Tables[0].Rows[0][35]); else Model.ehvd1_e_c = null;
+            if (ds.Tables[0].Rows[0][36] != System.DBNull.Value) Model.ehvd1_transformer_temp_a = Convert.ToDouble(ds.Tables[0].Rows[0][36]); else Model.ehvd1_transformer_temp_a = null;
+            if (ds.Tables[0].Rows[0][37] != System.DBNull.Value) Model.ehvd1_transformer_temp_b = Convert.ToDouble(ds.Tables[0].Rows[0][37]); else Model.ehvd1_transformer_temp_b = null;
+            if (ds.Tables[0].Rows[0][38] != System.DBNull.Value) Model.ehvd1_transformer_temp_c = Convert.ToDouble(ds.Tables[0].Rows[0][38]); else Model.ehvd1_transformer_temp_c = null;
+            if (ds.Tables[0].Rows[0][39] != System.DBNull.Value) Model.ehvd2_v_a = Convert.ToDouble(ds.Tables[0].Rows[0][39]); else Model.ehvd2_v_a = null;
+            if (ds.Tables[0].Rows[0][40] != System.DBNull.Value) Model.ehvd2_v_b = Convert.ToDouble(ds.Tables[0].Rows[0][40]); else Model.ehvd2_v_b = null;
+            if (ds.Tables[0].Rows[0][41] != System.DBNull.Value) Model.ehvd2_v_c = Convert.ToDouble(ds.Tables[0].Rows[0][41]); else Model.ehvd2_v_c = null;
+            if (ds.Tables[0].Rows[0][42] != System.DBNull.Value) Model.ehvd2_e_a = Convert.ToDouble(ds.Tables[0].Rows[0][42]); else Model.ehvd2_e_a = null;
+            if (ds.Tables[0].Rows[0][43] != System.DBNull.Value) Model.ehvd2_e_b = Convert.ToDouble(ds.Tables[0].Rows[0][43]); else Model.ehvd2_e_b = null;
+            if (ds.Tables[0].Rows[0][44] != System.DBNull.Value) Model.ehvd2_e_c = Convert.ToDouble(ds.Tables[0].Rows[0][44]); else Model.ehvd2_e_c = null;
+            if (ds.Tables[0].Rows[0][45] != System.DBNull.Value) Model.ehvd2_transformer_temp_a = Convert.ToDouble(ds.Tables[0].Rows[0][45]); else Model.ehvd2_transformer_temp_a = null;
+            if (ds.Tables[0].Rows[0][46] != System.DBNull.Value) Model.ehvd2_transformer_temp_b = Convert.ToDouble(ds.Tables[0].Rows[0][46]); else Model.ehvd2_transformer_temp_b = null;
+            if (ds.Tables[0].Rows[0][47] != System.DBNull.Value) Model.ehvd2_transformer_temp_c = Convert.ToDouble(ds.Tables[0].Rows[0][47]); else Model.ehvd2_transformer_temp_c = null;
+            if (ds.Tables[0].Rows[0][48] != System.DBNull.Value) Model.emr1_postive_active_all = Convert.ToDouble(ds.Tables[0].Rows[0][48]); else Model.emr1_postive_active_all = null;
+            if (ds.Tables[0].Rows[0][49] != System.DBNull.Value) Model.emr1_postive_active_sharp = Convert.ToDouble(ds.Tables[0].Rows[0][49]); else Model.emr1_postive_active_sharp = null;
+            if (ds.Tables[0].Rows[0][50] != System.DBNull.Value) Model.emr1_postive_active_peak = Convert.ToDouble(ds.Tables[0].Rows[0][50]); else Model.emr1_postive_active_peak = null;
+            if (ds.Tables[0].Rows[0][51] != System.DBNull.Value) Model.emr1_postive_active_shoulder = Convert.ToDouble(ds.Tables[0].Rows[0][51]); else Model.emr1_postive_active_shoulder = null;
+            if (ds.Tables[0].Rows[0][52] != System.DBNull.Value) Model.emr1_postive_active_offpeak = Convert.ToDouble(ds.Tables[0].Rows[0][52]); else Model.emr1_postive_active_offpeak = null;
+            if (ds.Tables[0].Rows[0][53] != System.DBNull.Value) Model.emr1_postive_reactive_all = Convert.ToDouble(ds.Tables[0].Rows[0][53]); else Model.emr1_postive_reactive_all = null;
+            if (ds.Tables[0].Rows[0][54] != System.DBNull.Value) Model.emr1_postive_reactive_sharp = Convert.ToDouble(ds.Tables[0].Rows[0][54]); else Model.emr1_postive_reactive_sharp = null;
+            if (ds.Tables[0].Rows[0][55] != System.DBNull.Value) Model.emr1_postive_reactive_peak = Convert.ToDouble(ds.Tables[0].Rows[0][55]); else Model.emr1_postive_reactive_peak = null;
+            if (ds.Tables[0].Rows[0][56] != System.DBNull.Value) Model.emr1_postive_reactive_shoulder = Convert.ToDouble(ds.Tables[0].Rows[0][56]); else Model.emr1_postive_reactive_shoulder = null;
+            if (ds.Tables[0].Rows[0][57] != System.DBNull.Value) Model.emr1_postive_reactive_offpeak = Convert.ToDouble(ds.Tables[0].Rows[0][57]); else Model.emr1_postive_reactive_offpeak = null;
+            if (ds.Tables[0].Rows[0][58] != System.DBNull.Value) Model.emr1_pf_all = Convert.ToDouble(ds.Tables[0].Rows[0][58]); else Model.emr1_pf_all = null;
+            if (ds.Tables[0].Rows[0][59] != System.DBNull.Value) Model.emr1_pf_a = Convert.ToDouble(ds.Tables[0].Rows[0][59]); else Model.emr1_pf_a = null;
+            if (ds.Tables[0].Rows[0][60] != System.DBNull.Value) Model.emr1_pf_b = Convert.ToDouble(ds.Tables[0].Rows[0][60]); else Model.emr1_pf_b = null;
+            if (ds.Tables[0].Rows[0][61] != System.DBNull.Value) Model.emr1_pf_c = Convert.ToDouble(ds.Tables[0].Rows[0][61]); else Model.emr1_pf_c = null;
+            if (ds.Tables[0].Rows[0][62] != System.DBNull.Value) Model.emr2_postive_active_all = Convert.ToDouble(ds.Tables[0].Rows[0][62]); else Model.emr2_postive_active_all = null;
+            if (ds.Tables[0].Rows[0][63] != System.DBNull.Value) Model.emr2_postive_active_sharp = Convert.ToDouble(ds.Tables[0].Rows[0][63]); else Model.emr2_postive_active_sharp = null;
+            if (ds.Tables[0].Rows[0][64] != System.DBNull.Value) Model.emr2_postive_active_peak = Convert.ToDouble(ds.Tables[0].Rows[0][64]); else Model.emr2_postive_active_peak = null;
+            if (ds.Tables[0].Rows[0][65] != System.DBNull.Value) Model.emr2_postive_active_shoulder = Convert.ToDouble(ds.Tables[0].Rows[0][65]); else Model.emr2_postive_active_shoulder = null;
+            if (ds.Tables[0].Rows[0][66] != System.DBNull.Value) Model.emr2_postive_active_offpeak = Convert.ToDouble(ds.Tables[0].Rows[0][66]); else Model.emr2_postive_active_offpeak = null;
+            if (ds.Tables[0].Rows[0][67] != System.DBNull.Value) Model.emr2_postive_reactive_all = Convert.ToDouble(ds.Tables[0].Rows[0][67]); else Model.emr2_postive_reactive_all = null;
+            if (ds.Tables[0].Rows[0][68] != System.DBNull.Value) Model.emr2_postive_reactive_sharp = Convert.ToDouble(ds.Tables[0].Rows[0][68]); else Model.emr2_postive_reactive_sharp = null;
+            if (ds.Tables[0].Rows[0][69] != System.DBNull.Value) Model.emr2_postive_reactive_peak = Convert.ToDouble(ds.Tables[0].Rows[0][69]); else Model.emr2_postive_reactive_peak = null;
+            if (ds.Tables[0].Rows[0][70] != System.DBNull.Value) Model.emr2_postive_reactive_shoulder = Convert.ToDouble(ds.Tables[0].Rows[0][70]); else Model.emr2_postive_reactive_shoulder = null;
+            if (ds.Tables[0].Rows[0][71] != System.DBNull.Value) Model.emr2_postive_reactive_offpeak = Convert.ToDouble(ds.Tables[0].Rows[0][71]); else Model.emr2_postive_reactive_offpeak = null;
+            if (ds.Tables[0].Rows[0][72] != System.DBNull.Value) Model.emr2_pf_all = Convert.ToDouble(ds.Tables[0].Rows[0][72]); else Model.emr2_pf_all = null;
+            if (ds.Tables[0].Rows[0][73] != System.DBNull.Value) Model.emr2_pf_a = Convert.ToDouble(ds.Tables[0].Rows[0][73]); else Model.emr2_pf_a = null;
+            if (ds.Tables[0].Rows[0][74] != System.DBNull.Value) Model.emr2_pf_b = Convert.ToDouble(ds.Tables[0].Rows[0][74]); else Model.emr2_pf_b = null;
+            if (ds.Tables[0].Rows[0][75] != System.DBNull.Value) Model.emr2_pf_c = Convert.ToDouble(ds.Tables[0].Rows[0][75]); else Model.emr2_pf_c = null;
+            if (ds.Tables[0].Rows[0][76] != System.DBNull.Value) Model.total_id = Convert.ToInt32(ds.Tables[0].Rows[0][76]); else Model.total_id = null;
+            Model.add_time = Convert.ToDateTime(ds.Tables[0].Rows[0][77]);
+            Model.user_name = ds.Tables[0].Rows[0][78].ToString();
+            con.Close();
+            //创建工作簿对象
+            HSSFWorkbook hssfworkbook;
+            //打开模板文件到文件流中
+            using (FileStream file = new FileStream(HttpContext.Request.PhysicalApplicationPath + @"ExcelModel\ElecReading.xls", FileMode.Open, FileAccess.Read))
+            {
+                //将文件流中模板加载到工作簿对象中
+                hssfworkbook = new HSSFWorkbook(file);
+                ISheet sheet1 = hssfworkbook.GetSheet("Sheet1");
+                //巡查时间及巡查人赋值
+                sheet1.GetRow(1).GetCell(0).SetCellValue("日期："+ Model.add_time.ToString("D") +"    时间：" + Model.add_time.ToString("t") +"    巡查人："+Model.user_name);
+                //电表1线赋值
+                sheet1.GetRow(4).GetCell(3).SetCellValue(Model.emr1_postive_active_all.ToString());
+                sheet1.GetRow(5).GetCell(3).SetCellValue(Model.emr1_postive_active_sharp.ToString());
+                sheet1.GetRow(6).GetCell(3).SetCellValue(Model.emr1_postive_active_peak.ToString());
+                sheet1.GetRow(7).GetCell(3).SetCellValue(Model.emr1_postive_active_shoulder.ToString());
+                sheet1.GetRow(8).GetCell(3).SetCellValue(Model.emr1_postive_active_offpeak.ToString());
+                sheet1.GetRow(9).GetCell(3).SetCellValue(Model.emr1_postive_reactive_all.ToString());
+                sheet1.GetRow(10).GetCell(3).SetCellValue(Model.emr1_postive_reactive_sharp.ToString());
+                sheet1.GetRow(11).GetCell(3).SetCellValue(Model.emr1_postive_reactive_peak.ToString());
+                sheet1.GetRow(12).GetCell(3).SetCellValue(Model.emr1_postive_reactive_shoulder.ToString());
+                sheet1.GetRow(13).GetCell(3).SetCellValue(Model.emr1_postive_reactive_offpeak.ToString());
+                sheet1.GetRow(14).GetCell(3).SetCellValue(Model.emr1_pf_all.ToString());
+                sheet1.GetRow(15).GetCell(3).SetCellValue(Model.emr1_pf_a.ToString());
+                sheet1.GetRow(16).GetCell(3).SetCellValue(Model.emr1_pf_b.ToString());
+                sheet1.GetRow(17).GetCell(3).SetCellValue(Model.emr1_pf_c.ToString());
+                //电表2线赋值
+                sheet1.GetRow(4).GetCell(4).SetCellValue(Model.emr2_postive_active_all.ToString());
+                sheet1.GetRow(5).GetCell(4).SetCellValue(Model.emr2_postive_active_sharp.ToString());
+                sheet1.GetRow(6).GetCell(4).SetCellValue(Model.emr2_postive_active_peak.ToString());
+                sheet1.GetRow(7).GetCell(4).SetCellValue(Model.emr2_postive_active_shoulder.ToString());
+                sheet1.GetRow(8).GetCell(4).SetCellValue(Model.emr2_postive_active_offpeak.ToString());
+                sheet1.GetRow(9).GetCell(4).SetCellValue(Model.emr2_postive_reactive_all.ToString());
+                sheet1.GetRow(10).GetCell(4).SetCellValue(Model.emr2_postive_reactive_sharp.ToString());
+                sheet1.GetRow(11).GetCell(4).SetCellValue(Model.emr2_postive_reactive_peak.ToString());
+                sheet1.GetRow(12).GetCell(4).SetCellValue(Model.emr2_postive_reactive_shoulder.ToString());
+                sheet1.GetRow(13).GetCell(4).SetCellValue(Model.emr2_postive_reactive_offpeak.ToString());
+                sheet1.GetRow(14).GetCell(4).SetCellValue(Model.emr2_pf_all.ToString());
+                sheet1.GetRow(15).GetCell(4).SetCellValue(Model.emr2_pf_a.ToString());
+                sheet1.GetRow(16).GetCell(4).SetCellValue(Model.emr2_pf_b.ToString());
+                sheet1.GetRow(17).GetCell(4).SetCellValue(Model.emr2_pf_c.ToString());
+                //高压1线赋值
+                sheet1.GetRow(18).GetCell(3).SetCellValue(Model.ehvd1_v_a.ToString());
+                sheet1.GetRow(19).GetCell(3).SetCellValue(Model.ehvd1_v_b.ToString());
+                sheet1.GetRow(20).GetCell(3).SetCellValue(Model.ehvd1_v_c.ToString());
+                sheet1.GetRow(21).GetCell(3).SetCellValue(Model.ehvd1_e_a.ToString());
+                sheet1.GetRow(22).GetCell(3).SetCellValue(Model.ehvd1_e_b.ToString());
+                sheet1.GetRow(23).GetCell(3).SetCellValue(Model.ehvd1_e_c.ToString());
+                sheet1.GetRow(24).GetCell(3).SetCellValue(Model.ehvd1_transformer_temp_a.ToString());
+                sheet1.GetRow(25).GetCell(3).SetCellValue(Model.ehvd1_transformer_temp_b.ToString());
+                sheet1.GetRow(26).GetCell(3).SetCellValue(Model.ehvd1_transformer_temp_c.ToString());
+                //高压2线赋值
+                sheet1.GetRow(18).GetCell(4).SetCellValue(Model.ehvd2_v_a.ToString());
+                sheet1.GetRow(19).GetCell(4).SetCellValue(Model.ehvd2_v_b.ToString());
+                sheet1.GetRow(20).GetCell(4).SetCellValue(Model.ehvd2_v_c.ToString());
+                sheet1.GetRow(21).GetCell(4).SetCellValue(Model.ehvd2_e_a.ToString());
+                sheet1.GetRow(22).GetCell(4).SetCellValue(Model.ehvd2_e_b.ToString());
+                sheet1.GetRow(23).GetCell(4).SetCellValue(Model.ehvd2_e_c.ToString());
+                sheet1.GetRow(24).GetCell(4).SetCellValue(Model.ehvd2_transformer_temp_a.ToString());
+                sheet1.GetRow(25).GetCell(4).SetCellValue(Model.ehvd2_transformer_temp_b.ToString());
+                sheet1.GetRow(26).GetCell(4).SetCellValue(Model.ehvd2_transformer_temp_c.ToString());
+                //低压母联赋值
+                sheet1.GetRow(27).GetCell(3).SetCellValue(Model.elvs_v_a.ToString());
+                sheet1.GetRow(27).GetCell(4).SetCellValue(Model.elvs_v_b.ToString());
+                sheet1.GetRow(27).GetCell(5).SetCellValue(Model.elvs_v_c.ToString());
+                sheet1.GetRow(28).GetCell(3).SetCellValue(Model.elvs_e_a.ToString());
+                sheet1.GetRow(28).GetCell(4).SetCellValue(Model.elvs_e_b.ToString());
+                sheet1.GetRow(28).GetCell(5).SetCellValue(Model.elvs_e_c.ToString());
+                //低压1线
+                sheet1.GetRow(29).GetCell(3).SetCellValue(Model.elvd1_v_a.ToString());
+                sheet1.GetRow(30).GetCell(3).SetCellValue(Model.elvd1_v_b.ToString());
+                sheet1.GetRow(31).GetCell(3).SetCellValue(Model.elvd1_v_c.ToString());
+                sheet1.GetRow(32).GetCell(3).SetCellValue(Model.elvd1_e_a.ToString());
+                sheet1.GetRow(33).GetCell(3).SetCellValue(Model.elvd1_e_b.ToString());
+                sheet1.GetRow(34).GetCell(3).SetCellValue(Model.elvd1_e_c.ToString());
+                sheet1.GetRow(35).GetCell(3).SetCellValue(Model.elvd1_pf.ToString());
+                //低压2线
+                sheet1.GetRow(29).GetCell(4).SetCellValue(Model.elvd2_v_a.ToString());
+                sheet1.GetRow(30).GetCell(4).SetCellValue(Model.elvd2_v_b.ToString());
+                sheet1.GetRow(31).GetCell(4).SetCellValue(Model.elvd2_v_c.ToString());
+                sheet1.GetRow(32).GetCell(4).SetCellValue(Model.elvd2_e_a.ToString());
+                sheet1.GetRow(33).GetCell(4).SetCellValue(Model.elvd2_e_b.ToString());
+                sheet1.GetRow(34).GetCell(4).SetCellValue(Model.elvd2_e_c.ToString());
+                sheet1.GetRow(35).GetCell(4).SetCellValue(Model.elvd2_pf.ToString());
+                //其他检查
+                if(Model.direct_current_state == 0) sheet1.GetRow(36).GetCell(2).SetCellValue("异常"); else sheet1.GetRow(36).GetCell(2).SetCellValue("正常");
+                if (Model.control_room_state == 0) sheet1.GetRow(37).GetCell(2).SetCellValue("异常"); else sheet1.GetRow(37).GetCell(2).SetCellValue("正常");
+                if (Model.distributor_door_state == 0) sheet1.GetRow(38).GetCell(2).SetCellValue("异常"); else sheet1.GetRow(38).GetCell(2).SetCellValue("正常");
+                if (Model.electric_room_state == 0) sheet1.GetRow(39).GetCell(2).SetCellValue("异常"); else sheet1.GetRow(39).GetCell(2).SetCellValue("正常");
+                if (Model.light_state == 0) sheet1.GetRow(40).GetCell(2).SetCellValue("异常"); else sheet1.GetRow(40).GetCell(2).SetCellValue("正常");
+                if (Model.wash_state == 0) sheet1.GetRow(41).GetCell(2).SetCellValue("异常"); else sheet1.GetRow(41).GetCell(2).SetCellValue("正常");
+                if (Model.fire_epuip_state == 0) sheet1.GetRow(42).GetCell(2).SetCellValue("异常"); else sheet1.GetRow(42).GetCell(2).SetCellValue("正常");
+                if (Model.safe_appliance_state == 0) sheet1.GetRow(43).GetCell(2).SetCellValue("异常"); else sheet1.GetRow(43).GetCell(2).SetCellValue("正常");
+                sheet1.GetRow(44).GetCell(0).SetCellValue("备注：" + Model.mark);
+                MemoryStream mstream = new MemoryStream();
+                hssfworkbook.Write(mstream);
+                DownloadFile(mstream, Model.add_time.ToString("D")  );
+
+            }
+        }
+        //在客户端保存或查看用流生成的excel文件
+        public static string DownloadFile(MemoryStream fs, string filename)//必须为FileStream或MemoryStream ，如果用Stream则生成的excel无法正常打开
+        {
+            string fileName = filename + ".xls";//客户端保存的文件名 //以字符流的形式下载文件 
+            byte[] bytes = fs.ToArray(); fs.Read(bytes, 0, bytes.Length); fs.Close();
+            System.Web.HttpContext.Current.Response.Clear();
+            System.Web.HttpContext.Current.Response.ClearContent();
+            System.Web.HttpContext.Current.Response.ClearHeaders();
+            System.Web.HttpContext.Current.Response.ContentType = "application/octet-stream";
+
+            //通知浏览器下载文件而不是打开  
+            System.Web.HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(fileName, System.Text.Encoding.UTF8));
+            System.Web.HttpContext.Current.Response.AddHeader("Content-Transfer-Encoding", "binary"); System.Web.HttpContext.Current.Response.BinaryWrite(bytes);
+            System.Web.HttpContext.Current.Response.Flush();
+            System.Web.HttpContext.Current.Response.End();
+            return null;
         }
     }
 

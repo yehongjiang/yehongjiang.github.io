@@ -102,3 +102,9 @@ G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\Gma.QrCodeNet.Encodin
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\Gma.QrCodeNet.Encoding.pdb
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\Gma.QrCodeNet.Encoding.xml
 G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\obj\Debug\SewagePlantIMS.csprojResolveAssemblyReference.cache
+G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\ICSharpCode.SharpZipLib.dll
+G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\NPOI.dll
+G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\NPOI.OOXML.dll
+G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\NPOI.OpenXml4Net.dll
+G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\NPOI.OpenXmlFormats.dll
+G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\ICSharpCode.SharpZipLib.xml
