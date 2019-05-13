@@ -494,5 +494,29 @@ namespace tryadonet.Controllers
         {
             return View();
         }
+
+        public ActionResult refresh_view()
+        {
+            return View();
+        }
+        public string refresh_timing(string list)
+        {
+            return "1";
+        }
+        public JavaScriptResult testlocalsql()
+        {
+            //SqlConnection Conn = new SqlConnection("Server=192.168.31.167;DataBase=Student;Integrated Security=True;");
+            //Conn.Open();
+            string stu_name = "曹家兵";
+           /* if (Conn.State == ConnectionState.Open)
+            {
+                string sqlStr = "select stu_name from student where stu_age = 27";
+                SqlCommand cmd = new SqlCommand(sqlStr, Conn);
+                stu_name = cmd.ExecuteReader().ToString();
+            }
+            */
+           // Conn.Close();
+            return JavaScript("UpdateName( '"+stu_name +"');");
+        }
     }
 }

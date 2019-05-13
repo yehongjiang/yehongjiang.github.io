@@ -1,0 +1,67 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>refresh_view</title>
+</head>
+<body>
+    <div> 
+        <table>
+            <tr>
+                <th>学号</th>
+                <th>姓名</th>
+                <th>成绩</th>
+            </tr>
+            <tr>
+                <td>11110000</td>
+                <td id="name">叶泓江</td>
+                <td id="score">0</td>
+            </tr>
+        </table>
+       @using (Ajax.BeginForm("testlocalsql", "Home", new { ID = 1, Name = "2" }, new AjaxOptions
+       {
+           HttpMethod = "POST",
+           InsertionMode = InsertionMode.Replace,
+           /*OnBegin = "OnBeginPost()",
+           OnComplete = "OnEndPost()",
+           OnSuccess = "OnSuccessPost",*/
+           /*UpdateTargetId = "content"*/
+       }
+                      ))
+       {
+            <button type="submit" class="btn btn-warning btn-block">测试局域网数据库的连接</button>
+
+        }
+    </div>
+</body>
+</html>
+<script src="~/scripts/jquery-2.1.1.min.js"></script>
+
+<script>
+    setInterval("to_refresh_timing()", 1000);  
+    function to_refresh_timing(){
+        $.ajax({
+            type: 'post',
+            url: '/Home/refresh_timing',
+            data: "{}",
+            contentType: "application/json",
+            //dataType: "json",
+            success: function (result) {
+                document.getElementById("score").innerHTML = parseInt(document.getElementById("score").innerHTML) + parseInt(result);
+            },
+            error: function () {
+                alert("传值失败~");
+            }
+        })
+    }
+    function UpdateName(stu) {
+        document.getElementById("name").innerHTML = stu;
+    }
+</script>
+<script src="~/scripts/jquery.unobtrusive-ajax.js"></script>

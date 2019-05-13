@@ -120,3 +120,6 @@ G:\yehongjiang.github.io\tryadonet\tryadonet\bin\zh-Hans\System.Web.Mvc.resource
 G:\yehongjiang.github.io\tryadonet\tryadonet\obj\Debug\tryadonet.csprojResolveAssemblyReference.cache
 G:\yehongjiang.github.io\tryadonet\tryadonet\obj\Debug\tryadonet.dll
 G:\yehongjiang.github.io\tryadonet\tryadonet\obj\Debug\tryadonet.pdb
+G:\yehongjiang.github.io\tryadonet\tryadonet\bin\Quartz.dll
+G:\yehongjiang.github.io\tryadonet\tryadonet\bin\Quartz.pdb
+G:\yehongjiang.github.io\tryadonet\tryadonet\bin\Quartz.xml
