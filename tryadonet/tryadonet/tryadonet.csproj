@@ -198,6 +198,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\chemical_device.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\temp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -226,6 +227,7 @@
     <Content Include="Views\Home\tablechecks.cshtml" />
     <Content Include="Views\Home\temp22.cshtml" />
     <Content Include="Views\Home\refresh_view.cshtml" />
+    <Content Include="Views\Home\TestSelectTable.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

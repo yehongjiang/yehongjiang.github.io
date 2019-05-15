@@ -1,0 +1,124 @@
+﻿@model List<tryadonet.Models.chemical_device>
+@{
+    Layout = null;
+    int num = 1;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>TestSelectTable</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+
+</head>
+<body>
+    <div class="form-group">
+        <div class="col-md-2">
+            <label class="control-label">工艺段</label>
+            @Html.DropDownList("hard-code-dropdownlist", new SelectList(ViewBag.hard_value, "Value", "Text"), new { @class = "btn btn-default dropdown-toggle form-control", @onchange = "selectOnchang(this)" })
+        </div>
+    </div>
+    <table class="table table-bordered table-hover table-striped" id="table_id_example">
+        <thead>
+            <tr>
+                <th>序号</th>
+                <th>出厂编号</th>
+                <th>仪器名称</th>
+                <th>保管人</th>
+                <th>相关操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@num</td>
+                    <td>@item.cd_num </td>
+                    <td>@item.cd_name</td>
+                    <td>@item.cd_preserver</td>
+                    <td>
+                        @using (@Html.BeginForm("ModifyChemicalDevice", "Chemical", FormMethod.Post, new { @class = "myform" }))
+                        {
+                            <button class="btn btn-success btn-xs" type="submit" value="@item.id" name="id">修改</button>
+                        }
+                        @using (@Html.BeginForm("AddChemicalDevicePic", "Chemical", FormMethod.Post, new { @class = "myform" }))
+                        {
+                            <button class="btn btn-primary btn-xs" type="submit" value="@item.id" name="id">添加图片</button>
+                        }
+                        @using (Ajax.BeginForm("DeleteChemicalDevice", "Chemical", new AjaxOptions
+                        {
+                            HttpMethod = "POST",
+                            InsertionMode = InsertionMode.Replace,
+                        }, new { @class = "myform" }))
+                        {
+                            <button class="btn btn-danger btn-xs" type="submit" value="@item.id" name="del" id="del" onclick="return confirm('确定删除吗？？？')">删除</button>
+                        }
+                        @using (@Html.BeginForm("ShowChemicalDevice", "Chemical", FormMethod.Post, new { @class = "myform" }))
+                        {
+                            <button class="btn btn-default btn-xs" value="@item.id" name="show">展示页</button>
+                        }
+                        @using (@Html.BeginForm("CreateQRcode", "Chemical", FormMethod.Post, new { @class = "myform" }))
+                        {
+                            <button class="btn btn-warning btn-xs" value="@item.id" name="qrcode" type="submit">二维码</button>
+                        }
+                    </td>
+                </tr>
+                num++;
+            }
+
+        </tbody>
+
+    </table>
+</body>
+</html>
+<script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
+<script>
+    function selectOnchang(obj) {
+        //获取被选中的option标签选项
+        if (obj.selectedIndex != 0) {
+            alert(obj.selectedIndex);
+        }
+    }
+    $(function () {
+        $("#table_id_example").dataTable({
+            searching: true,//搜索
+            lengthMenu: [10, 20, 30],
+            "bSort": true,
+
+            "oLanguage": {
+
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+
+                "sZeroRecords": "对不起，查询不到任何相关数据",
+
+                "sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_条记录",
+
+                "sInfoEmtpy": "找不到相关数据",
+
+                "sInfoFiltered": "数据表中共为 _MAX_ 条记录)",
+
+                "sProcessing": "正在加载中...",
+
+                "sSearch": "搜索",
+
+                "oPaginate": {
+
+                    "sFirst": "第一页",
+
+                    "sPrevious": " 上一页 ",
+
+                    "sNext": " 下一页 ",
+
+                    "sLast": " 最后一页 "
+
+                },
+
+            }
+
+        });
+    });
+</script>

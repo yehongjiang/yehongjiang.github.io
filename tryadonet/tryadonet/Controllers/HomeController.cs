@@ -525,5 +525,44 @@ namespace tryadonet.Controllers
             Conn.Close();
             return JavaScript("UpdateName( '" + stu_name + "');");
         }
+        public ActionResult TestSelectTable()
+        {
+            SqlConnection con = new SqlConnection("Server=192.168.16.104;DataBase=devicemanager;integrated security=true;");
+            con.Open();
+            string sqlStr2 = " select distinct cd_preserver from dm_chemical_device;";
+            SqlDataAdapter da2 = new SqlDataAdapter(sqlStr2, con);
+            DataSet ds2 = new DataSet();
+            da2.Fill(ds2);
+            /*ViewBag.hard_value = new List<SelectListItem>() {
+                new SelectListItem(){Value="0",Text="xpy0928"},
+                new SelectListItem(){Value="1",Text="cnblogs"}
+            };*/
+            List<SelectListItem> list = new List<SelectListItem>();
+            for (int mDr = 0; mDr < ds2.Tables[0].Rows.Count; mDr++)
+            {
+                list.Add(new SelectListItem() { Value = "1", Text = "" + ds2.Tables[0].Rows[mDr][0].ToString() + "" });            
+            }
+            ViewBag.hard_value = list;
+
+
+
+            List<chemical_device> model = new List<chemical_device>();
+            string sqlStr = "select id,cd_num,cd_name,cd_preserver from dm_chemical_device;";
+            SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            chemical_device[] E = new chemical_device[ds.Tables[0].Rows.Count];
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                E[mDr] = new chemical_device();
+                E[mDr].id = Convert.ToInt32(ds.Tables[0].Rows[mDr][0]);
+                E[mDr].cd_num = ds.Tables[0].Rows[mDr][1].ToString();
+                E[mDr].cd_name = ds.Tables[0].Rows[mDr][2].ToString();
+                E[mDr].cd_preserver = ds.Tables[0].Rows[mDr][3].ToString();
+                model.Add(E[mDr]);
+            }
+            con.Close();
+            return View(model);
+        }
     }
 }
