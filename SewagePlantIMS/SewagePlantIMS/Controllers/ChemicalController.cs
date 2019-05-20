@@ -25,7 +25,7 @@ namespace SewagePlantIMS.Controllers
 
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string sqlStr = "select id,cd_num,cd_name,cd_preserver from dm_chemical_device;";
+            string sqlStr = "select id,cd_manufacturer,cd_name,cd_preserver from dm_chemical_device;";
             SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
             DataSet ds = new DataSet();
             da.Fill(ds);
@@ -34,7 +34,7 @@ namespace SewagePlantIMS.Controllers
             {
                 E[mDr] = new chemical_device();
                 E[mDr].id = Convert.ToInt32(ds.Tables[0].Rows[mDr][0]);
-                E[mDr].cd_num = ds.Tables[0].Rows[mDr][1].ToString();
+                E[mDr].cd_manufacturer = ds.Tables[0].Rows[mDr][1].ToString();
                 E[mDr].cd_name = ds.Tables[0].Rows[mDr][2].ToString();
                 E[mDr].cd_preserver = ds.Tables[0].Rows[mDr][3].ToString();
                 model.Add(E[mDr]);

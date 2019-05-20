@@ -80,7 +80,7 @@ namespace SewagePlantIMS.Function
             float fontSize = 10.0f;             //字体大小
             float textWidth = text.Length * fontSize;  //文本的长度
                                                        //下面定义一个矩形区域，以后在这个矩形里画上白底黑字
-            float rectY = 350;
+            float rectY = 0;
             float rectX = 15;
             float rectWidth = text.Length * (fontSize + 40);
             float rectHeight = fontSize + 40;
