@@ -37,14 +37,27 @@ namespace SewagePlantIMS.Controllers
                 E[mDr].brand_id = Convert.ToInt32(ds.Tables[0].Rows[mDr][4]);
                 model.Add(E[mDr]);
             }
-            con.Close();
+            
             List<string> technology_name = new List<string>();
             List<string> class_name = new List<string>();
             List<string> brand_name = new List<string>();
+            SqlCommand cmd = new SqlCommand();
             foreach (var data in model)
             {
-                //data.
+                sqlStr = "select title from dm_technology where id = " + data.technology_id + ";";
+                cmd = new SqlCommand(sqlStr, con);
+                technology_name.Add(cmd.ExecuteScalar().ToString());
+                sqlStr = "select title from dm_device_class where id = " + data.class_id + ";";
+                cmd = new SqlCommand(sqlStr, con);
+                class_name.Add(cmd.ExecuteScalar().ToString());
+                sqlStr = "select title from dm_supplier_brand where id = " + data.brand_id + ";";
+                cmd = new SqlCommand(sqlStr, con);
+                brand_name.Add(cmd.ExecuteScalar().ToString());
             }
+            ViewBag.technology_name = technology_name;
+            ViewBag.class_name = class_name;
+            ViewBag.brand_name = brand_name;
+            con.Close();
             return View(model);
         }
     }

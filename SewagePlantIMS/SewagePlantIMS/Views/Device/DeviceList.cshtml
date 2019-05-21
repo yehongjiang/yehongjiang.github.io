@@ -1,10 +1,134 @@
-﻿
+﻿@model List<SewagePlantIMS.Models.Device>
 @{
     ViewBag.Title = "设备清单";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int num = 1;
 }
 <fieldset>
     <legend style="color:#5b9bd1">设备清单</legend>
 </fieldset>
+<a href="AddChemicalDevice">新增设备信息</a>
+<table class="table table-bordered table-hover table-striped" id="example">
+    <thead>
+        <tr>
+            <th>序号</th>
+            <th>设备名称</th>
+            <th>工艺段</th>
+            <th>类别</th>
+            <th>品牌</th>
+            <th>相关操作</th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </tfoot>
+    <tbody>
+        @foreach (var item in Model)
+            {
+            <tr>
+                <td>@num</td>
+                <td>@item.title </td>
+                <td>@ViewBag.technology_name[@num-1]</td>
+                <td>@ViewBag.class_name[@num-1]</td>
+                <td>@ViewBag.brand_name[@num-1]</td>
+                <td>
+                    @using (@Html.BeginForm("", "Chemical", FormMethod.Post, new { @class = "myform" }))
+                    {
+                        <button class="btn btn-primary btn-xs" type="submit" value="@item.id" name="id">修改</button>
+                    }
+                    @using (Ajax.BeginForm("", "Chemical", new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                    }, new { @class = "myform" }))
+                    {
+                        <button class="btn btn-danger btn-xs" type="submit" value="@item.id" name="del" id="del" onclick="return confirm('确定删除吗？？？')">删除</button>
+                    }
+                    @using (@Html.BeginForm("", "Chemical", FormMethod.Post, new { @class = "myform" }))
+                    {
+                        <button class="btn btn-default btn-xs" value="@item.id" name="show">展示页</button>
+                    }
+                    @using (@Html.BeginForm("", "Chemical", FormMethod.Post, new { @class = "myform" }))
+                    {
+                        <button class="btn btn-warning btn-xs" value="@item.id" name="qrcode" type="submit">二维码</button>
+                    }
+                </td>
+            </tr>
+            num++;
+        }
+
+    </tbody>
+
+</table>
+<script>
+$(function () {
+        $("#example").dataTable({
+            searching: true,//搜索
+
+                    initComplete: function () {
+                        var api = this.api();
+                        api.columns([2,3,4]).indexes().flatten().each( function (i) {
+                            var column = api.column(i);
+                            var select = $('<select class="form-control"><option value=""></option></select>')
+                                .appendTo( $(column.footer()).empty() )
+                                .on( 'change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex(
+                                        $(this).val()
+                                    );
+                                    column
+                                        .search( val ? '^'+val+'$' : '', true, false )
+                                        .draw();
+                                } );
+                            column.data().unique().sort().each( function ( d, j ) {
+                                select.append( '<option value="'+d+'">'+d+'</option>' )
+                            } );
+                        } );
+                    },
 
 
+            lengthMenu: [10, 20, 30],
+            "bSort": true,
+
+            "oLanguage": {
+
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+
+                "sZeroRecords": "对不起，查询不到任何相关数据",
+
+                "sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_条记录",
+
+                "sInfoEmtpy": "找不到相关数据",
+
+                "sInfoFiltered": "数据表中共为 _MAX_ 条记录)",
+
+                "sProcessing": "正在加载中...",
+
+                "sSearch": "搜索",
+
+                "oPaginate": {
+
+                    "sFirst": "第一页",
+
+                    "sPrevious": " 上一页 ",
+
+                    "sNext": " 下一页 ",
+
+                    "sLast": " 最后一页 "
+
+                },
+
+
+            }
+
+        }
+
+    )
+    });
+</script>
