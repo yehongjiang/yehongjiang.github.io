@@ -12,10 +12,11 @@ using System.Data;
 
 namespace SewagePlantIMS.Controllers
 {
-    //[LoginAttribute(isNeed = true)]
+    [LoginAttribute(isNeed = true)]
     public class DeviceController : Controller
     {
         // GET: Device
+        //设备列表呈现
         public ActionResult DeviceList()
         {
             List<Device> model = new List<Device>();
@@ -37,7 +38,7 @@ namespace SewagePlantIMS.Controllers
                 E[mDr].brand_id = Convert.ToInt32(ds.Tables[0].Rows[mDr][4]);
                 model.Add(E[mDr]);
             }
-            
+
             List<string> technology_name = new List<string>();
             List<string> class_name = new List<string>();
             List<string> brand_name = new List<string>();
@@ -59,6 +60,66 @@ namespace SewagePlantIMS.Controllers
             ViewBag.brand_name = brand_name;
             con.Close();
             return View(model);
+        }
+        //新增设备信息
+        public ActionResult AddDevice()
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //1)查出所有分类
+            string sqlStr = "select id,title from dm_device_class where id not in (select distinct parent_id from dm_device_class);";
+            SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            List<SelectListItem> list_class = new List<SelectListItem>();
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                list_class.Add(new SelectListItem() { Value = "" + ds.Tables[0].Rows[mDr][0].ToString() + "", Text = "" + ds.Tables[0].Rows[mDr][1].ToString() + "" });
+            }
+            ViewBag.list_class = list_class;
+            //2)查出所有工艺段
+            sqlStr = "select id,title from dm_technology;";
+            da = new SqlDataAdapter(sqlStr, con);
+            ds = new DataSet();
+            da.Fill(ds);
+            List<SelectListItem> list_tecnology = new List<SelectListItem>();
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                list_tecnology.Add(new SelectListItem() { Value = "" + ds.Tables[0].Rows[mDr][0].ToString() + "", Text = "" + ds.Tables[0].Rows[mDr][1].ToString() + "" });
+            }
+            ViewBag.list_tecnology = list_tecnology;
+            //3)查出所有的品牌
+            sqlStr = "select id,title from dm_supplier_brand;";
+            da = new SqlDataAdapter(sqlStr, con);
+            ds = new DataSet();
+            da.Fill(ds);
+            List<SelectListItem> list_brand = new List<SelectListItem>();
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                list_brand.Add(new SelectListItem() { Value = "" + ds.Tables[0].Rows[mDr][0].ToString() + "", Text = "" + ds.Tables[0].Rows[mDr][1].ToString() + "" });
+            }
+            ViewBag.list_brand = list_brand;
+            //4)设置一下状态
+            List<SelectListItem> state = new List<SelectListItem>();
+            state.Add(new SelectListItem() { Value = "1", Text = "正常" });
+            state.Add(new SelectListItem() { Value = "0", Text = "异常" });
+            ViewBag.state = state;
+            return View();
+        }
+        //提交设备信息
+        [HttpPost]
+        public JavaScriptResult AddDevice_post(Device model)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sqlStr = "insert into dm_device(title,alias,class_id,technology_id,brand_id,state,device_power,device_model,summary,purchase_date,add_date,add_user_id,add_user_name) values('" + model.title + "','" + model.alias + "'," + model.class_id + "," + model.technology_id + "," + model.brand_id + "," + model.state + ",'" + model.device_power + "','" + model.device_model + "','" + model.summary + "','" + model.purchase_date + "','" + DateTime.Now + "'," + Session["user_id"] + ",'" + Session["real_name"] + "')";
+            SqlCommand cmd = new SqlCommand(sqlStr, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check == 1)
+                return JavaScript("swal_success();jump_DeviceList();");
+            else
+                return JavaScript("swal_error();");
         }
     }
 }
