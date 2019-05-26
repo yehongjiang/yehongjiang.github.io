@@ -228,6 +228,7 @@
     <Compile Include="Models\chemical_device.cs" />
     <Compile Include="Models\chemical_device_pic.cs" />
     <Compile Include="Models\Device.cs" />
+    <Compile Include="Models\DevicePic.cs" />
     <Compile Include="Models\Electrical.cs" />
     <Compile Include="Models\elec_pic.cs" />
     <Compile Include="Models\technology.cs" />
@@ -329,6 +330,8 @@
     <Content Include="Views\ElectricManage\ModifyElectricReading.cshtml" />
     <Content Include="Views\Device\DeviceList.cshtml" />
     <Content Include="Views\Device\AddDevice.cshtml" />
+    <Content Include="Views\Device\ModifyDevice.cshtml" />
+    <Content Include="Views\Device\AddDevicePic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

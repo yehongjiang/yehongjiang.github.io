@@ -1,0 +1,26 @@
+﻿@model List<SewagePlantIMS.Models.DevicePic>
+@{
+    ViewBag.Title = "添加设备图片";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#sub').click(function () {
+            if ($("#filename").text() == '') {
+                document.getElementById('fileerrorTip1').innerHTML = '您未选取任何需要要添加的图片！！';
+                document.getElementById('fileerrorTip1').style.color = "red";
+                return false;
+            }
+        });
+    });
+    /*function imgUrl() {
+        document.getElementById("imgInit").src = "/images/ElectricalPic/电脑性能测试.png";
+    }*/
+</script>
+
+<fieldset>
+    <legend style="color:#5b9bd1">添加设备图片</legend>
+</fieldset>
+

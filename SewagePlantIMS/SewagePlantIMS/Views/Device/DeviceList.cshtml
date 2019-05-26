@@ -4,6 +4,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int num = 1;
 }
+<style>
+    .btn_border{
+        border:none;
+        text-align:left;
+        padding-left:10px;
+    }
+</style>
 <fieldset>
     <legend style="color:#5b9bd1">设备清单</legend>
 </fieldset>
@@ -16,7 +23,7 @@
             <th>工艺段</th>
             <th>类别</th>
             <th>品牌</th>
-            <th>相关操作</th>
+            <th>操作</th>
         </tr>
     </thead>
     <tfoot>
@@ -39,26 +46,42 @@
                 <td>@ViewBag.class_name[@num-1]</td>
                 <td>@ViewBag.brand_name[@num-1]</td>
                 <td>
-                    @using (@Html.BeginForm("", "Chemical", FormMethod.Post, new { @class = "myform" }))
-                    {
-                        <button class="btn btn-primary btn-xs" type="submit" value="@item.id" name="id">修改</button>
-                    }
-                    @using (Ajax.BeginForm("", "Chemical", new AjaxOptions
-                    {
-                        HttpMethod = "POST",
-                        InsertionMode = InsertionMode.Replace,
-                    }, new { @class = "myform" }))
-                    {
-                        <button class="btn btn-danger btn-xs" type="submit" value="@item.id" name="del" id="del" onclick="return confirm('确定删除吗？？？')">删除</button>
-                    }
-                    @using (@Html.BeginForm("", "Chemical", FormMethod.Post, new { @class = "myform" }))
-                    {
-                        <button class="btn btn-default btn-xs" value="@item.id" name="show">展示页</button>
-                    }
-                    @using (@Html.BeginForm("", "Chemical", FormMethod.Post, new { @class = "myform" }))
-                    {
-                        <button class="btn btn-warning btn-xs" value="@item.id" name="qrcode" type="submit">二维码</button>
-                    }
+                    <div class="btn-group">
+                        <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">操作<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" style="min-width:60px" >
+                            <li>@using (@Html.BeginForm("ModifyDevice", "Device", FormMethod.Post))
+                            {
+                                <button class="btn btn-default btn-xs btn-block btn_border" type="submit" value="@item.id" name="id">修改</button>
+                            }</li>
+                            <li>
+                                @using (@Html.BeginForm("AddDevicePic", "Device", FormMethod.Post))
+                            {
+                                <button class="btn btn-default btn-xs btn-block btn_border" type="submit" value="@item.id" name="id">图片</button>
+                            }
+                        </li>
+                            <li>
+                                @using (Ajax.BeginForm("", "Device", new AjaxOptions
+                                {
+                                    HttpMethod = "POST",
+                                    InsertionMode = InsertionMode.Replace,
+                                }, new { @class = "myform" }))
+                                {
+                                    <button class="btn btn-danger btn-xs btn-block btn_border" type="submit" value="@item.id" name="del" id="del" onclick="return confirm('确定删除吗？？？')">删除</button>
+                                }</li>
+                            <li>@using (@Html.BeginForm("", "Device", FormMethod.Post, new { @class = "myform" }))
+                            {
+                                <button class="btn btn-default btn-xs btn-block btn_border" value="@item.id" name="show">展示页</button>
+                            }</li>
+                            <li>@using (@Html.BeginForm("", "Device", FormMethod.Post, new { @class = "myform" }))
+                            {
+                                <button class="btn btn-default btn-xs btn-block btn_border" value="@item.id" name="qrcode" type="submit">二维码</button>
+                            }</li>
+                        </ul>
+                    </div>
+                   
+                    
+                    
                 </td>
             </tr>
             num++;

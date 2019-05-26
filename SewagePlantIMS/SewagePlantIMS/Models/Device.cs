@@ -29,7 +29,7 @@ namespace SewagePlantIMS.Models
         [Display(Name = "设备别名")]
         public string alias { get; set; }
         [Display(Name = "安装日期")]
-        public DateTime purchase_date { get; set; }
+        public DateTime? purchase_date { get; set; }
         [Display(Name = "品牌ID")]
         public int brand_id { get; set; }
         [Display(Name = "型号")]
