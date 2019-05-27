@@ -332,6 +332,7 @@
     <Content Include="Views\Device\AddDevice.cshtml" />
     <Content Include="Views\Device\ModifyDevice.cshtml" />
     <Content Include="Views\Device\AddDevicePic.cshtml" />
+    <Content Include="Views\Device\ShowDevice.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

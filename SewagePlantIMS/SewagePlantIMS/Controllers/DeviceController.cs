@@ -9,6 +9,7 @@ using SewagePlantIMS.Models;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Data;
+using System.IO;
 
 namespace SewagePlantIMS.Controllers
 {
@@ -104,6 +105,7 @@ namespace SewagePlantIMS.Controllers
             state.Add(new SelectListItem() { Value = "1", Text = "正常" });
             state.Add(new SelectListItem() { Value = "0", Text = "异常" });
             ViewBag.state = state;
+            con.Close();
             return View();
         }
         //提交设备信息
@@ -184,6 +186,7 @@ namespace SewagePlantIMS.Controllers
             state.Add(new SelectListItem() { Value = "1", Text = "正常" });
             state.Add(new SelectListItem() { Value = "0", Text = "异常"});
             ViewBag.state = state;
+            con.Close();
             return View(model);
         }
         public JavaScriptResult ModifyDevice_post(Device model)
@@ -214,7 +217,7 @@ namespace SewagePlantIMS.Controllers
             ViewBag.id = id;
             List<DevicePic> models = new List<DevicePic>();
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
-            string sqlStr = "select id,pic_url from dm_device_pic where id = " + ViewBag.id + "; ";
+            string sqlStr = "select id,pic_url from dm_device_pic where device_id = " + ViewBag.id + "; ";
             SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
             DataSet ds = new DataSet();
             da.Fill(ds);
@@ -233,26 +236,26 @@ namespace SewagePlantIMS.Controllers
         [HttpPost]
         public ActionResult AddDevicePic()
         {
-            ViewBag.cd_id = Request.Form["id"];
-            List<chemical_device_pic> models = new List<chemical_device_pic>();
+            ViewBag.id = Request.Form["id"];
+            List<DevicePic> models = new List<DevicePic>();
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
-            string sqlStr = "select id,cd_picurl from dm_chemical_device_pic where cd_id = " + ViewBag.cd_id + "; ";
+            string sqlStr = "select id,pic_url from dm_device_pic where device_id = " + ViewBag.id + "; ";
             SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
             DataSet ds = new DataSet();
             da.Fill(ds);
-            chemical_device_pic[] tc = new chemical_device_pic[ds.Tables[0].Rows.Count];
+            DevicePic[] tc = new DevicePic[ds.Tables[0].Rows.Count];
             for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
             {
-                tc[mDr] = new chemical_device_pic();
+                tc[mDr] = new DevicePic();
                 tc[mDr].id = Convert.ToInt32(ds.Tables[0].Rows[mDr][0]);
-                tc[mDr].cd_picurl = ds.Tables[0].Rows[mDr][1].ToString();
+                tc[mDr].pic_url = ds.Tables[0].Rows[mDr][1].ToString();
 
                 models.Add(tc[mDr]);
             }
             con.Close();
             return View(models);
         }
-        public void AddChemicalDevicePicPost()
+        public void AddDevicePicPost()
         {
             chemical_device_pic ep = new chemical_device_pic();
             HttpPostedFileBase ff = Request.Files["File"];
@@ -271,7 +274,7 @@ namespace SewagePlantIMS.Controllers
             //读取elec_pic表最后一个id号加1最为不重复图片名的依据
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string sql = "select max(id) from dm_chemical_device_pic";
+            string sql = "select max(id) from dm_device_pic";
             SqlCommand cmd1 = new SqlCommand(sql, con);
             int max_id;
             if (cmd1.ExecuteScalar() != DBNull.Value)
@@ -283,26 +286,184 @@ namespace SewagePlantIMS.Controllers
             {
                 max_id = 1;
             }
-            string filepath = Server.MapPath("/images/ChemicalDevicePic_Pre/" + filename + "_" + Request.Form["id"] + "_" + max_id.ToString() + ".png");
+            string filepath = Server.MapPath("/images/DevicePic_Pre/" + filename + "_" + Request.Form["id"] + "_" + max_id.ToString() + ".png");
             ff.SaveAs(filepath);//在服务器上保存上传原图文件
                                 //string[] readFile = System.IO.File.ReadAllLines(filepath);//读取txt文档存放在字符数组中
-            string filepath2 = Server.MapPath("/images/ChemicalDevicePic/" + filename + "_" + Request.Form["id"] + "_" + max_id.ToString() + ".png");
+            string filepath2 = Server.MapPath("/images/DevicePic/" + filename + "_" + Request.Form["id"] + "_" + max_id.ToString() + ".png");
             CompressPic cp = new CompressPic();
             bool temp = cp.CompressImage(filepath, filepath2, 80, 150, true); //保存压缩完的文件到ChemicalDevicePic文件夹
 
 
-            string sqlStr = "insert into dm_chemical_device_pic (cd_picname,cd_picurl,cd_addtime,cd_id) values('" + filename + "','" + "/images/ChemicalDevicePic/" + filename + "_" + Request.Form["id"] + "_" + max_id.ToString() + ".png" + "','" + DateTime.Now.ToString() + "','" + Request.Form["id"] + "')";
+            string sqlStr = "insert into dm_device_pic (title,pic_url,add_date,device_id) values('" + filename + "','" + "/images/DevicePic/" + filename + "_" + Request.Form["id"] + "_" + max_id.ToString() + ".png" + "','" + DateTime.Now.ToString() + "','" + Request.Form["id"] + "')";
             SqlCommand cmd = new SqlCommand(sqlStr, con);
             int check = cmd.ExecuteNonQuery();
             if (check == 1)
             {
-                Response.Write("<script>alert('添加图片成功！！');window.location.href='AddChemicalDevicePic?id=" + Request.Form["id"] + " '   ;</script>");
+                Response.Write("<script>alert('添加图片成功！！');window.location.href='AddDevicePic?id=" + Request.Form["id"] + " '   ;</script>");
             }
             else
                 Response.Write("<script>alert('添加图片失败！,请手动联系管理员~');</script>");
             con.Close();
             //return RedirectToAction("Electrical_List"); //如果直接View就不会执行HttpGet的代码
             //return ElectricalPic();
+        }
+        //删除设备图片
+        public void DeleteDevicePic()
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //先查出url
+            string pic_url = "select pic_url from dm_device_pic  where id =  '" + Request.Form["del_id"] + "'";
+            SqlCommand cmd_url = new SqlCommand(pic_url, con);
+            pic_url = cmd_url.ExecuteScalar().ToString();
+            string sql = "select device_id from dm_device_pic  where id =  '" + Request.Form["del_id"] + "'";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int id = Convert.ToInt32(cmd.ExecuteScalar());
+            string sqlStr = "delete from dm_device_pic where id =  '" + Request.Form["del_id"] + "'";
+            SqlCommand cmd2 = new SqlCommand(sqlStr, con);
+            int check = cmd2.ExecuteNonQuery();
+            con.Close();
+            //删除对应的实体文件
+            string filePath = Server.MapPath(pic_url);//路径 
+            FileInfo file = new FileInfo(filePath);
+            if (file.Exists)
+            {
+                file.Delete();
+            }
+            //删除原图
+            string preurl = pic_url.Insert(25, "_Pre");
+            filePath = Server.MapPath(preurl);//路径 
+            file = new FileInfo(filePath);
+            if (file.Exists)
+            {
+                file.Delete();
+            }
+
+            if (check == 1)
+            {
+                Response.Write("<script>alert('删除图片成功！！');window.location.href='AddDevicePic?id=" + id + " '   ;</script>");
+            }
+            else
+                Response.Write("<script>alert('删除失败！,请手动联系管理员~');</script>");
+        }
+        //设备展示页
+        [LoginAttribute(isNeed = false)]
+        [HttpGet]
+        public ActionResult ShowDevice(string id)
+        {
+            Device model = new Device();
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "select id,title,class_id,technology_id,state,brand_id,device_power,device_model,summary,purchase_date from dm_device where id = " + id +";";
+            SqlCommand cmd = new SqlCommand(sql,con);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())    // 判断数据是否读到尾. 
+            {
+                model.id = Convert.ToInt32(reader["id"]);
+                model.title = reader["title"].ToString();
+                model.class_id = Convert.ToInt32(reader["class_id"]);
+                model.technology_id = Convert.ToInt32(reader["technology_id"]);
+                model.brand_id = Convert.ToInt32(reader["brand_id"]);
+                model.state = Convert.ToInt32(reader["state"]);
+                model.device_power = reader["device_power"].ToString();
+                model.device_model = reader["device_model"].ToString();
+                model.summary = reader["summary"].ToString();
+                if (reader["purchase_date"] != DBNull.Value) model.purchase_date = Convert.ToDateTime(reader["purchase_date"]);   //特殊情况
+            }
+            reader.Close();
+            //0)查出所有图片地址
+            List<DevicePic> dp = new List<DevicePic>();
+            DevicePic dd;
+            sql = "select id,pic_url from dm_device_pic where device_id = " + model.id +";";
+            cmd = new SqlCommand(sql, con);
+            reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                dd = new DevicePic();
+                dd.id = Convert.ToInt32(reader["id"]);
+                dd.pic_url = reader["pic_url"].ToString();
+                dp.Add(dd);
+            }
+            ViewBag.device_pic = dp;
+            reader.Close();
+            //1)查出分类中文名
+            string sqlStr = "select title from dm_device_class where id = " + model.class_id +";";
+            cmd = new SqlCommand(sqlStr, con);
+            ViewBag.list_class = cmd.ExecuteScalar().ToString() ;
+            //2)查出所有工艺段
+            sqlStr = "select title from dm_technology where id = " + model.technology_id + ";";
+            cmd = new SqlCommand(sqlStr, con);
+            ViewBag.list_tecnology = cmd.ExecuteScalar().ToString() ;
+            //3)查出所有的品牌
+            sqlStr = "select title from dm_supplier_brand where id = " + model.brand_id +  ";";
+            cmd = new SqlCommand(sqlStr, con);
+            ViewBag.list_brand = cmd.ExecuteScalar().ToString();
+            //4)设置一下状态
+            if(model.state == 1)
+                ViewBag.state = "正常";
+            else
+                ViewBag.state = "异常";
+            con.Close();
+            return View(model);
+
+        }
+        [HttpPost]
+        public ActionResult ShowDevice()
+        {
+            Device model = new Device();
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "select id,title,class_id,technology_id,state,brand_id,device_power,device_model,summary,purchase_date from dm_device where id = " + Request.Form["show"] + ";";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())    // 判断数据是否读到尾. 
+            {
+                model.id = Convert.ToInt32(reader["id"]);
+                model.title = reader["title"].ToString();
+                model.class_id = Convert.ToInt32(reader["class_id"]);
+                model.technology_id = Convert.ToInt32(reader["technology_id"]);
+                model.brand_id = Convert.ToInt32(reader["brand_id"]);
+                model.state = Convert.ToInt32(reader["state"]);
+                model.device_power = reader["device_power"].ToString();
+                model.device_model = reader["device_model"].ToString();
+                model.summary = reader["summary"].ToString();
+                if (reader["purchase_date"] != DBNull.Value) model.purchase_date = Convert.ToDateTime(reader["purchase_date"]);   //特殊情况
+            }
+            reader.Close();
+            //0)查出所有图片地址
+            List<DevicePic> dp = new List<DevicePic>();
+            DevicePic dd;
+            sql = "select id,pic_url from dm_device_pic where device_id = " + model.id + ";";
+            cmd = new SqlCommand(sql, con);
+            reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                dd = new DevicePic();
+                dd.id = Convert.ToInt32(reader["id"]);
+                dd.pic_url = reader["pic_url"].ToString();
+                dp.Add(dd);
+            }
+            ViewBag.device_pic = dp;
+            reader.Close();
+            //1)查出分类中文名
+            string sqlStr = "select title from dm_device_class where id = " + model.class_id + ";";
+            cmd = new SqlCommand(sqlStr, con);
+            ViewBag.list_class = cmd.ExecuteScalar().ToString();
+            //2)查出所有工艺段
+            sqlStr = "select title from dm_technology where id = " + model.technology_id + ";";
+            cmd = new SqlCommand(sqlStr, con);
+            ViewBag.list_tecnology = cmd.ExecuteScalar().ToString();
+            //3)查出所有的品牌
+            sqlStr = "select title from dm_supplier_brand where id = " + model.brand_id + ";";
+            cmd = new SqlCommand(sqlStr, con);
+            ViewBag.list_brand = cmd.ExecuteScalar().ToString();
+            //4)设置一下状态
+            if (model.state == 1)
+                ViewBag.state = "正常";
+            else
+                ViewBag.state = "异常";
+            con.Close();
+            return View(model);
         }
     }
 }

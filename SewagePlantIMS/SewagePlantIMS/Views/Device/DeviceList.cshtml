@@ -69,7 +69,7 @@
                                 {
                                     <button class="btn btn-danger btn-xs btn-block btn_border" type="submit" value="@item.id" name="del" id="del" onclick="return confirm('确定删除吗？？？')">删除</button>
                                 }</li>
-                            <li>@using (@Html.BeginForm("", "Device", FormMethod.Post, new { @class = "myform" }))
+                            <li>@using (@Html.BeginForm("ShowDevice", "Device", FormMethod.Post, new { @class = "myform" }))
                             {
                                 <button class="btn btn-default btn-xs btn-block btn_border" value="@item.id" name="show">展示页</button>
                             }</li>
