@@ -294,7 +294,7 @@ namespace SewagePlantIMS.Controllers
             bool temp = cp.CompressImage(filepath, filepath2, 80, 150, true); //保存压缩完的文件到ChemicalDevicePic文件夹
 
 
-            string sqlStr = "insert into dm_device_pic (title,pic_url,add_date,device_id) values('" + filename + "','" + "/images/DevicePic/" + filename + "_" + Request.Form["id"] + "_" + max_id.ToString() + ".png" + "','" + DateTime.Now.ToString() + "','" + Request.Form["id"] + "')";
+            string sqlStr = "insert into dm_device_pic (title,pic_url,add_date,device_id) values('" + filename + "','" + "/images/DevicePic/" + filename + "_" + Request.Form["id"] + "_" + max_id.ToString() + ".png" + "','" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "','" + Request.Form["id"] + "')";
             SqlCommand cmd = new SqlCommand(sqlStr, con);
             int check = cmd.ExecuteNonQuery();
             if (check == 1)
@@ -331,7 +331,7 @@ namespace SewagePlantIMS.Controllers
                 file.Delete();
             }
             //删除原图
-            string preurl = pic_url.Insert(25, "_Pre");
+            string preurl = pic_url.Insert(17, "_Pre");
             filePath = Server.MapPath(preurl);//路径 
             file = new FileInfo(filePath);
             if (file.Exists)
