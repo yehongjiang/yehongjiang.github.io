@@ -5,10 +5,10 @@
     int num = 1;
 }
 <style>
-    .btn_border{
-        border:none;
-        text-align:left;
-        padding-left:10px;
+    .btn_border {
+        border: none;
+        text-align: left;
+        padding-left: 10px;
     }
 </style>
 <fieldset>
@@ -42,46 +42,58 @@
             <tr>
                 <td>@num</td>
                 <td>@item.title </td>
-                <td>@ViewBag.technology_name[@num-1]</td>
-                <td>@ViewBag.class_name[@num-1]</td>
-                <td>@ViewBag.brand_name[@num-1]</td>
+                <td>@ViewBag.technology_name[@num - 1]</td>
+                <td>@ViewBag.class_name[@num - 1]</td>
+                <td>@ViewBag.brand_name[@num - 1]</td>
                 <td>
+
                     <div class="btn-group">
-                        <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">操作<span class="caret"></span>
+
+                        <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            操作<span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu" style="min-width:60px" >
-                            <li>@using (@Html.BeginForm("ModifyDevice", "Device", FormMethod.Post))
-                            {
-                                <button class="btn btn-default btn-xs btn-block btn_border" type="submit" value="@item.id" name="id">修改</button>
-                            }</li>
+
+                        <ul class="dropdown-menu" style="min-width:60px;">
+
+                            <li>
+                                @using (@Html.BeginForm("ModifyDevice", "Device", FormMethod.Post))
+                                {
+                                    <button class="btn btn-default btn-xs btn-block btn_border" type="submit" value="@item.id" name="id">修改</button>
+                                }
+                            </li>
                             <li>
                                 @using (@Html.BeginForm("AddDevicePic", "Device", FormMethod.Post))
-                            {
-                                <button class="btn btn-default btn-xs btn-block btn_border" type="submit" value="@item.id" name="id">图片</button>
-                            }
-                        </li>
+                                {
+                                    <button class="btn btn-default btn-xs btn-block btn_border" type="submit" value="@item.id" name="id">图片</button>
+                                }
+                            </li>
                             <li>
-                                @using (Ajax.BeginForm("", "Device", new AjaxOptions
+                                @using (Ajax.BeginForm("DeleteDevice", "Device", new AjaxOptions
                                 {
                                     HttpMethod = "POST",
                                     InsertionMode = InsertionMode.Replace,
                                 }, new { @class = "myform" }))
                                 {
                                     <button class="btn btn-danger btn-xs btn-block btn_border" type="submit" value="@item.id" name="del" id="del" onclick="return confirm('确定删除吗？？？')">删除</button>
-                                }</li>
-                            <li>@using (@Html.BeginForm("ShowDevice", "Device", FormMethod.Post, new { @class = "myform" }))
-                            {
-                                <button class="btn btn-default btn-xs btn-block btn_border" value="@item.id" name="show">展示页</button>
-                            }</li>
-                            <li>@using (@Html.BeginForm("", "Device", FormMethod.Post, new { @class = "myform" }))
-                            {
-                                <button class="btn btn-default btn-xs btn-block btn_border" value="@item.id" name="qrcode" type="submit">二维码</button>
-                            }</li>
+                                }
+                            </li>
+                            <li>
+                                @using (@Html.BeginForm("ShowDevice", "Device", FormMethod.Post, new { @class = "myform", @target = "_blank" }))
+                                {
+                                    <button class="btn btn-default btn-xs btn-block btn_border" value="@item.id" name="show">展示页</button>
+                                }
+                            </li>
+                            <li>
+                                @using (@Html.BeginForm("CreateQrCode", "Device", FormMethod.Post, new { @class = "myform" }))
+                                {
+                                    <button class="btn btn-default btn-xs btn-block btn_border" value="@item.id" name="qrcode" type="submit">二维码</button>
+                                }
+                            </li>
                         </ul>
                     </div>
-                   
-                    
-                    
+
+
+
                 </td>
             </tr>
             num++;
@@ -91,29 +103,29 @@
 
 </table>
 <script>
-$(function () {
+    $(function () {
         $("#example").dataTable({
             searching: true,//搜索
 
-                    initComplete: function () {
-                        var api = this.api();
-                        api.columns([2,3,4]).indexes().flatten().each( function (i) {
-                            var column = api.column(i);
-                            var select = $('<select class="form-control"><option value=""></option></select>')
-                                .appendTo( $(column.footer()).empty() )
-                                .on( 'change', function () {
-                                    var val = $.fn.dataTable.util.escapeRegex(
-                                        $(this).val()
-                                    );
-                                    column
-                                        .search( val ? '^'+val+'$' : '', true, false )
-                                        .draw();
-                                } );
-                            column.data().unique().sort().each( function ( d, j ) {
-                                select.append( '<option value="'+d+'">'+d+'</option>' )
-                            } );
-                        } );
-                    },
+            initComplete: function () {
+                var api = this.api();
+                api.columns([2, 3, 4]).indexes().flatten().each(function (i) {
+                    var column = api.column(i);
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            },
 
 
             lengthMenu: [10, 20, 30],

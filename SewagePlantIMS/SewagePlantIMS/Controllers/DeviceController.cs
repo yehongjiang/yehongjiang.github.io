@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using System.Configuration;
 using System.Data;
 using System.IO;
+using System.Drawing;
 
 namespace SewagePlantIMS.Controllers
 {
@@ -464,6 +465,78 @@ namespace SewagePlantIMS.Controllers
                 ViewBag.state = "异常";
             con.Close();
             return View(model);
+        }
+        //二维码下载
+        public void CreateQrCode()
+        {
+            string host = Request.Url.Host;
+            var port = Request.Url.Port;
+            string str = "http://" + host + ":" + port + "/Device/ShowDevice?id=" + Request.Form["qrcode"];
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sqlStr = "select title from dm_device where id = " + Request.Form["qrcode"] + ";";
+            SqlCommand cmd = new SqlCommand(sqlStr, con);
+            string name = cmd.ExecuteScalar().ToString();
+            con.Close();
+            using (var memoryStream = QRCodeHelper.GetQRCode(str, 10))
+            {
+                System.Drawing.Image img = Image.FromStream(memoryStream);
+                img = QRCodeHelper.AddTextToImg(img, name, name);
+
+                System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                Response.ContentType = "application/octet-stream";
+                //文件名+文件格式 （这里编码采用的是utf-8）
+                Response.AddHeader("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(name + ".png", System.Text.Encoding.UTF8));
+                Response.BinaryWrite(ms.ToArray());
+                ms.Dispose();
+                img.Dispose();
+            }
+        }
+        //删除设备
+        public JavaScriptResult DeleteDevice()
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //先删除对应的图片
+            string del_pic = "select pic_url from dm_device_pic where device_id = " + Request.Form["del"];
+            SqlDataAdapter da = new SqlDataAdapter(del_pic, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+
+                string filePath = Server.MapPath(ds.Tables[0].Rows[mDr][0].ToString());
+                FileInfo file2 = new FileInfo(filePath);
+                if (file2.Exists)
+                {
+                    file2.Delete();
+                }
+            }
+            //删除图片原图
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+
+                string filePath = Server.MapPath(ds.Tables[0].Rows[mDr][0].ToString().Insert(17, "_Pre"));
+                FileInfo file2 = new FileInfo(filePath);
+                if (file2.Exists)
+                {
+                    file2.Delete();
+                }
+            }
+            //最后删除相应的数据库数据
+            string sqlStr = "delete from dm_device_pic where device_id = " + Request.Form["del"] + "; delete from dm_device where id = " + Request.Form["del"] + ";";
+            SqlCommand cmd = new SqlCommand(sqlStr, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check != 0)
+            {
+                return JavaScript("swal_success();jump_DeviceList()");
+            }
+            else
+            {
+                return JavaScript("swal_error();");
+            }
         }
     }
 }
