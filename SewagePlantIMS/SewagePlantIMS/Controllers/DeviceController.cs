@@ -11,6 +11,9 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Drawing;
+//为了将SQL数据转为JSON数据而引用的
+using Newtonsoft.Json;
+using System.Text;
 
 namespace SewagePlantIMS.Controllers
 {
@@ -537,6 +540,46 @@ namespace SewagePlantIMS.Controllers
             {
                 return JavaScript("swal_error();");
             }
+        }
+
+        ///////////下面是和维修有关的内容//////////////////
+        public ActionResult DeviceRepair()
+        {
+            
+            /*string js = "";
+            // 创建一个 StreamReader 的实例来读取文件 
+            // using 语句也能关闭 StreamReader
+            string path = "data222.txt";
+            using (StreamReader sr = new StreamReader(System.Web.HttpContext.Current.Server.MapPath(path), System.Text.Encoding.Default))
+            {
+                string line;
+                // 从文件读取并显示行，直到文件的末尾 
+                while ((line = sr.ReadLine()) != null)
+                {
+                    js += line;
+                }
+            }
+            ViewBag.data = js;*/
+            return View();
+        }
+        //将sql查询的内容转化为JSON格式
+        public ActionResult SelectDeviceRepairList()
+        {
+            string js = "";
+            // 创建一个 StreamReader 的实例来读取文件 
+            // using 语句也能关闭 StreamReader
+            using (StreamReader sr = new StreamReader("‪C:/Users/11619/Desktop/data222.txt"))
+            {
+                string line;
+                ;
+                // 从文件读取并显示行，直到文件的末尾 
+                while ((line = sr.ReadLine()) != null)
+                {
+                    js += line;
+                }
+            }
+       
+            return Content(js);
         }
     }
 }

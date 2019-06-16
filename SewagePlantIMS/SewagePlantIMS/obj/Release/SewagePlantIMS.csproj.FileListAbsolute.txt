@@ -206,3 +206,9 @@ D:\yhj_github\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\zh-Hans\Mi
 D:\yhj_github\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\obj\Release\SewagePlantIMS.csprojResolveAssemblyReference.cache
 D:\yhj_github\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\obj\Release\SewagePlantIMS.dll
 D:\yhj_github\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\obj\Release\SewagePlantIMS.pdb
+G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\ICSharpCode.SharpZipLib.dll
+G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\NPOI.dll
+G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\NPOI.OOXML.dll
+G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\NPOI.OpenXml4Net.dll
+G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\NPOI.OpenXmlFormats.dll
+G:\yehongjiang.github.io\SewagePlantIMS\SewagePlantIMS\bin\ICSharpCode.SharpZipLib.xml

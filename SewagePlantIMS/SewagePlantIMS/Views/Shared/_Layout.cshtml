@@ -10,16 +10,17 @@
     <title>@ViewBag.Title</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <link rel="icon" type="image/png" href="~/assets/i/favicon.png">
-    <link rel="apple-touch-icon-precomposed" href="~/assets/i/app-icon72x72@2x.png">
+    <link rel="icon" type="image/png" href="~/assets_amazeui/i/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="~/assets_amazeui/i/app-icon72x72@2x.png">
     <meta name="apple-mobile-web-app-title" content="Amaze UI" />
-    <link rel="stylesheet" href="~/assets/css/amazeui.min.css" />
-    <link rel="stylesheet" href="~/assets/css/admin.css">
-    <link rel="stylesheet" href="~/assets/css/app.css">
+    <link rel="stylesheet" href="~/assets_amazeui/css/amazeui.min.css" />
+    <link rel="stylesheet" href="~/assets_amazeui/css/admin.css">
+    <link rel="stylesheet" href="~/assets_amazeui/css/app.css">
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-
+    <link rel="stylesheet" href="~/assets/libs/layui/css/layui.css" />
+    <link rel="stylesheet" href="~/assets/module/admin.css?v=312" />
 
 
     <style>
@@ -64,140 +65,37 @@
             font-weight: bold;
             font-size: 18px;
         }
-        .bgcolor{
-            background-color:white;
-        }
-        #select_button{
-            background-color:#5b9bd1;
-            border-radius:3px;
-            border-color:none;
-            border:none;
+
+        #select_button {
+            background-color: #5b9bd1;
+            border-radius: 3px;
+            border-color: none;
+            border: none;
         }
     </style>
 
 </head>
 <body data-type="index">
 
-    <header class="am-topbar am-topbar-inverse admin-header">
-        <div class="am-topbar-brand">
-            <a href="javascript:;" class="tpl-logo">
-                <img src="~/assets/img/logo.png" alt="">
-            </a>
-        </div>
-        <div class="am-icon-list tpl-header-nav-hover-ico am-fl am-margin-right">
-
-        </div>
-
-        <button id="select_button" class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
-
-        <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
-
-            <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list tpl-header-list">
 
 
-                <li class="am-hide-sm-only"><a href="javascript:;" id="admin-fullscreen" class="tpl-header-list-link"><span class="am-icon-arrows-alt"></span> <span class="admin-fullText">开启全屏</span></a></li>
+    <div class="am-u-md-24" style="background-color:white;z-index:1;">
+        @RenderBody()
 
-                <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
-                    <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
-                        <span class="tpl-header-list-user-nick">@ViewBag.real_name</span><span class="tpl-header-list-user-ico"><!-- <img src="assets/img/user01.png">--></span>
-                    </a>
-                    <ul class="am-dropdown-content">
-                        <li><a href="#"><span class="am-icon-bell-o"></span> 资料</a></li>
-                        <li><a href="#"><span class="am-icon-cog"></span> 设置</a></li>
-                        <li><a href="#"><span class="am-icon-power-off"></span> 退出</a></li>
-                    </ul>
-                </li>
-                <li><a href="###" class="tpl-header-list-link"><span class="am-icon-sign-out tpl-header-list-ico-out-size"></span></a></li>
-            </ul>
-        </div>
-    </header>
-
-    <div style="padding-top:70px;" class="bgcolor">
+    </div>
 
 
-        <div class="tpl-left-nav tpl-left-nav-hover">
-            <div class="tpl-left-nav-title">
-                功能列表
-            </div>
-            <div class="tpl-left-nav-list">
-                <ul class="tpl-left-nav-menu">
-                    <li class="tpl-left-nav-item">
-                        <a href="~/ElectricManage/Index" class="nav-link active">
-                            <i class="am-icon-home"></i>
-                            <span>首页</span>
-                        </a>
-                    </li>
-                    <li class="tpl-left-nav-item">
-                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-wrench"></i>
-                            <span>设备管理</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
-                        </a>
-                        <ul class="tpl-left-nav-sub-menu">
-                            <li>
-                                <a href="~/Device/DeviceList">
-                                    <i class="am-icon-angle-right"></i>
-                                    <span>设备清单</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="tpl-left-nav-item">
-                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-plug"></i>
-                            <span>电器管理</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
-                        </a>
-                        <ul class="tpl-left-nav-sub-menu">
-                            <li>
-                                <a href="~/ElectricManage/ElecReadingList">
-                                    <i class="am-icon-angle-right"></i>
-                                    <span>电力巡查</span>
-                                </a>
-
-
-                                <a href="~/ElectricManage/Electrical_List">
-                                    <i class="am-icon-angle-right"></i>
-                                    <span>仪表管理</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="tpl-left-nav-item">
-                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-flask"></i>
-                            <span>化验室管理</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
-                        </a>
-                        <ul class="tpl-left-nav-sub-menu">
-                            <li>
-                                <a href="~/Chemical/ChemicalDeviceList">
-                                    <i class="am-icon-angle-right"></i>
-                                    <span>化验仪器管理</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-
-
-
-        <div class="row" style="margin-left:10px;margin-right:10px;overflow:hidden;">
-            <div class="tpl-content">
-                <div class="am-u-md-24" style="background-color:white;z-index:1;">
-                    @RenderBody()
-
-                </div>
-            </div>
+    <!-- 加载动画 -->
+    <div class="page-loading">
+        <div class="ball-loader">
+            <span></span><span></span><span></span><span></span>
         </div>
     </div>
 
 </body>
 </html>
-
+<script type="text/javascript" src="~/assets/libs/layui/layui.js"></script>
+<script type="text/javascript" src="~/assets/js/common.js?v=312"></script>
 <script type="text/javascript">
     $(function () {
         $("#table_id_example").dataTable({
@@ -259,10 +157,12 @@
 </script>
 
 
-<script src="~/assets/js/jquery.min.js"></script>
-<script src="~/assets/js/amazeui.min.js"></script>
-<script src="~/assets/js/iscroll.js"></script>
-<script src="~/assets/js/app.js"></script>
+<script src="~/assets_amazeui/js/jquery.min.js"></script>
+<script type="text/javascript" src="~/assets/libs/layui/layui.js"></script>
+<script type="text/javascript" src="~/assets/js/common.js?v=312"></script>
+<script src="~/assets_amazeui/js/amazeui.min.js"></script>
+<script src="~/assets_amazeui/js/iscroll.js"></script>
+<script src="~/assets_amazeui/js/app.js"></script>
 <!-- DataTables -->
 <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.13/js/jquery.dataTables.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>

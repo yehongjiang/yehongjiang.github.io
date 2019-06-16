@@ -12,7 +12,18 @@ namespace SewagePlantIMS.Controllers
 {
     public class HomeController : Controller
     {
+        //登录界面
         public ActionResult Index()
+        {
+            return View();
+        }
+        //后台框架界面
+        public ActionResult Iframe()
+        {
+            return View();
+        }
+        //欢迎页
+        public ActionResult Welcome()
         {
             return View();
         }
@@ -24,10 +35,10 @@ namespace SewagePlantIMS.Controllers
             string password = Request.Form["password"].Replace("'","");
             string sql = "select id from dm_user where name = '" + username  + "' and password = '" + getMd5Hash(password) + "';";
             SqlCommand cmd = new SqlCommand(sql, con);
-            int result = (int)cmd.ExecuteScalar();
+            string result = Convert.ToString(cmd.ExecuteScalar());   
             con.Close();
 
-            if (result > 0)
+            if (result != "")
             {
                 Session["user_id"] = result;
                 Session["username"] = Request.Form["username"];
@@ -36,7 +47,7 @@ namespace SewagePlantIMS.Controllers
                 cmd = new SqlCommand(sql, con);
                 Session["real_name"] = cmd.ExecuteScalar().ToString();
                 con.Close();             
-                Response.Redirect("/ElectricManage/Index",false);
+                Response.Redirect("/Home/Iframe",false);
             }
             else
             {

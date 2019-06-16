@@ -1,0 +1,359 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="~/assets/images/favicon.ico" rel="icon">
+    <title>瓯江口污水处理厂</title>
+    <link rel="stylesheet" href="~/assets/libs/layui/css/layui.css" />
+    <link rel="stylesheet" href="~/assets/module/admin.css?v=312" />
+    <style>
+        /** 透明侧边栏导航 */
+        .layui-layout-admin .layui-side .layui-nav {
+            background-color: transparent;
+        }
+
+            .layui-layout-admin .layui-side .layui-nav .layui-nav-item > a:hover {
+                background: rgba(59, 116, 255, .02);
+            }
+
+        /** logo部分样式 */
+        .layui-layout-admin .layui-header .layui-logo {
+            background-color: #fff;
+            color: #666;
+        }
+
+        /** header样式 */
+        .layui-layout-admin .layui-header {
+            background-color: #fff;
+        }
+
+            .layui-layout-admin .layui-header a {
+                color: #555;
+            }
+
+                .layui-layout-admin .layui-header a:hover {
+                    color: #555;
+                }
+
+            /** header里面三角箭头 */
+            .layui-layout-admin .layui-header .layui-nav .layui-nav-more {
+                border-color: #666 transparent transparent;
+            }
+
+            .layui-layout-admin .layui-header .layui-nav .layui-nav-mored {
+                border-color: transparent transparent #666;
+            }
+
+            /** header线条 */
+            .layui-layout-admin .layui-header .layui-nav .layui-this:after, .layui-layout-admin .layui-header .layui-nav-bar {
+                background-color: #3B74FF;
+            }
+
+        /** 侧边栏样式 */
+        .layui-layout-admin .layui-side {
+            background-color: #fff;
+        }
+
+        /** 侧边栏文字颜色 */
+        .layui-side .layui-nav .layui-nav-item a {
+            color: #555;
+        }
+
+        .layui-nav-tree .layui-nav-child dd.layui-this, .layui-nav-tree .layui-nav-child dd.layui-this a, .layui-nav-tree .layui-this, .layui-nav-tree .layui-this > a, .layui-nav-tree .layui-this > a:hover {
+            background: rgba(59, 116, 255, .03);
+            color: #3B74FF !important;
+        }
+
+        .layui-nav-tree .layui-nav-bar {
+            background-color: #3B74FF;
+            width: 4px;
+        }
+
+        .layui-side .layui-nav-itemed > a, .layui-nav-tree .layui-nav-title a, .layui-nav-tree .layui-nav-title a:hover {
+            color: #555 !important;
+        }
+
+        .layui-layout-admin.admin-nav-mini .layui-side .layui-nav li.layui-nav-itemed > a {
+            background: rgba(59, 116, 255, .03);
+        }
+
+        .layui-layout-admin .layui-side .layui-nav .layui-nav-itemed > .layui-nav-child {
+            background-color: #fff !important;
+        }
+
+        /** PC端折叠鼠标经过样式 */
+        .layui-layout-admin.admin-nav-mini .layui-side .layui-nav .layui-nav-item.admin-nav-hover > .layui-nav-child {
+            background: #fff !important;
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+        }
+
+        /** 移动设备样式 */
+        @@media screen and (max-width: 750px) {
+            /** 去掉PC端折叠鼠标经过样式 */
+            .layui-layout-admin.admin-nav-mini .layui-side .layui-nav .layui-nav-item.admin-nav-hover > .layui-nav-child {
+                background-color: #fff !important;
+            }
+
+            .layui-layout-admin.admin-nav-mini .layui-side .layui-nav li.layui-nav-itemed > a {
+                background: transparent;
+            }
+        }
+
+        /** 侧边栏小三角样式 */
+        .layui-layout-admin .layui-side .layui-nav .layui-nav-more {
+            border-color: #999 transparent transparent;
+        }
+
+        .layui-layout-admin .layui-side .layui-nav .layui-nav-itemed > a .layui-nav-more {
+            border-color: transparent transparent #999;
+        }
+
+        .layui-nav.arrow3 .layui-nav-itemed > a > .layui-nav-more:before {
+            background-color: #888;
+        }
+
+        /** tab下划线 */
+        .layui-layout-admin .layui-body > .layui-tab > .layui-tab-title li.layui-this:after {
+            background-color: #2486FF;
+            /*top: 38px;*/
+        }
+
+        /** 主体标题 */
+        .layui-body-header-title {
+            border-left-color: #2486FF;
+        }
+
+        /** 主题切换 */
+        .btnTheme:hover, .btnTheme.active {
+            border-color: #2486FF;
+        }
+
+        /** admin风格弹窗样式 */
+        .layui-layer.layui-layer-admin .layui-layer-title {
+            background-color: #fff;
+            color: #333;
+            border-bottom: 1px solid #eee;
+        }
+
+        /** 按钮颜色 */
+        .layui-layer.layui-layer-admin .layui-layer-setwin a {
+            color: #000;
+        }
+
+        /* 最小化按钮 */
+        .layui-layer.layui-layer-admin .layui-layer-setwin .layui-layer-min cite {
+            background-color: #555;
+        }
+
+        /** 弹窗按钮 */
+        .layui-layer.layui-layer-admin .layui-layer-btn .layui-layer-btn0 {
+            border-color: #2486FF;
+            background-color: #2486FF;
+        }
+
+        /* 圆形按钮 */
+        .btn-circle {
+            background: #2486FF;
+        }
+
+        /** 主题颜色 */
+
+        /** 按钮 */
+        .layui-btn:not(.layui-btn-primary):not(.layui-btn-normal):not(.layui-btn-warm):not(.layui-btn-danger):not(.layui-btn-disabled) {
+            background-color: #2486FF;
+        }
+
+        .layui-btn.layui-btn-primary:hover {
+            border-color: #2486FF;
+        }
+
+        /** 开关 */
+        .layui-form-onswitch {
+            border-color: #2486FF;
+            background-color: #2486FF;
+        }
+
+        /** 分页插件 */
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {
+            background-color: #2486FF;
+        }
+
+        .layui-table-page .layui-laypage input:focus {
+            border-color: #2486FF !important;
+        }
+
+        .layui-table-view select:focus {
+            border-color: #2486FF !important;
+        }
+
+        .layui-table-page .layui-laypage a:hover {
+            color: #2486FF;
+        }
+
+        /** 单选按钮 */
+        .layui-form-radio > i:hover, .layui-form-radioed > i {
+            color: #2486FF;
+        }
+
+        /** 下拉条目选中 */
+        .layui-form-select dl dd.layui-this {
+            background-color: #2486FF;
+        }
+
+        /** 选项卡 */
+        .layui-tab-brief > .layui-tab-title .layui-this {
+            color: #2486FF;
+        }
+
+            .layui-tab-brief > .layui-tab-more li.layui-this:after, .layui-tab-brief > .layui-tab-title .layui-this:after {
+                border-color: #2486FF !important;
+            }
+
+        /** 面包屑导航 */
+        .layui-breadcrumb a:hover {
+            color: #2486FF !important;
+        }
+
+        /** 日期选择器按钮 */
+        .laydate-footer-btns span:hover {
+            color: #2486FF !important;
+        }
+
+        /** 时间轴 */
+        .layui-timeline-axis {
+            color: #2486FF;
+        }
+
+        /** 复选框 */
+        .layui-form-checked[lay-skin=primary] i {
+            border-color: #2486FF;
+            background-color: #2486FF;
+        }
+
+        .layui-form-checkbox[lay-skin=primary] i:hover {
+            border-color: #2486FF;
+        }
+
+        /** 加载动画颜色 */
+        .ball-loader span {
+            background-color: #2486FF;
+        }
+    </style>
+</head>
+<body class="layui-layout-body close-footer">
+    <div class="layui-layout layui-layout-admin">
+        <!-- 头部 -->
+        <div class="layui-header">
+            <div class="layui-logo">
+                <img src="~/assets/images/logo.png" /> 
+                <cite>&nbsp;瓯江口 DMS</cite>
+            </div>
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item" lay-unselect>
+                    <a ew-event="flexible" title="侧边伸缩"><i class="layui-icon layui-icon-shrink-right"></i></a>
+                </li>
+                <li class="layui-nav-item" lay-unselect>
+                    <a ew-event="refresh" title="刷新"><i class="layui-icon layui-icon-refresh-3"></i></a>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a ew-event="fullScreen" title="全屏"><i class="layui-icon layui-icon-screen-full"></i></a>
+                </li>
+                <li class="layui-nav-item" lay-unselect>
+                    <a>
+                        <img src="~/assets/images/head.png" class="layui-nav-img">
+                        <cite>@Session["real_name"]</cite>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd lay-unselect>
+                            <a ew-href="#">个人中心</a>
+                        </dd>
+                        <dd lay-unselect>
+                            <a ew-event="psw">修改密码</a>
+                        </dd>
+                        <hr>
+                        <dd lay-unselect>
+                            <a ew-event="logout" data-url="#">退出</a>
+                        </dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item" lay-unselect>
+                    <a></a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 侧边栏 -->
+        <div class="layui-side">
+            <div class="layui-side-scroll">
+                <ul class="layui-nav layui-nav-tree" lay-filter="admin-side-nav" lay-accordion="true"
+                    style="margin: 15px 0;">
+                    <li class="layui-nav-item">
+                        <a><i class="layui-icon layui-icon-home"></i>&emsp;<cite>首页</cite></a>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a><i class="layui-icon layui-icon-util"></i>&emsp;<cite>设备管理</cite></a>
+                        <dl class="layui-nav-child">
+                            <dd><a lay-href="~/Device/DeviceList">设备清单</a></dd>
+                            <dd><a lay-href="~/Device/DeviceRepair">设备维修</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a><i class="layui-icon layui-icon-console"></i>&emsp;<cite>电气管理</cite></a>
+                        <dl class="layui-nav-child">
+                            <dd><a lay-href="~/ElectricManage/ElecReadingList">电力巡查</a></dd>
+                            <dd><a lay-href="~/ElectricManage/Electrical_List">仪表清单</a></dd>
+                        </dl>
+
+                    </li>
+                    <li class="layui-nav-item">
+                        <a><i class="layui-icon layui-icon-app"></i>&emsp;<cite>化验室管理</cite></a>
+                        <dl class="layui-nav-child">
+                            <dd><a lay-href="~/Chemical/ChemicalDeviceList">化验室仪器清单</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 主体部分 -->
+        <div class="layui-body"></div>
+        <!-- 底部 -->
+        <div class="layui-footer">
+            copyright © 2019 easyweb.vip all rights reserved. <span class="pull-right">Version 3.1.2</span>
+        </div>
+    </div>
+
+    <!-- 加载动画 -->
+    <div class="page-loading">
+        <div class="ball-loader">
+            <span></span><span></span><span></span><span></span>
+        </div>
+    </div>
+
+    <!-- js部分 -->
+    <script type="text/javascript" src="~/assets/libs/layui/layui.js"></script>
+    <script type="text/javascript" src="~/assets/js/common.js?v=312"></script>
+    <script>
+        layui.use(['index'], function () {
+            var $ = layui.jquery;
+            var index = layui.index;
+
+            // 默认加载主页
+            index.loadHome({
+                menuPath: 'Welcome',
+                menuName: '<i class="layui-icon layui-icon-home"></i>'
+            });
+
+        });
+    </script>
+</body>
+</html>

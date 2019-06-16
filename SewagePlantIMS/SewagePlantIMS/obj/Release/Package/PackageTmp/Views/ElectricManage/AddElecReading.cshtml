@@ -3,7 +3,14 @@
     ViewBag.Title = "新增电力抄表信息";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    #temp {
+        width: 100px;
+    }
+</style>
 <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <fieldset>
     <legend>新增电力抄表信息</legend>
 </fieldset>
@@ -55,9 +62,10 @@
         </a>
     </li>
 </ul>
+
 <div id="myTabContent" class="tab-content" style="border-right-style:none;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-width:1px;border-color:#dddddd;padding: 50px;">
     <div class="tab-pane fade in active" id="home">
-        @using (Ajax.BeginForm("", "ElectricManage", new AjaxOptions
+        @using (Ajax.BeginForm("BeginElecReading", "ElectricManage", new AjaxOptions
         {
             HttpMethod = "POST",
             InsertionMode = InsertionMode.Replace,
@@ -65,166 +73,769 @@
         {
             <div class="am-form-group">
                 <label>巡查时间：</label>
-                <input size="22" type="text" value="" readonly class="form_datetime form-control" name="aer_check_time">
+                <input size="22" type="datetime" value="" readonly class="form_datetime form-control" name="aer_check_time" id="date_info">
             </div>
             <div class="am-form-group">
                 <label>巡查问题备注：</label>
                 <textarea class="form-control" rows="4" name="aer_remark" placeholder="请简述巡查过程中出现的问题"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">开始巡查</button>
-            <button class="btn btn-default btn-block" onclick="javascrtpt:window.location.href='ElecReadingList'">返回</button>
+            <button type="submit" class="btn btn-primary btn-block" id="begincheck" onclick="check_begin()">开始巡查</button>
         }
+        <button class="btn btn-default btn-block" onclick="javascrtpt:window.location.href='ElecReadingList'">返回</button>
     </div>
 
     <div class="tab-pane fade" id="db1x">
         <div class="form-horizontal">
 
-                @using (Ajax.BeginForm("", "ElectricManage", new AjaxOptions
+            @using (Ajax.BeginForm("Insert_db1x", "ElectricManage", new AjaxOptions
             {
                 HttpMethod = "POST",
                 InsertionMode = InsertionMode.Replace,
 
             }))
             {
-                    <h5 style="color:#5b9bd1;text-align:center;">正向有功(kwh)</h5>
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_postive_active_all, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.emr1_postive_active_all, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.emr1_postive_active_all, "", new { @class = "text-danger" })
-                        </div>
+                <h5 style="color:#5b9bd1;text-align:center;">正向有功(kwh)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr1_postive_active_all, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr1_postive_active_all, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr1_postive_active_all, "", new { @class = "text-danger" })
                     </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr1_postive_active_sharp, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr1_postive_active_sharp, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr1_postive_active_sharp, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr1_postive_active_peak, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr1_postive_active_peak, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr1_postive_active_peak, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr1_postive_active_shoulder, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr1_postive_active_shoulder, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr1_postive_active_shoulder, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr1_postive_active_offpeak, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr1_postive_active_offpeak, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr1_postive_active_offpeak, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <h5 style="color:#5b9bd1;text-align:center;">正向无功(kvarh)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr1_postive_reactive_all, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr1_postive_reactive_all, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr1_postive_reactive_all, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr1_postive_reactive_sharp, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr1_postive_reactive_sharp, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr1_postive_reactive_sharp, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr1_postive_reactive_peak, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr1_postive_reactive_peak, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr1_postive_reactive_peak, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr1_postive_reactive_shoulder, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr1_postive_reactive_shoulder, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr1_postive_reactive_shoulder, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_postive_active_sharp, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.emr1_postive_active_sharp, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.emr1_postive_active_sharp, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_postive_active_peak, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.emr1_postive_active_peak, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.emr1_postive_active_peak, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_postive_active_shoulder, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.emr1_postive_active_shoulder, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.emr1_postive_active_shoulder, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_postive_active_offpeak, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.emr1_postive_active_offpeak, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.emr1_postive_active_offpeak, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                    <h5 style="color:#5b9bd1;text-align:center;">正向无功(kvarh)</h5>
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_postive_reactive_all, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.emr1_postive_reactive_all, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.emr1_postive_reactive_all, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_postive_reactive_sharp, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.emr1_postive_reactive_sharp, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.emr1_postive_reactive_sharp, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_postive_reactive_peak, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.emr1_postive_reactive_peak, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.emr1_postive_reactive_peak, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_postive_reactive_shoulder, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.emr1_postive_reactive_shoulder, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.emr1_postive_reactive_shoulder, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_postive_reactive_offpeak, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
+                        @Html.LabelFor(model => model.emr1_postive_reactive_offpeak, htmlAttributes: new { @class = "control-label col-md-1" })
+                        <div class="col-md-11">
                             @Html.EditorFor(model => model.emr1_postive_reactive_offpeak, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.emr1_postive_reactive_offpeak, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <h5 style="color:#5b9bd1;text-align:center;">功率因素(%)</h5>
                     <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_pf_all, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
+                        @Html.LabelFor(model => model.emr1_pf_all, htmlAttributes: new { @class = "control-label col-md-1" })
+                        <div class="col-md-11">
                             @Html.EditorFor(model => model.emr1_pf_all, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.emr1_pf_all, "", new { @class = "text-danger" })
                         </div>
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_pf_a, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
+                        @Html.LabelFor(model => model.emr1_pf_a, htmlAttributes: new { @class = "control-label col-md-1" })
+                        <div class="col-md-11">
                             @Html.EditorFor(model => model.emr1_pf_a, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.emr1_pf_a, "", new { @class = "text-danger" })
                         </div>
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_pf_b, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
+                        @Html.LabelFor(model => model.emr1_pf_b, htmlAttributes: new { @class = "control-label col-md-1" })
+                        <div class="col-md-11">
                             @Html.EditorFor(model => model.emr1_pf_b, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.emr1_pf_b, "", new { @class = "text-danger" })
                         </div>
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.emr1_pf_c, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
+                        @Html.LabelFor(model => model.emr1_pf_c, htmlAttributes: new { @class = "control-label col-md-1" })
+                        <div class="col-md-11">
                             @Html.EditorFor(model => model.emr1_pf_c, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.emr1_pf_c, "", new { @class = "text-danger" })
                         </div>
                     </div>
-                }
- 
+                    <button type="submit" class="btn btn-primary" id="db1x_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()" >提交</button>
+            }
+
         </div>
     </div>
     <div class="tab-pane fade" id="db2x">
-        2
+        <div class="form-horizontal">
+
+            @using (Ajax.BeginForm("Insert_db2x", "ElectricManage", new AjaxOptions
+            {
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+
+            }))
+            {
+                <h5 style="color:#5b9bd1;text-align:center;">正向有功(kwh)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr2_postive_active_all, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr2_postive_active_all, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr2_postive_active_all, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr2_postive_active_sharp, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr2_postive_active_sharp, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr2_postive_active_sharp, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr2_postive_active_peak, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr2_postive_active_peak, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr2_postive_active_peak, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr2_postive_active_shoulder, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr2_postive_active_shoulder, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr2_postive_active_shoulder, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr2_postive_active_offpeak, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr2_postive_active_offpeak, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr2_postive_active_offpeak, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <h5 style="color:#5b9bd1;text-align:center;">正向无功(kvarh)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr2_postive_reactive_all, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr2_postive_reactive_all, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr2_postive_reactive_all, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr2_postive_reactive_sharp, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr2_postive_reactive_sharp, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr2_postive_reactive_sharp, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr2_postive_reactive_peak, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr2_postive_reactive_peak, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr2_postive_reactive_peak, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr2_postive_reactive_shoulder, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr2_postive_reactive_shoulder, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr2_postive_reactive_shoulder, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr2_postive_reactive_offpeak, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr2_postive_reactive_offpeak, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr2_postive_reactive_offpeak, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <h5 style="color:#5b9bd1;text-align:center;">功率因素(%)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr2_pf_all, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr2_pf_all, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr2_pf_all, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr2_pf_a, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr2_pf_a, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr2_pf_a, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr2_pf_b, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr2_pf_b, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr2_pf_b, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.emr2_pf_c, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.emr2_pf_c, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.emr2_pf_c, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="db2x_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()">提交</button>
+            }
+        </div>
+
     </div>
     <div class="tab-pane fade" id="gy1x">
-        3
+        <div class="form-horizontal">
+
+            @using (Ajax.BeginForm("Insert_gy1x", "ElectricManage", new AjaxOptions
+            {
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+
+            }))
+            {
+                <h5 style="color:#5b9bd1;text-align:center;">电压(V)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd1_v_a, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd1_v_a, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd1_v_a, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd1_v_b, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd1_v_b, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd1_v_b, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd1_v_c, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd1_v_c, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd1_v_c, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <h5 style="color:#5b9bd1;text-align:center;">电流(A)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd1_e_a, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd1_e_a, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd1_e_a, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd1_e_b, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd1_e_b, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd1_e_b, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd1_e_c, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd1_e_c, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd1_e_c, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <h5 style="color:#5b9bd1;text-align:center;">变压器温度(℃)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd1_transformer_temp_a, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd1_transformer_temp_a, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd1_transformer_temp_a, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd1_transformer_temp_b, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd1_transformer_temp_b, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd1_transformer_temp_b, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd1_transformer_temp_c, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd1_transformer_temp_c, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd1_transformer_temp_c, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="gy1x_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()">提交</button>
+            }
+        </div>
     </div>
     <div class="tab-pane fade" id="gy2x">
-        4
+        <div class="form-horizontal">
+
+            @using (Ajax.BeginForm("Insert_gy2x", "ElectricManage", new AjaxOptions
+            {
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+
+            }))
+            {
+                <h5 style="color:#5b9bd1;text-align:center;">电压(V)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd2_v_a, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd2_v_a, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd2_v_a, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd2_v_b, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd2_v_b, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd2_v_b, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd2_v_c, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd2_v_c, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd2_v_c, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <h5 style="color:#5b9bd1;text-align:center;">电流(A)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd2_e_a, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd2_e_a, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd2_e_a, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd2_e_b, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd2_e_b, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd2_e_b, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd2_e_c, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd2_e_c, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd2_e_c, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <h5 style="color:#5b9bd1;text-align:center;">变压器温度(℃)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd2_transformer_temp_a, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd2_transformer_temp_a, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd2_transformer_temp_a, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd2_transformer_temp_b, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd2_transformer_temp_b, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd2_transformer_temp_b, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ehvd2_transformer_temp_c, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.ehvd2_transformer_temp_c, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ehvd2_transformer_temp_c, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="gy2x_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()">提交</button>
+            }
+        </div>
     </div>
     <div class="tab-pane fade" id="dyml">
-        5
+        <div class="form-horizontal">
+
+            @using (Ajax.BeginForm("Insert_dyml", "ElectricManage", new AjaxOptions
+            {
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+
+            }))
+            {
+                <h5 style="color:#5b9bd1;text-align:center;">电压(V)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvs_v_a, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvs_v_a, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvs_v_a, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvs_v_b, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvs_v_b, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvs_v_b, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvs_v_c, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvs_v_c, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvs_v_c, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <h5 style="color:#5b9bd1;text-align:center;">电流(A)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvs_e_a, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvs_e_a, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvs_e_a, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvs_e_b, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvs_e_b, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvs_e_b, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvs_e_c, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvs_e_c, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvs_e_c, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="dyml_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()">提交</button>
+            }
+        </div>
     </div>
     <div class="tab-pane fade" id="dy1x">
-        6
+        <div class="form-horizontal">
+
+            @using (Ajax.BeginForm("Insert_dy1x", "ElectricManage", new AjaxOptions
+            {
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+
+            }))
+            {
+                <h5 style="color:#5b9bd1;text-align:center;">电压(V)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvd1_v_a, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvd1_v_a, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvd1_v_a, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvd1_v_b, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvd1_v_b, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvd1_v_b, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvd1_v_c, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvd1_v_c, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvd1_v_c, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <h5 style="color:#5b9bd1;text-align:center;">电流(A)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvd1_e_a, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvd1_e_a, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvd1_e_a, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvd1_e_b, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvd1_e_b, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvd1_e_b, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvd1_e_c, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvd1_e_c, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvd1_e_c, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvd1_pf, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvd1_pf, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvd1_pf, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="dy1x_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()">提交</button>
+            }
+        </div>
     </div>
     <div class="tab-pane fade" id="dy2x">
-        7
+        <div class="form-horizontal">
+
+            @using (Ajax.BeginForm("Insert_dy2x", "ElectricManage", new AjaxOptions
+            {
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+
+            }))
+            {
+                <h5 style="color:#5b9bd1;text-align:center;">电压(V)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvd2_v_a, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvd2_v_a, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvd2_v_a, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvd2_v_b, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvd2_v_b, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvd2_v_b, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvd2_v_c, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvd2_v_c, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvd2_v_c, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <h5 style="color:#5b9bd1;text-align:center;">电流(A)</h5>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvd2_e_a, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvd2_e_a, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvd2_e_a, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvd2_e_b, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvd2_e_b, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvd2_e_b, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvd1_e_c, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvd2_e_c, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvd2_e_c, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.elvd2_pf, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-11">
+                        @Html.EditorFor(model => model.elvd2_pf, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.elvd2_pf, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="dy2x_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()">提交</button>
+            }
+        </div>
     </div>
     <div class="tab-pane fade" id="qtjc">
-        8
+        <div class="form-horizontal">
+
+            @using (Ajax.BeginForm("Insert_qtjc", "ElectricManage", new AjaxOptions
+            {
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+
+            }))
+            {
+               <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.direct_current_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.direct_current_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.direct_current_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.control_room_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.control_room_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.control_room_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.distributor_door_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.distributor_door_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.distributor_door_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.electric_room_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.electric_room_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.electric_room_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.light_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.light_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.light_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.wash_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.wash_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.wash_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.fire_epuip_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.fire_epuip_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.fire_epuip_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.safe_appliance_state, htmlAttributes: new { @class = "control-label", @id = "temp" })
+                    @Html.RadioButtonFor(model => model.safe_appliance_state, 1, new { @checked = "checked" })正常
+                    @Html.RadioButtonFor(model => model.safe_appliance_state, 0, new { })异常
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.mark, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.mark, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入其他需要补充的信息"} })
+                    @Html.ValidationMessageFor(model => model.mark, "", new { @class = "text-danger" })
+                </div>
+                <button type="submit" class="btn btn-primary" id="qtjc_button" name="pre_id" style="display:block;margin:0 auto" onclick="btn_click_pre()">提交</button>
+            }
+        </div>
     </div>
 </div>
 <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+
 <script type="text/javascript">
+    var ii = 0;
     $(".form_datetime").datetimepicker({ format: 'yyyy-mm-dd hh:ii' });
+
+    var begincheck = document.getElementById("begincheck");
+    begincheck.onclick = function check_begin() {
+        if (document.getElementById("date_info").value == "") {
+            alert("亲，您还未选择巡查时间呢!!!");
+            return false;
+        }
+        else {
+            if (ii != 0) {
+                alert("亲，您已经添加过一次了~");
+                return false;
+            }
+            ii = ii + 1;
+        }        
+    }
+    
+    function btn_click_pre() {             
+        var btn = $("button[name^='pre_id']");
+        for (var i = 0; i < btn.length; i++) {
+            if (btn[i].value == '') {
+                alert("还未添加新的巡查信息哦！！！");
+                return false;
+            }
+            else {
+                break;
+            }
+
+        }
+    }
+    function GetPreId(pre_id) {
+        var btn = $("button[name^='pre_id']");
+        for (var i = 0; i < btn.length; i++) {
+            btn[i].value = pre_id;
+        }
+    }
+    function jump_to_db1x() {      
+        document.getElementById("db1x_tag").click();
+    }
+    function jump_to_db2x() {
+        document.getElementById("db2x_tag").click();
+    }
+    function jump_to_gy1x() {
+        document.getElementById("gy1x_tag").click();
+    }
+    function jump_to_gy2x() {
+        document.getElementById("gy2x_tag").click();
+    }
+    function jump_to_dyml() {
+        document.getElementById("dyml_tag").click();
+    }
+    function jump_to_dy1x() {
+        document.getElementById("dy1x_tag").click();
+    }
+    function jump_to_dy2x() {
+        document.getElementById("dy2x_tag").click();
+    }
+    function jump_to_qtjc() {
+        document.getElementById("qtjc_tag").click();
+    }
 </script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
