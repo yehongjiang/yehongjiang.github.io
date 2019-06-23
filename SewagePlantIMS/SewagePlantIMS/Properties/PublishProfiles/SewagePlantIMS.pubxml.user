@@ -964,7 +964,7 @@
       <publishTime>03/25/2019 08:50:38</publishTime>
     </File>
     <File Include="bin/SewagePlantIMS.dll">
-      <publishTime>06/15/2019 16:25:25</publishTime>
+      <publishTime>06/17/2019 22:51:46</publishTime>
     </File>
     <File Include="bin/System.Web.Helpers.dll">
       <publishTime>03/25/2019 08:50:38</publishTime>
@@ -1200,6 +1200,9 @@
     <File Include="Views/Device/DeviceList.cshtml">
       <publishTime>06/14/2019 20:42:52</publishTime>
     </File>
+    <File Include="Views/Device/DeviceRepair.cshtml">
+      <publishTime>06/16/2019 17:17:48</publishTime>
+    </File>
     <File Include="Views/Device/ModifyDevice.cshtml">
       <publishTime>05/26/2019 21:31:44</publishTime>
     </File>
@@ -1240,10 +1243,10 @@
       <publishTime>04/20/2019 22:26:41</publishTime>
     </File>
     <File Include="Views/Home/Iframe.cshtml">
-      <publishTime>06/15/2019 17:20:53</publishTime>
+      <publishTime>06/16/2019 11:35:47</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>06/16/2019 10:33:09</publishTime>
+      <publishTime>06/17/2019 22:48:38</publishTime>
     </File>
     <File Include="Views/Home/Login.cshtml">
       <publishTime>02/19/2019 21:22:54</publishTime>
@@ -1252,7 +1255,7 @@
       <publishTime>06/15/2019 09:50:24</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>06/15/2019 15:17:32</publishTime>
+      <publishTime>06/16/2019 10:49:49</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>03/25/2019 08:50:36</publishTime>

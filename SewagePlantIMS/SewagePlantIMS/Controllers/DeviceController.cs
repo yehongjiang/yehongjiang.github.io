@@ -14,6 +14,7 @@ using System.Drawing;
 //为了将SQL数据转为JSON数据而引用的
 using Newtonsoft.Json;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace SewagePlantIMS.Controllers
 {
@@ -546,40 +547,33 @@ namespace SewagePlantIMS.Controllers
         public ActionResult DeviceRepair()
         {
             
-            /*string js = "";
-            // 创建一个 StreamReader 的实例来读取文件 
-            // using 语句也能关闭 StreamReader
-            string path = "data222.txt";
-            using (StreamReader sr = new StreamReader(System.Web.HttpContext.Current.Server.MapPath(path), System.Text.Encoding.Default))
-            {
-                string line;
-                // 从文件读取并显示行，直到文件的末尾 
-                while ((line = sr.ReadLine()) != null)
-                {
-                    js += line;
-                }
-            }
-            ViewBag.data = js;*/
             return View();
         }
         //将sql查询的内容转化为JSON格式
-        public ActionResult SelectDeviceRepairList()
+        public string SelectDeviceRepairList()
         {
-            string js = "";
-            // 创建一个 StreamReader 的实例来读取文件 
-            // using 语句也能关闭 StreamReader
-            using (StreamReader sr = new StreamReader("‪C:/Users/11619/Desktop/data222.txt"))
+            /*保存一下，这个是读取json文件再通过后台传输到前台的代码  
+             "msg": "",
+             "count": 15,
+             这两段没有的话不要紧
+            string jsonfile = Server.MapPath("user.json");
+
+            using (System.IO.StreamReader file = System.IO.File.OpenText(jsonfile))
             {
-                string line;
-                ;
-                // 从文件读取并显示行，直到文件的末尾 
-                while ((line = sr.ReadLine()) != null)
+                using (JsonTextReader reader = new JsonTextReader(file))
                 {
-                    js += line;
+                    JObject o = (JObject)JToken.ReadFrom(reader);
+                    //object JSONObj = JsonConvert.SerializeObject(o);
+                    return o.ToString();
                 }
-            }
-       
-            return Content(js);
+            }*/
+            //建立一个字符串,严格按照规定的json格式租合
+            string s = "{\"name\":\"王小明\",\"age\":\"26\",\"sex\":\"男\",\"graduate\":\"加利顿大学7987879798\"}";
+            s = "{\"code\": 0,\"data\": [" + s;
+            s = s + "]}";
+            //建立一个json对象
+            JObject json = (JObject)JsonConvert.DeserializeObject(s.ToString());
+            return json.ToString();
         }
     }
 }
