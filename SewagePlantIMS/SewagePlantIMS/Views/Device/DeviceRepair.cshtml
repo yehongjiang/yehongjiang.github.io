@@ -41,18 +41,20 @@
                             <button class="layui-btn icon-btn" lay-filter="formSubSearchTbBas" lay-submit>
                                 <i class="layui-icon">&#xe615;</i>搜索
                             </button>
-                            <button id="btnExportTbBas" class="layui-btn icon-btn">
+                            <a class="layui-btn" href="AddDeviceRepair">
+                                    <i class="layui-icon layui-icon-add-1"></i>新增维修记录
+                            </a>
+
+                            <!--<button id="btnExportTbBas" class="layui-btn icon-btn">
                                 <i class="layui-icon">&#xe67d;</i>导出
-                            </button>
+                            </button>-->
                             <!-- 下拉按钮 -->
                             <div class="dropdown-menu dropdown-hover">
                                 <button class="layui-btn icon-btn">
                                     &nbsp;更多 <i class="layui-icon layui-icon-drop"></i>
                                 </button>
                                 <ul class="dropdown-menu-nav">
-                                    <li><a><i class="layui-icon layui-icon-edit"></i>修改用户</a></li>
-                                    <li><a><i class="layui-icon layui-icon-delete"></i>删除用户</a></li>
-                                    <li><a><i class="layui-icon layui-icon-print"></i>打印用户</a></li>
+                                    <li><a><i class="layui-icon layui-icon-edit"></i>维修图片</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -74,71 +76,90 @@
         <!-- 下拉菜单 -->
         <ul class="dropdown-menu-nav dropdown-bottom-right layui-hide" id="dropUser{{d.LAY_INDEX}}">
             <div class="dropdown-anchor"></div>
-            <li><a lay-event="edit2"><i class="layui-icon layui-icon-edit"></i>修改用户</a></li>
-            <li><a lay-event="del2"><i class="layui-icon layui-icon-delete"></i>删除用户</a></li>
-            <li><a lay-event="print2"><i class="layui-icon layui-icon-print"></i>打印用户</a></li>
+            <li><a lay-event="edit_pic"><i class="layui-icon layui-icon-edit"></i>维修图片</a></li>
         </ul>
     </script>
     <script>
-    layui.use(['layer', 'form', 'table', 'util', 'dropdown'], function () {
-        var $ = layui.jquery;
-        var layer = layui.layer;
-        var form = layui.form;
-        var table = layui.table;
-        var util = layui.util;
-        var dropdown = layui.dropdown;
+        layui.use(['layer', 'form', 'table', 'util', 'dropdown'], function () {
+            var $ = layui.jquery;
+            var layer = layui.layer;
+            var form = layui.form;
+            var table = layui.table;
+            var util = layui.util;
+            var dropdown = layui.dropdown;
 
-        // 渲染表格
-        var insTb = table.render({
-            elem: '#tableTbBas',
-            url: '/Device/SelectDeviceRepairList', //数据接口           
-            page: true,
-            cellMinWidth: 100,
-            cols: [[
-                {type: 'checkbox'},
-                {field: 'name', align: 'center', sort: true, title: '姓名'},
-                {field: 'age', align: 'center', sort: true, title: '年龄'},
-                {field: 'sex', align: 'center', sort: true, title: '性别'},
-                {field: 'graduate', align: 'center', sort: true, title: '毕业院校'},
-                {align: 'center', toolbar: '#tableBarTbBas', title: '操作', minWidth: 200}
-            ]]
+            // 渲染表格
+            var insTb = table.render({
+                elem: '#tableTbBas',
+                url: '/Device/SelectDeviceRepairList', //数据接口
+                page: true,
+                cellMinWidth: 100,
+                cols: [[
+                    { type: 'checkbox', fixed: 'left' },
+                    { field: 'id', align: 'center', sort: true, title: 'id', hide: true },
+                    { field: 'repair_title', align: 'center', sort: true, title: '维修名称', fixed: 'left' },
+                    { field: 'device_id', align: 'center', sort: true, title: '对应设备' },
+                    { field: 'technology_id', align: 'center', sort: true, title: '工艺段' },
+                    { field: 'repair_date', align: 'center', sort: true, title: '维修日期' },
+                     { field: 'repair_finsh', align: 'center', sort: true, title: '完工日期' },
+                      { field: 'repair_class', align: 'center', sort: true, title: '维修类别' },
+                       { field: 'repair_nums', align: 'center', sort: true, title: '数量' },
+                        { field: 'repair_reasons', align: 'center', sort: true, title: '维修原因' },
+                         { field: 'repair_conclusion', align: 'center', sort: true, title: '维修结论' },
+                          { field: 'repair_join', align: 'center', sort: true, title: '参与维修' },
+                           { field: 'repair_consumption', align: 'center', sort: true, title: '维修消耗' },
+                            { field: 'repair_mark', align: 'center', sort: true, title: '备注' },
+                    { align: 'center', toolbar: '#tableBarTbBas', title: '操作', minWidth: 200, fixed: 'right' }
+                ]]
+            });
+
+            //监听工具条
+            table.on('tool(tableTbBas)', function (obj) {
+                var data = obj.data; //获得当前行数据
+                var layEvent = obj.event; //获得 lay-event 对应的值
+
+                if (layEvent === 'edit') { // 查看
+                    //layer.msg(data["id"]);
+                   /*$.ajax({
+                        type: "POST", //提交数据的类型 分为POST和GET
+                        url: '/Device/test',  //提交url 注意url必须小写
+                        data: { "data": data["id"] },
+                        success: function (return_data) {
+                            alert(return_data + "修改成功！");
+                        },
+                        error: function () {
+                            alert("按钮出错~");
+                        }
+                    });*/
+                    window.location.href = "/Device/ModifyDeviceRepair?id=" + data["id"];
+                } else if (layEvent === 'del') { // 删除
+                    layer.msg('点击了删除');
+                } else if (layEvent === 'edit_pic') { // 维修图片
+                    window.location.href = "/Device/DeviceRepairPic?id=" + data["id"];
+                } else if (layEvent === 'del2') { // 删除2
+                    layer.msg('点击了下拉菜单删除');
+                } else if (layEvent === 'print2') { // 打印2
+                    layer.msg('点击了下拉菜单打印');
+                }
+                dropdown.hideAll();
+            });
+
+            // 导出excel
+            $('#btnExportTbBas').click(function () {
+                var checkRows = table.checkStatus('tableTbBas');
+                if (checkRows.data.length == 0) {
+                    layer.msg('请选择要导出的数据', { icon: 2 });
+                } else {
+                    table.exportFile(insTb.config.id, checkRows.data, 'xls');
+                }
+            });
+
+            // 搜索按钮点击事件
+            form.on('submit(formSubSearchTbBas)', function (data) {
+                insTb.reload({ where: data.field }, 'data');
+            });
+
         });
-
-        //监听工具条
-        table.on('tool(tableTbBas)', function (obj) {
-            var data = obj.data; //获得当前行数据
-            var layEvent = obj.event; //获得 lay-event 对应的值
-
-            if (layEvent === 'edit') { // 查看
-                layer.msg('点击了修改');
-            } else if (layEvent === 'del') { // 删除
-                layer.msg('点击了删除');
-            } else if (layEvent === 'edit2') { // 修改2
-                layer.msg('点击了下拉菜单修改');
-            } else if (layEvent === 'del2') { // 删除2
-                layer.msg('点击了下拉菜单删除');
-            } else if (layEvent === 'print2') { // 打印2
-                layer.msg('点击了下拉菜单打印');
-            }
-            dropdown.hideAll();
-        });
-
-        // 导出excel
-        $('#btnExportTbBas').click(function () {
-            var checkRows = table.checkStatus('tableTbBas');
-            if (checkRows.data.length == 0) {
-                layer.msg('请选择要导出的数据', {icon: 2});
-            } else {
-                table.exportFile(insTb.config.id, checkRows.data, 'xls');
-            }
-        });
-
-        // 搜索按钮点击事件
-        form.on('submit(formSubSearchTbBas)', function (data) {
-            insTb.reload({where: data.field}, 'data');
-        });
-
-    });
     </script>
 </body>
 

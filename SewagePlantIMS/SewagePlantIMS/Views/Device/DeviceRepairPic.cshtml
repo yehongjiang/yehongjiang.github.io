@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "维修图片";
+    Layout = null;
+}
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/assets/libs/layui/css/layui.css" />
+<link rel="stylesheet" href="~/assets/module/admin.css?v=312" />
+<!-- js部分 -->
+<script type="text/javascript" src="~/assets/libs/layui/layui.js"></script>
+<script type="text/javascript" src="~/assets/js/common.js?v=312"></script>
+<!-- 加载动画 -->
+<div class="page-loading">
+    <div class="ball-loader">
+        <span></span><span></span><span></span><span></span>
+    </div>
+</div>
+
+<button type="button" class="layui-btn" id="test1" name="woli">
+    <i class="layui-icon">&#xe67c;</i>上传图片
+</button>
+
+<script src="/static/build/layui.js"></script>
+<script>
+layui.use('upload', function(){
+  var upload = layui.upload;
+  //执行实例
+  var uploadInst = upload.render({
+    elem: '#test1' //绑定元素
+    , url: '/Device/DeviceRepairPic_Post' //上传接口
+    , done: function (res) {
+        var a = "ddd";
+        layer.msg(a + "hahha");
+    }
+    ,error: function(){
+        layer.msg('进入后台失败');
+    }
+  });
+});
+</script>

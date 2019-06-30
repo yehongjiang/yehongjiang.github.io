@@ -229,6 +229,8 @@
     <Compile Include="Models\chemical_device_pic.cs" />
     <Compile Include="Models\Device.cs" />
     <Compile Include="Models\DevicePic.cs" />
+    <Compile Include="Models\DeviceRepair.cs" />
+    <Compile Include="Models\DeviceRepairPic.cs" />
     <Compile Include="Models\Electrical.cs" />
     <Compile Include="Models\elec_pic.cs" />
     <Compile Include="Models\technology.cs" />
@@ -472,11 +474,19 @@
     <Content Include="Content\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Device\data222.txt" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="images\DevicePic\IMG_5052_2_1.png" />
+    <Content Include="images\DevicePic_Pre\IMG_5052_2_1.png" />
+    <Content Include="images\ElectricalPic_Pre\32 叶泓江 11619693076%40qq_35_52.png" />
+    <Content Include="images\ElectricalPic_Pre\32 叶泓江 11619693076%40qq_37_60.png" />
+    <Content Include="images\ElectricalPic_Pre\32-2 叶泓江 11619693076%40qq_35_52.png" />
+    <Content Include="images\ElectricalPic_Pre\IMG_20190325_091131_35_52.png" />
+    <Content Include="images\ElectricalPic_Pre\IMG_20190325_091804_35_52.png" />
+    <Content Include="images\ElectricalPic_Pre\IMG_5066_37_59.png" />
+    <Content Include="images\ElectricalPic_Pre\IMG_5338_37_60.png" />
     <Content Include="images\logo.ico" />
     <Content Include="images\logo.png" />
     <Content Include="images\oujiangkou.png" />
@@ -561,9 +571,15 @@
     <Content Include="Views\Home\Iframe.cshtml" />
     <Content Include="Views\Home\Welcome.cshtml" />
     <Content Include="Views\Device\DeviceRepair.cshtml" />
+    <Content Include="Views\Device\AddDeviceRepair.cshtml" />
+    <Content Include="Views\Device\ModifyDeviceRepair.cshtml" />
+    <Content Include="Views\Device\DeviceRepairPic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="images\ChemicalDevicePic\" />
+    <Folder Include="images\ChemicalDevicePic_Pre\" />
+    <Folder Include="images\DeviceRepairPic\" />
     <Folder Include="images\ElectricalPic\" />
     <Folder Include="QRcode\ElectricQR\" />
     <Folder Include="Views\LoginAttribute\" />
