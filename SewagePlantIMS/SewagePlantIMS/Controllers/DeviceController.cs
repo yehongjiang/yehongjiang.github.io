@@ -774,6 +774,7 @@ namespace SewagePlantIMS.Controllers
         }
         public ActionResult DeviceRepairPic(string id)
         {
+            ViewBag.id = id;
             return View();
         }
         public string DeviceRepairPic_Post()
@@ -784,18 +785,20 @@ namespace SewagePlantIMS.Controllers
             //获取文件名后缀
             string extName = Path.GetExtension(file.FileName).ToLower();
             //获取保存目录的物理路径
-            if (System.IO.Directory.Exists(Server.MapPath("images/DeviceRepairPic/")) == false)//如果不存在就创建images文件夹
+            if (System.IO.Directory.Exists(Server.MapPath("/images/DeviceRepairPic/")) == false)//如果不存在就创建images文件夹
             {
-                System.IO.Directory.CreateDirectory(Server.MapPath("images/DeviceRepairPic/"));
+                System.IO.Directory.CreateDirectory(Server.MapPath("/images/DeviceRepairPic/"));
             }
-            string path = Server.MapPath("images/DeviceRepairPic/"); //path为某个文件夹的绝对路径，不要直接保存到数据库
+            string path = Server.MapPath("/images/DeviceRepairPic/"); //path为某个文件夹的绝对路径，不要直接保存到数据库
                                                       //    string path = "F:\\TgeoSmart\\Image\\";
                                                       //生成新文件的名称，guid保证某一时刻内图片名唯一（文件不会被覆盖）
             string fileNewName = Guid.NewGuid().ToString();
-            string ImageUrl = path + fileNewName + extName;
+            //获取前端图片描述
+            string describe = Request["describe"];
+             string ImageUrl = path + fileNewName + "-" + describe  + extName;
             //SaveAs将文件保存到指定文件夹中
             file.SaveAs(ImageUrl);
-            string str = "\"src\": \"http://cdn.layui.com/123.jpg\"";
+            string str = "\"src\": \"success\"";
             str = "{\"code\": 0,\"data\": {" + str;
             str = str + "}}";
             JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());

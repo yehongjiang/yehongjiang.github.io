@@ -16,24 +16,41 @@
     </div>
 </div>
 
-<button type="button" class="layui-btn" id="test1" name="woli">
-    <i class="layui-icon">&#xe67c;</i>上传图片
-</button>
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <fieldset>
+                <legend style="color:#5b9bd1">维修图片</legend>
+            </fieldset>
 
+                <input type="text" id ="title"name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                 <div class="layui-upload-drag" id="test10" style="width:100%">
+                    <i class="layui-icon"></i>
+                    <p>点击上传，或将文件拖拽到此处</p>
+                </div>
+                <hr class="layui-bg-gray">
+            </div>
+    </div>
+</div>
 <script src="/static/build/layui.js"></script>
 <script>
+var des = @ViewBag.id;
 layui.use('upload', function(){
-  var upload = layui.upload;
+    var upload = layui.upload;
+    //获取图片描述的内容
+
+   
   //执行实例
   var uploadInst = upload.render({
-    elem: '#test1' //绑定元素
+    elem: '#test10' //绑定元素
     , url: '/Device/DeviceRepairPic_Post' //上传接口
+    , data: { describe: des }
     , done: function (res) {
-        var a = "ddd";
-        layer.msg(a + "hahha");
+        layer.msg("上传图片成功！");
     }
     ,error: function(){
-        layer.msg('进入后台失败');
+        layer.msg('上传图片失败，请联系管理员~');
     }
   });
 });
