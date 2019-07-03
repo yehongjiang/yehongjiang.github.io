@@ -1,7 +1,9 @@
-﻿
+﻿@model List<SewagePlantIMS.Models.DeviceRepairPic>
 @{
     ViewBag.Title = "维修图片";
     Layout = null;
+    int temp1 = 1;
+    int temp2 = 1;
 }
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="~/assets/libs/layui/css/layui.css" />
@@ -9,6 +11,12 @@
 <!-- js部分 -->
 <script type="text/javascript" src="~/assets/libs/layui/layui.js"></script>
 <script type="text/javascript" src="~/assets/js/common.js?v=312"></script>
+<style>
+     .myform {
+            margin: 0px;
+            display: inline;
+        }
+</style>
 <!-- 加载动画 -->
 <div class="page-loading">
     <div class="ball-loader">
@@ -24,34 +32,120 @@
                 <legend style="color:#5b9bd1">维修图片</legend>
             </fieldset>
 
-                <input type="text" id ="title"name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
-                 <div class="layui-upload-drag" id="test10" style="width:100%">
-                    <i class="layui-icon"></i>
-                    <p>点击上传，或将文件拖拽到此处</p>
-                </div>
-                <hr class="layui-bg-gray">
+            <input id="title" placeholder="请输入标题" class="layui-input">
+            <div class="layui-upload-drag" id="test10" style="width:100%">
+                <i class="layui-icon"></i>
+                <p>点击上传，或将文件拖拽到此处</p>
             </div>
+            <hr class="layui-bg-gray">
+        </div>
+    </div>
+</div>
+<div class="layui-tab layui-tab-card" style="margin-left:14px;margin-right:14px;">
+    <ul class="layui-tab-title">
+        @foreach (var item in Model)
+        {
+            if (@temp1 == 1)
+            {
+                <li class="layui-this">图 @temp1</li>
+            }
+            else
+            {
+                <li>图 @temp1</li>
+            }
+            temp1 += 1;
+        }
+    </ul>
+    <div class="layui-tab-content">
+        @foreach (var item2 in Model)
+        {
+
+            if (@temp2 == 1)
+            {
+                <div class="layui-tab-item layui-show">
+                    <fieldset class="layui-elem-field">
+                        <legend>描述</legend>
+                        <div class="layui-field-box">
+                            <p>@item2.describe</p>
+                        </div>
+                    </fieldset>
+                    <p><img src=@item2.pic_url style="width:100%" /></p>
+                    <br />
+                    <div class="caption">
+                        @using (@Html.BeginForm("", "", FormMethod.Post, new { @class = "myform" }))
+                        {
+                            <button class="btn btn-primary btn-xs" type="submit" value="@item2.id" name="id">修改描述</button>
+                        }
+                        @using (@Html.BeginForm("", "", FormMethod.Post, new { @class = "myform" }))
+                        {
+                            <button class="btn btn-danger btn-xs" type="submit" value="@item2.id" name="id" onclick="return confirm('确定删除吗？？？')">删除</button>
+                        }
+                    </div>
+                </div>
+                
+            }
+            else
+            {
+                <div class="layui-tab-item">
+                    <fieldset class="layui-elem-field">
+                        <legend>描述</legend>
+                        <div class="layui-field-box">
+                            <p>@item2.describe</p>
+                        </div>
+                    </fieldset>
+                    <p> <img src=@item2.pic_url style="width:100%" /></p>
+                    <br />
+                    <div class="caption">
+                        @using (@Html.BeginForm("", "", FormMethod.Post, new { @class = "myform" }))
+                        {
+                            <button class="btn btn-primary btn-xs" type="submit" value="@item2.id" name="id">修改描述</button>
+                        }
+                        @using (@Html.BeginForm("", "", FormMethod.Post, new { @class = "myform" }))
+                        {
+                            <button class="btn btn-danger btn-xs" type="submit" value="@item2.id" name="id" onclick="return confirm('确定删除吗？？？')">删除</button>
+                        }
+                    </div>
+                </div>
+                
+            }
+            temp2 += 1;
+        }
     </div>
 </div>
 <script src="/static/build/layui.js"></script>
-<script>
-var des = @ViewBag.id;
-layui.use('upload', function(){
-    var upload = layui.upload;
-    //获取图片描述的内容
 
-   
-  //执行实例
-  var uploadInst = upload.render({
-    elem: '#test10' //绑定元素
-    , url: '/Device/DeviceRepairPic_Post' //上传接口
-    , data: { describe: des }
-    , done: function (res) {
-        layer.msg("上传图片成功！");
-    }
-    ,error: function(){
-        layer.msg('上传图片失败，请联系管理员~');
-    }
-  });
-});
+<script>
+
+    var idd = @ViewBag.id;
+
+    layui.use('upload', function(){
+        var upload = layui.upload;
+        //获取图片描述的内容
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#test10' //绑定元素
+        , url: '/Device/DeviceRepairPic_Post' //上传接口
+        , data: { id : idd ,describe: function(){
+            return document.getElementById("title").value;
+        }
+        }
+        , done: function (res) {
+            layer.msg("上传图片成功！");
+        }
+        ,error: function(){
+            layer.msg('上传图片失败，请联系管理员~');
+        }
+        });
+    });
+</script>
+
+<script>
+    layui.use('element', function(){
+        var $ = layui.jquery
+        ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+
+
+
+    });
 </script>

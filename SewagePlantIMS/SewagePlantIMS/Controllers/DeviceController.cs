@@ -774,8 +774,26 @@ namespace SewagePlantIMS.Controllers
         }
         public ActionResult DeviceRepairPic(string id)
         {
+            //获取传输过来的ID
             ViewBag.id = id;
-            return View();
+            //连接数据库
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "select pic_url,describe,id from dm_device_repair_pic where repair_id = " + id + ";";
+            List<DeviceRepairPic> models = new List<DeviceRepairPic>();
+            SqlDataAdapter da = new SqlDataAdapter(sql, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            DeviceRepairPic[] tc = new DeviceRepairPic[ds.Tables[0].Rows.Count];
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                tc[mDr] = new DeviceRepairPic();
+                tc[mDr].pic_url = ds.Tables[0].Rows[mDr][0].ToString();
+                tc[mDr].describe = ds.Tables[0].Rows[mDr][1].ToString();
+                tc[mDr].id = Convert.ToInt32(ds.Tables[0].Rows[mDr][2]);
+                models.Add(tc[mDr]);
+            }
+            return View(models);
         }
         public string DeviceRepairPic_Post()
         {
@@ -795,14 +813,34 @@ namespace SewagePlantIMS.Controllers
             string fileNewName = Guid.NewGuid().ToString();
             //获取前端图片描述
             string describe = Request["describe"];
-             string ImageUrl = path + fileNewName + "-" + describe  + extName;
-            //SaveAs将文件保存到指定文件夹中
-            file.SaveAs(ImageUrl);
-            string str = "\"src\": \"success\"";
-            str = "{\"code\": 0,\"data\": {" + str;
-            str = str + "}}";
-            JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
-            return json.ToString();
+            string id = Request["id"];
+            string ImageUrl = path + fileNewName  + extName;
+            //连接数据库把图片地址还有描述等插入
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "insert into dm_device_repair_pic(pic_url,describe,add_date,repair_id) values('" + "/images/DeviceRepairPic/" + fileNewName + extName + "','" + describe + "','" + DateTime.Now.ToString() + "'," + id + ");";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check == 1)
+            {
+                //SaveAs将文件保存到指定文件夹中
+                file.SaveAs(ImageUrl);
+                string str = "\"src\": \"success\"";
+                str = "{\"code\": 0,\"data\": {" + str;
+                str = str + "}}";
+                JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
+                return json.ToString();
+            }
+            else
+            {
+                string str = "";
+                JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
+                return json.ToString();
+            }
+            
+           
+            
         }
     }
 }
