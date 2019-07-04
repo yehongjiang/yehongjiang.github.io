@@ -11,11 +11,14 @@
 <!-- js部分 -->
 <script type="text/javascript" src="~/assets/libs/layui/layui.js"></script>
 <script type="text/javascript" src="~/assets/js/common.js?v=312"></script>
+<!--没有下面两个JS则后台javascript返回失效-->
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
 <style>
-     .myform {
-            margin: 0px;
-            display: inline;
-        }
+    .myform {
+        margin: 0px;
+        display: inline;
+    }
 </style>
 <!-- 加载动画 -->
 <div class="page-loading">
@@ -72,17 +75,27 @@
                     <p><img src=@item2.pic_url style="width:100%" /></p>
                     <br />
                     <div class="caption">
-                        @using (@Html.BeginForm("", "", FormMethod.Post, new { @class = "myform" }))
+                        @using (Ajax.BeginForm("DeleteDeviceRepairPic", "Device", new AjaxOptions
+                        {
+                            HttpMethod = "POST",
+                            InsertionMode = InsertionMode.Replace,
+
+                        }, new { @class = "myform" }))
                         {
                             <button class="btn btn-primary btn-xs" type="submit" value="@item2.id" name="id">修改描述</button>
                         }
-                        @using (@Html.BeginForm("", "", FormMethod.Post, new { @class = "myform" }))
+                        @using (Ajax.BeginForm("DeleteDeviceRepairPic", "Device", new AjaxOptions
+                        {
+                            HttpMethod = "POST",
+                            InsertionMode = InsertionMode.Replace,
+
+                        }, new { @class = "myform" }))
                         {
                             <button class="btn btn-danger btn-xs" type="submit" value="@item2.id" name="id" onclick="return confirm('确定删除吗？？？')">删除</button>
                         }
                     </div>
                 </div>
-                
+
             }
             else
             {
@@ -96,24 +109,42 @@
                     <p> <img src=@item2.pic_url style="width:100%" /></p>
                     <br />
                     <div class="caption">
-                        @using (@Html.BeginForm("", "", FormMethod.Post, new { @class = "myform" }))
+                        @using (Ajax.BeginForm("", "Device", new AjaxOptions
+                        {
+                            HttpMethod = "POST",
+                            InsertionMode = InsertionMode.Replace,
+
+                        }, new { @class = "myform" }))
                         {
                             <button class="btn btn-primary btn-xs" type="submit" value="@item2.id" name="id">修改描述</button>
                         }
-                        @using (@Html.BeginForm("", "", FormMethod.Post, new { @class = "myform" }))
+                        @using (Ajax.BeginForm("", "Device", new AjaxOptions
+                        {
+                            HttpMethod = "POST",
+                            InsertionMode = InsertionMode.Replace,
+
+                        }, new { @class = "myform" }))
                         {
                             <button class="btn btn-danger btn-xs" type="submit" value="@item2.id" name="id" onclick="return confirm('确定删除吗？？？')">删除</button>
                         }
                     </div>
                 </div>
-                
+
             }
             temp2 += 1;
         }
     </div>
 </div>
 <script src="/static/build/layui.js"></script>
-
+<script>
+    function del_pic_success(data){
+        window.location.href = "/Device/DeviceRepairPic?id=" + data;
+    }
+    function del_pic_error(data){
+        layer.msg("删除失败！！！请联系管理员探讨问题所在~");
+        window.location.href = "/Device/DeviceRepairPic?id=" + data;
+    }
+</script>
 <script>
 
     var idd = @ViewBag.id;
@@ -124,14 +155,17 @@
 
         //执行实例
         var uploadInst = upload.render({
-            elem: '#test10' //绑定元素
+        elem: '#test10' //绑定元素
         , url: '/Device/DeviceRepairPic_Post' //上传接口
         , data: { id : idd ,describe: function(){
             return document.getElementById("title").value;
         }
         }
         , done: function (res) {
+            //console.log(JSON.stringify(res));这个是个可以把json对象转化为字符串的记录一下
+           // console.log(res.data.src);可以以这种格式直接读取
             layer.msg("上传图片成功！");
+            window.location.href = "/Device/DeviceRepairPic?id=" + res.data.src;
         }
         ,error: function(){
             layer.msg('上传图片失败，请联系管理员~');

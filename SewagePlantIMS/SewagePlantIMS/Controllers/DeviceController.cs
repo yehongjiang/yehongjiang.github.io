@@ -826,7 +826,7 @@ namespace SewagePlantIMS.Controllers
             {
                 //SaveAs将文件保存到指定文件夹中
                 file.SaveAs(ImageUrl);
-                string str = "\"src\": \"success\"";
+                string str = "\"src\": " + id;
                 str = "{\"code\": 0,\"data\": {" + str;
                 str = str + "}}";
                 JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
@@ -841,6 +841,42 @@ namespace SewagePlantIMS.Controllers
             
            
             
+        }
+        //删除对应图片
+        public JavaScriptResult DeleteDeviceRepairPic()
+        {
+            //先查询出该图片的地址
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //先查出url
+            string pic_url = "select pic_url from dm_device_repair_pic  where id =  '" + Request.Form["id"] + "';";
+            SqlCommand cmd_url = new SqlCommand(pic_url, con);
+            pic_url = cmd_url.ExecuteScalar().ToString();
+            //查出对应的repair_id
+            string repair_id = "select repair_id from dm_device_repair_pic where id = '" + Request.Form["id"] + "';";
+            cmd_url = new SqlCommand(repair_id, con);
+            repair_id = cmd_url.ExecuteScalar().ToString();
+            //删除对应的实体文件
+            string filePath = Server.MapPath(pic_url);//路径 
+            FileInfo file = new FileInfo(filePath);
+            if (file.Exists)
+            {
+                file.Delete();
+            }
+            //删除对应的数据库记录
+            string sql = "delete from dm_device_repair_pic where id = '" + Request.Form["id"] + "';";
+            cmd_url = new SqlCommand(sql, con);
+            //检查执行是否成功
+            int check = cmd_url.ExecuteNonQuery();
+            con.Close();
+            if (check == 1)
+            {
+                return JavaScript("del_pic_success(" + repair_id + ");");
+            }
+            else
+            {
+                return JavaScript("del_pic_error(" + repair_id + ");");
+            }
         }
     }
 }
