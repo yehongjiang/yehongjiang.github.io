@@ -15,6 +15,13 @@ using System.Drawing;
 using Newtonsoft.Json;
 using System.Text;
 using Newtonsoft.Json.Linq;
+//Excel操作
+using NPOI;
+using NPOI.HSSF.UserModel;
+using NPOI.XSSF.UserModel;
+using NPOI.XSSF.Util;
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
 
 namespace SewagePlantIMS.Controllers
 {
@@ -814,11 +821,12 @@ namespace SewagePlantIMS.Controllers
             //获取前端图片描述
             string describe = Request["describe"];
             string id = Request["id"];
-            string ImageUrl = path + fileNewName  + extName;
+            string ImageUrl = path + fileNewName + "_cp"  + extName;
+            string ImageUrl2 = path + fileNewName  + extName; //压缩备用
             //连接数据库把图片地址还有描述等插入
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string sql = "insert into dm_device_repair_pic(pic_url,describe,add_date,repair_id) values('" + "/images/DeviceRepairPic/" + fileNewName + extName + "','" + describe + "','" + DateTime.Now.ToString() + "'," + id + ");";
+            string sql = "insert into dm_device_repair_pic(pic_url,describe,add_date,repair_id) values('" + "/images/DeviceRepairPic/" + fileNewName  + extName + "','" + describe + "','" + DateTime.Now.ToString() + "'," + id + ");";
             SqlCommand cmd = new SqlCommand(sql, con);
             int check = cmd.ExecuteNonQuery();
             con.Close();
@@ -826,6 +834,16 @@ namespace SewagePlantIMS.Controllers
             {
                 //SaveAs将文件保存到指定文件夹中
                 file.SaveAs(ImageUrl);
+                //压缩一下            
+                CompressPic cp = new CompressPic();
+                bool temp = cp.CompressImage(ImageUrl, ImageUrl2, 80, 150, true);
+                //删除未压缩图片
+                FileInfo del_file = new FileInfo(ImageUrl);
+                if (del_file.Exists)
+                {
+                    del_file.Delete();
+                }
+                //建立JSON字符串返回
                 string str = "\"src\": " + id;
                 str = "{\"code\": 0,\"data\": {" + str;
                 str = str + "}}";
@@ -878,5 +896,252 @@ namespace SewagePlantIMS.Controllers
                 return JavaScript("del_pic_error(" + repair_id + ");");
             }
         }
+        //修改图片对应的描述
+        public JavaScriptResult ModifyDeviceRepairPicDescribe()
+        {
+            //连接数据库
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //写出查询语句
+            string sql = "update dm_device_repair_pic set describe = '" + Request.Form["newtitle"] + "' where id = " + Request.Form["pic_id"] +" ;";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            //再把repair_id 拿出来等等返回用
+            sql = "select repair_id from dm_device_repair_pic where id = " + Request.Form["pic_id"] + ";";
+            cmd = new SqlCommand(sql, con);
+            int idd = Convert.ToInt32(cmd.ExecuteScalar());
+            con.Close();
+            if (check == 1)
+            {
+                return JavaScript("del_pic_success(" + idd + ");");
+            }
+            else
+            {
+                return JavaScript("del_pic_error(" + idd + ");");
+            }
+        }
+        //删除与维修记录有关一切信息
+        public string DeleteDeviceRepair(string id)
+        {
+            //连接数据库
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //查询出所有图片的url
+            string sql = "select pic_url from dm_device_repair_pic where repair_id = " + id + ";";
+            SqlCommand cmd = new SqlCommand(sql,con);
+            SqlDataReader reader = cmd.ExecuteReader();
+            string filePath;
+            FileInfo file;
+            while (reader.Read())
+            {
+                //删除对应的实体文件
+                filePath = Server.MapPath(reader["pic_url"].ToString());//路径 
+                file = new FileInfo(filePath);
+                if (file.Exists)
+                {
+                    file.Delete();
+                }
+            }
+            reader.Close();
+            //删除维修图片和维修记录
+            sql = "delete from dm_device_repair_pic where repair_id = " + id + ";" + "delete from dm_device_repair where id = " + id + "; ";
+            cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            if (check == 2)
+            {
+                return "";
+            }
+            else
+            {
+                return "";
+            }
+
+        }
+        //导出维修记录表
+        public void OutputDeiveRepairExcel(string id)
+        {
+            //连接数据库
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //查询出对应的维修数据
+            string sql = "select * from dm_device_repair where id = " + id ;
+            SqlCommand cmd = new SqlCommand(sql, con);
+            DeviceRepair model = new DeviceRepair();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                model.id = Convert.ToInt32(reader["id"]);
+                model.device_id = Convert.ToInt32(reader["device_id"]);
+                model.technology_id = Convert.ToInt32(reader["technology_id"]);
+                model.repair_date = Convert.ToDateTime(reader["repair_date"]);
+                model.repair_finsh = Convert.ToDateTime(reader["repair_finsh"]);
+                model.repair_class = reader["repair_class"].ToString();
+                model.repair_title = reader["repair_title"].ToString();
+                model.repair_nums = Convert.ToInt32(reader["repair_nums"]);
+                model.repair_reasons = reader["repair_reasons"].ToString();
+                model.repair_conclusion = reader["repair_conclusion"].ToString();
+                model.repair_join = reader["repair_join"].ToString();
+                model.repair_consumption = reader["repair_consumption"].ToString();
+                model.repair_mark = reader["repair_mark"].ToString();
+            }
+            reader.Close();
+            //查询出对应的设备名称
+            sql = "select title from dm_device where id = " + model.id;
+            cmd = new SqlCommand(sql, con);
+            string device_name = cmd.ExecuteScalar().ToString();
+            //查询出对应工艺段的名称
+            sql = "select title from dm_technology where id = " + model.technology_id;
+            cmd = new SqlCommand(sql, con);
+            string technology_name = cmd.ExecuteScalar().ToString();
+            //查询出对应的图片（最多四张）
+            sql = "select pic_url from dm_device_repair_pic where repair_id = " + model.id;
+            cmd = new SqlCommand(sql, con);
+            reader = cmd.ExecuteReader();
+            List<string> pic_url = new List<string>();
+            int temp = 1;
+            
+            while (reader.Read())
+            {
+                pic_url.Add(Server.MapPath(reader["pic_url"].ToString()));
+                temp += 1;
+            }
+            reader.Close();
+            //创建工作簿对象
+            HSSFWorkbook hssfworkbook;
+            using (FileStream file = new FileStream(HttpContext.Request.PhysicalApplicationPath + @"ExcelModel\DeviceRepair.xls", FileMode.Open, FileAccess.Read))
+            {
+                hssfworkbook = new HSSFWorkbook(file);
+                ISheet sheet1 = hssfworkbook.GetSheet("Sheet1");
+                //往表中插入数据
+                sheet1.GetRow(1).GetCell(1).SetCellValue(model.repair_class);
+                sheet1.GetRow(1).GetCell(7).SetCellValue(device_name);
+                sheet1.GetRow(2).GetCell(1).SetCellValue(model.repair_title);
+                sheet1.GetRow(2).GetCell(5).SetCellValue(model.repair_nums);
+                sheet1.GetRow(2).GetCell(10).SetCellValue(technology_name);
+                sheet1.GetRow(3).GetCell(2).SetCellValue(model.repair_date.ToString("D"));
+                sheet1.GetRow(3).GetCell(7).SetCellValue(model.repair_finsh.ToString("D"));
+                //AddPieChart(sheet1, hssfworkbook, sql, 1, 1,".png");
+                MemoryStream mstream = new MemoryStream();
+                hssfworkbook.Write(mstream);
+                DownloadFile(mstream,model.repair_title);
+            }
+            con.Close();
+        }
+        public static string DownloadFile(MemoryStream fs, string filename)//必须为FileStream或MemoryStream ，如果用Stream则生成的excel无法正常打开
+        {
+            string fileName = filename + ".xls";//客户端保存的文件名 //以字符流的形式下载文件 
+            byte[] bytes = fs.ToArray(); fs.Read(bytes, 0, bytes.Length); fs.Close();
+            System.Web.HttpContext.Current.Response.Clear();
+            System.Web.HttpContext.Current.Response.ClearContent();
+            System.Web.HttpContext.Current.Response.ClearHeaders();
+            System.Web.HttpContext.Current.Response.ContentType = "application/octet-stream";
+
+            //通知浏览器下载文件而不是打开  
+            System.Web.HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(fileName, System.Text.Encoding.UTF8));
+            System.Web.HttpContext.Current.Response.AddHeader("Content-Transfer-Encoding", "binary"); System.Web.HttpContext.Current.Response.BinaryWrite(bytes);
+            System.Web.HttpContext.Current.Response.Flush();
+            System.Web.HttpContext.Current.Response.End();
+            return null;
+        }
+        #region 向sheet插入图片
+        /// <summary>
+        /// 向sheet插入图片
+        /// </summary>
+        /// <param name="sheet"></param>
+        /// <param name="workbook"></param>
+        /// <param name="fileurl">文件路径</param>
+        /// <param name="row">第几行</param>
+        /// <param name="col">第几列</param>
+        public static void AddPieChart(ISheet sheet, HSSFWorkbook workbook, string fileurl, int row, int col, string suffixType)
+        {
+            try
+            {
+
+
+                string FileName = fileurl;
+                FileInfo file = new FileInfo(FileName);
+                if (!string.IsNullOrEmpty(FileName) && file.Exists)
+                {
+
+                    byte[] bytes = System.IO.File.ReadAllBytes(FileName);
+                    int pictureIdx = 0;
+                    pictureIdx = workbook.AddPicture(bytes, PictureType.JPEG);
+                    HSSFPatriarch patriarch = (HSSFPatriarch)sheet.CreateDrawingPatriarch();
+                    HSSFClientAnchor anchor = new HSSFClientAnchor(10, 0, 2, 0, col, row, col + 1, row + 1);
+                    //##处理照片位置，【图片左上角为（col, row）第row+1行col+1列，右下角为（ col +1, row +1）第 col +1+1行row +1+1列，第三个参数为宽，第四个参数为高
+
+                    HSSFPicture pict = (HSSFPicture)patriarch.CreatePicture(anchor, pictureIdx);
+
+                    // pict.Resize();//这句话一定不要，这是用图片原始大小来显示
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+        #region 保存一个直接输出excel的方法
+        /// <summary>
+        /// 直接输出Excel
+        /// </summary>
+        /// <param name="dtData"></param>
+        public static void DataTableToExcel(System.Data.DataTable dt, string excelName)
+        {
+            HSSFWorkbook book = new HSSFWorkbook();
+            ISheet sheet = book.CreateSheet("sheet1");
+            IRow row = sheet.CreateRow(0);
+
+            for (int i = 0; i < dt.Columns.Count; i++)
+            {
+
+                row.CreateCell(i).SetCellValue(dt.Columns[i].ColumnName);
+            }
+
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+
+                IRow row2 = sheet.CreateRow(i + 1);
+
+
+
+                for (int j = 0; j < dt.Columns.Count; j++)
+                {
+                    //获取后缀名
+                    string fileName = dt.Rows[i][j].ToString();
+                    string savefiletype = fileName.Substring(
+                    fileName.LastIndexOf('.') + 1,
+                    fileName.Length - fileName.LastIndexOf('.') - 1
+                    ).ToLower(); //获取文件类型
+
+                    if (savefiletype == "jpg" || savefiletype == "bmp"
+                        || savefiletype == "jpeg" || savefiletype == "gif"
+                        || savefiletype == "png")
+                    {
+                        row2.Height = 3000;
+                        AddPieChart(sheet, book, dt.Rows[i][j].ToString(), i, j, savefiletype);
+                        sheet.SetColumnWidth(j, 4000);
+
+                    }
+                    else
+                    {
+                        row2.CreateCell(j).SetCellValue(dt.Rows[i][j].ToString());
+                    }
+                }
+            }
+
+            //写入到客户端
+
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            book.Write(ms);
+            System.Web.HttpContext.Current.Response.AddHeader("Content-Disposition", string.Format("attachment; filename=" + HttpUtility.UrlEncode(excelName + ".xls", System.Text.Encoding.UTF8) ));
+            System.Web.HttpContext.Current.Response.BinaryWrite(ms.ToArray());
+            book = null;
+            ms.Close();
+            ms.Dispose();
+        }
+        #endregion
+
     }
 }

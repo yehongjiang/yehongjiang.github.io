@@ -221,6 +221,7 @@
     <Compile Include="Controllers\ElectricManageController.cs" />
     <Compile Include="Filter\LoginAttribute.cs" />
     <Compile Include="Function\CompressPic.cs" />
+    <Compile Include="Function\ExcelFunction.cs" />
     <Compile Include="Function\QRCodeHepler.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -522,6 +523,7 @@
     <Content Include="json\tree.json" />
     <Content Include="json\user.json" />
     <Content Include="json\userAll.json" />
+    <Content Include="ExcelModel\DeviceRepair.xls" />
     <None Include="Properties\PublishProfiles\SewagePlantIMS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

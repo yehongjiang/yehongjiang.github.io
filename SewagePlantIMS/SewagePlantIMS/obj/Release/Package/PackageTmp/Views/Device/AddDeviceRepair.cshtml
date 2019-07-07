@@ -1,0 +1,70 @@
+﻿@model SewagePlantIMS.Models.DeviceRepair
+@{
+    ViewBag.Title = "新增设备维修记录";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<fieldset>
+    <legend style="color:#5b9bd1">新增设备维修信息</legend>
+</fieldset>
+@using (Ajax.BeginForm("AddDeviceRepair_Post", "Device", new AjaxOptions
+{
+    HttpMethod = "POST",
+    InsertionMode = InsertionMode.Replace,
+
+}))
+{
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.repair_title, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.repair_title, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入具体维修的设备名称" } })
+        @Html.ValidationMessageFor(model => model.repair_title, "", new { @class = "text-danger" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.device_id, htmlAttributes: new { @class = "control-label" })
+        @Html.DropDownListFor(model => model.device_id, new SelectList(ViewBag.list_device, "Value", "Text"), new { @class = "btn btn-default dropdown-toggle form-control", @onchange = "selectOnchang(this)" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.repair_date, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.repair_date, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.repair_finsh, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.repair_finsh, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.repair_class, htmlAttributes: new { @class = "control-label" })
+        @Html.DropDownListFor(model => model.repair_class, new SelectList(ViewBag.state, "Value", "Text"), new { @class = "btn btn-default dropdown-toggle form-control", @onchange = "selectOnchang(this)" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.repair_nums, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.repair_nums, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入设备数量" } })
+        @Html.ValidationMessageFor(model => model.repair_nums, "", new { @class = "text-danger" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.repair_reasons, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.repair_reasons, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入维修原因" } })
+        @Html.ValidationMessageFor(model => model.repair_reasons, "", new { @class = "text-danger" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.repair_conclusion, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.repair_conclusion, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入维修结论" } })
+        @Html.ValidationMessageFor(model => model.repair_conclusion, "", new { @class = "text-danger" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.repair_join, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.repair_join, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入参与维修的人员" } })
+        @Html.ValidationMessageFor(model => model.repair_join, "", new { @class = "text-danger" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.repair_consumption, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.repair_consumption, new { htmlAttributes = new { @class = "form-control", @placeholder = "零部件消耗情况" } })
+        @Html.ValidationMessageFor(model => model.repair_consumption, "", new { @class = "text-danger" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.repair_mark, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.repair_mark, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入相关备注" } })
+        @Html.ValidationMessageFor(model => model.repair_mark, "", new { @class = "text-danger" })
+    </div>
+    <button type="submit" class="btn btn-primary btn-block" >添加维修设备</button>
+}
+<button class="btn btn-default btn-block" onclick="javascrtpt: window.location.href = 'DeviceRepair'">返回</button>
