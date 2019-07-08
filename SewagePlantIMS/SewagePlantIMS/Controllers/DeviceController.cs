@@ -986,7 +986,7 @@ namespace SewagePlantIMS.Controllers
             }
             reader.Close();
             //查询出对应的设备名称
-            sql = "select title from dm_device where id = " + model.id;
+            sql = "select title from dm_device where id = " + model.device_id;
             cmd = new SqlCommand(sql, con);
             string device_name = cmd.ExecuteScalar().ToString();
             //查询出对应工艺段的名称
@@ -998,12 +998,11 @@ namespace SewagePlantIMS.Controllers
             cmd = new SqlCommand(sql, con);
             reader = cmd.ExecuteReader();
             List<string> pic_url = new List<string>();
-            int temp = 1;
+            
             
             while (reader.Read())
             {
                 pic_url.Add(Server.MapPath(reader["pic_url"].ToString()));
-                temp += 1;
             }
             reader.Close();
             //创建工作簿对象
@@ -1013,13 +1012,45 @@ namespace SewagePlantIMS.Controllers
                 hssfworkbook = new HSSFWorkbook(file);
                 ISheet sheet1 = hssfworkbook.GetSheet("Sheet1");
                 //往表中插入数据
+                model.repair_class = model.repair_class.Trim();
                 sheet1.GetRow(1).GetCell(1).SetCellValue(model.repair_class);
-                sheet1.GetRow(1).GetCell(7).SetCellValue(device_name);
-                sheet1.GetRow(2).GetCell(1).SetCellValue(model.repair_title);
-                sheet1.GetRow(2).GetCell(5).SetCellValue(model.repair_nums);
-                sheet1.GetRow(2).GetCell(10).SetCellValue(technology_name);
-                sheet1.GetRow(3).GetCell(2).SetCellValue(model.repair_date.ToString("D"));
-                sheet1.GetRow(3).GetCell(7).SetCellValue(model.repair_finsh.ToString("D"));
+                sheet1.GetRow(2).GetCell(1).SetCellValue(device_name);
+                sheet1.GetRow(3).GetCell(1).SetCellValue(model.repair_title);
+                sheet1.GetRow(4).GetCell(1).SetCellValue(model.repair_nums);
+                sheet1.GetRow(5).GetCell(1).SetCellValue(technology_name);
+                sheet1.GetRow(6).GetCell(1).SetCellValue(model.repair_date.ToString("D"));
+                sheet1.GetRow(7).GetCell(1).SetCellValue(model.repair_finsh.ToString("D"));
+                sheet1.GetRow(8).GetCell(1).SetCellValue(model.repair_reasons);
+                sheet1.GetRow(9).GetCell(1).SetCellValue(model.repair_conclusion);
+                sheet1.GetRow(12).GetCell(1).SetCellValue(model.repair_consumption);
+                sheet1.GetRow(14).GetCell(1).SetCellValue(model.repair_mark);
+                //再往表格中插入前四张图片
+                int index = 0;
+                int temp = 1;
+                int row = 10;
+                int col = 1;
+                while (index<pic_url.Count && temp <= 4)
+                {
+                    AddPieChart(sheet1, hssfworkbook, pic_url[index], row, col, ".png");
+                    index += 1;
+                    temp += 1;
+                    if(temp == 2)
+                    {
+                        row = 10;
+                        col = 2;
+                    }
+                    else if(temp == 3)
+                    {
+                        row = 11;
+                        col = 1;
+                    }
+                    else if(temp == 4)
+                    {
+                        row = 11;
+                        col = 2;
+                    }
+
+                }
                 //AddPieChart(sheet1, hssfworkbook, sql, 1, 1,".png");
                 MemoryStream mstream = new MemoryStream();
                 hssfworkbook.Write(mstream);
