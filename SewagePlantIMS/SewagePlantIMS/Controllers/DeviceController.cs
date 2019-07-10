@@ -607,7 +607,8 @@ namespace SewagePlantIMS.Controllers
             }
             reader.Close();
             //最后把设备维修表给查询出来
-            sql = "select id,device_id,user_id,technology_id,repair_date,repair_finsh,repair_class,repair_title,repair_nums,repair_reasons,repair_conclusion,repair_join,repair_consumption,repair_mark from dm_device_repair order by repair_date desc;";
+            //对月份做一个判断修改
+            sql = "select id,device_id,user_id,technology_id,repair_date,repair_finsh,repair_class,repair_title,repair_nums,repair_reasons,repair_conclusion,repair_join,repair_consumption,repair_mark from dm_device_repair where repair_title like '%" + Request["keyword"] + "%' and CONVERT(VARCHAR,Year(repair_date)) like '%" + Request["year"] + "%' and Right(100+Month(repair_date),2) like '%" + Request["month"] + "%' order by repair_date desc;";
             cmd = new SqlCommand(sql, con);
             reader = cmd.ExecuteReader();
             while (reader.Read())    // 判断数据是否读到尾. 
