@@ -72,9 +72,9 @@
                                     <i class="layui-icon layui-icon-add-1"></i>新增维修
                                 </a>
 
-                                <!--<button id="btnExportTbBas" class="layui-btn icon-btn">
+                                <button id="btnExportTbBas" class="layui-btn icon-btn">
                                     <i class="layui-icon">&#xe67d;</i>导出
-                                </button>-->
+                                </button>
                                 <!-- 下拉按钮
                                 <div class="dropdown-menu dropdown-hover">
                                     <button class="layui-btn icon-btn">
@@ -205,7 +205,21 @@
                     if (checkRows.data.length == 0) {
                         layer.msg('请选择要导出的数据', { icon: 2 });
                     } else {
-                        table.exportFile(insTb.config.id, checkRows.data, 'xls');
+                        /*console.log(insTb.config);
+                        table.exportFile(insTb.config.id, checkRows.data, 'xls');*/
+                        $.ajax({
+                            type: 'post',
+                            url: "/Device/OutputDeviceRepairList",
+                            data: {"rrrr":"10"},
+                            contentType: "application/json",
+                            //dataType: "json",
+                            success: function (result) {
+                                layer.msg("导出维修记录成功！！！");
+                            },
+                            error: function () {
+                                layer.msg("导出失败！！！请联系管理员探讨问题所在~");
+                            }
+                        })
                     }
                 });
 

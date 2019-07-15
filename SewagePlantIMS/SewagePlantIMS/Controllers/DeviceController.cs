@@ -582,10 +582,10 @@ namespace SewagePlantIMS.Controllers
             JObject json = (JObject)JsonConvert.DeserializeObject(s.ToString());
             return json.ToString();*/
             //建立一个字符串，用来组合成json字符串
-            string str="";
+            string str = "";
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            
+
             //先将对应的设备ID取出生成字典备用
             string sql = "select ID,title from dm_device";
             Dictionary<int, string> dic_device = new Dictionary<int, string>();
@@ -593,7 +593,7 @@ namespace SewagePlantIMS.Controllers
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                dic_device.Add(Convert.ToInt32(reader["id"]),reader["title"].ToString());
+                dic_device.Add(Convert.ToInt32(reader["id"]), reader["title"].ToString());
             }
             reader.Close();
             //再将对应的工艺段取出来
@@ -611,6 +611,8 @@ namespace SewagePlantIMS.Controllers
             sql = "select id,device_id,user_id,technology_id,repair_date,repair_finsh,repair_class,repair_title,repair_nums,repair_reasons,repair_conclusion,repair_join,repair_consumption,repair_mark from dm_device_repair where repair_title like '%" + Request["keyword"] + "%' and CONVERT(VARCHAR,Year(repair_date)) like '%" + Request["year"] + "%' and Right(100+Month(repair_date),2) like '%" + Request["month"] + "%' order by repair_date desc;";
             cmd = new SqlCommand(sql, con);
             reader = cmd.ExecuteReader();
+            //设置一个变量count来记录数据条数
+            int count = 0;
             while (reader.Read())    // 判断数据是否读到尾. 
             {
                 str += "{\"id\":\"" + reader["id"].ToString() + "\",";
@@ -627,10 +629,11 @@ namespace SewagePlantIMS.Controllers
                 str += "\"repair_join\":\"" + reader["repair_join"].ToString() + "\",";
                 str += "\"repair_consumption\":\"" + reader["repair_consumption"].ToString() + "\",";
                 str += "\"repair_mark\":\"" + reader["repair_mark"].ToString() + "\"},";
+                count += 1;
             }
-            str = "{\"code\": 0,\"data\": [" + str;
+            str = "{\"code\": 0,\"count\":" + count + ",\"data\": [" + str;
             str = str + "]}";
-            JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());         
+            JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
             reader.Close();
             con.Close();
             return json.ToString();
@@ -654,7 +657,7 @@ namespace SewagePlantIMS.Controllers
             List<SelectListItem> list_device = new List<SelectListItem>();
             for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
             {
-                list_device.Add(new SelectListItem() { Value = "" + ds.Tables[0].Rows[mDr][0].ToString() + "", Text = "" + ds.Tables[0].Rows[mDr][2].ToString()+" 丨 " +ds.Tables[0].Rows[mDr][1].ToString() + "" });
+                list_device.Add(new SelectListItem() { Value = "" + ds.Tables[0].Rows[mDr][0].ToString() + "", Text = "" + ds.Tables[0].Rows[mDr][2].ToString() + " 丨 " + ds.Tables[0].Rows[mDr][1].ToString() + "" });
             }
             ViewBag.list_device = list_device;
             //2)设置一下维修类别
@@ -816,18 +819,18 @@ namespace SewagePlantIMS.Controllers
                 System.IO.Directory.CreateDirectory(Server.MapPath("/images/DeviceRepairPic/"));
             }
             string path = Server.MapPath("/images/DeviceRepairPic/"); //path为某个文件夹的绝对路径，不要直接保存到数据库
-                                                      //    string path = "F:\\TgeoSmart\\Image\\";
-                                                      //生成新文件的名称，guid保证某一时刻内图片名唯一（文件不会被覆盖）
+                                                                      //    string path = "F:\\TgeoSmart\\Image\\";
+                                                                      //生成新文件的名称，guid保证某一时刻内图片名唯一（文件不会被覆盖）
             string fileNewName = Guid.NewGuid().ToString();
             //获取前端图片描述
             string describe = Request["describe"];
             string id = Request["id"];
-            string ImageUrl = path + fileNewName + "_cp"  + extName;
-            string ImageUrl2 = path + fileNewName  + extName; //压缩备用
+            string ImageUrl = path + fileNewName + "_cp" + extName;
+            string ImageUrl2 = path + fileNewName + extName; //压缩备用
             //连接数据库把图片地址还有描述等插入
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string sql = "insert into dm_device_repair_pic(pic_url,describe,add_date,repair_id) values('" + "/images/DeviceRepairPic/" + fileNewName  + extName + "','" + describe + "','" + DateTime.Now.ToString() + "'," + id + ");";
+            string sql = "insert into dm_device_repair_pic(pic_url,describe,add_date,repair_id) values('" + "/images/DeviceRepairPic/" + fileNewName + extName + "','" + describe + "','" + DateTime.Now.ToString() + "'," + id + ");";
             SqlCommand cmd = new SqlCommand(sql, con);
             int check = cmd.ExecuteNonQuery();
             con.Close();
@@ -857,9 +860,9 @@ namespace SewagePlantIMS.Controllers
                 JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
                 return json.ToString();
             }
-            
-           
-            
+
+
+
         }
         //删除对应图片
         public JavaScriptResult DeleteDeviceRepairPic()
@@ -904,7 +907,7 @@ namespace SewagePlantIMS.Controllers
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
             //写出查询语句
-            string sql = "update dm_device_repair_pic set describe = '" + Request.Form["newtitle"] + "' where id = " + Request.Form["pic_id"] +" ;";
+            string sql = "update dm_device_repair_pic set describe = '" + Request.Form["newtitle"] + "' where id = " + Request.Form["pic_id"] + " ;";
             SqlCommand cmd = new SqlCommand(sql, con);
             int check = cmd.ExecuteNonQuery();
             //再把repair_id 拿出来等等返回用
@@ -929,7 +932,7 @@ namespace SewagePlantIMS.Controllers
             con.Open();
             //查询出所有图片的url
             string sql = "select pic_url from dm_device_repair_pic where repair_id = " + id + ";";
-            SqlCommand cmd = new SqlCommand(sql,con);
+            SqlCommand cmd = new SqlCommand(sql, con);
             SqlDataReader reader = cmd.ExecuteReader();
             string filePath;
             FileInfo file;
@@ -965,7 +968,7 @@ namespace SewagePlantIMS.Controllers
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
             //查询出对应的维修数据
-            string sql = "select * from dm_device_repair where id = " + id ;
+            string sql = "select * from dm_device_repair where id = " + id;
             SqlCommand cmd = new SqlCommand(sql, con);
             DeviceRepair model = new DeviceRepair();
             SqlDataReader reader = cmd.ExecuteReader();
@@ -999,8 +1002,8 @@ namespace SewagePlantIMS.Controllers
             cmd = new SqlCommand(sql, con);
             reader = cmd.ExecuteReader();
             List<string> pic_url = new List<string>();
-            
-            
+
+
             while (reader.Read())
             {
                 pic_url.Add(Server.MapPath(reader["pic_url"].ToString()));
@@ -1030,22 +1033,22 @@ namespace SewagePlantIMS.Controllers
                 int temp = 1;
                 int row = 10;
                 int col = 1;
-                while (index<pic_url.Count && temp <= 4)
+                while (index < pic_url.Count && temp <= 4)
                 {
                     AddPieChart(sheet1, hssfworkbook, pic_url[index], row, col, ".png");
                     index += 1;
                     temp += 1;
-                    if(temp == 2)
+                    if (temp == 2)
                     {
                         row = 10;
                         col = 2;
                     }
-                    else if(temp == 3)
+                    else if (temp == 3)
                     {
                         row = 11;
                         col = 1;
                     }
-                    else if(temp == 4)
+                    else if (temp == 4)
                     {
                         row = 11;
                         col = 2;
@@ -1055,7 +1058,7 @@ namespace SewagePlantIMS.Controllers
                 //AddPieChart(sheet1, hssfworkbook, sql, 1, 1,".png");
                 MemoryStream mstream = new MemoryStream();
                 hssfworkbook.Write(mstream);
-                DownloadFile(mstream,model.repair_title);
+                DownloadFile(mstream, model.repair_title);
             }
             con.Close();
         }
@@ -1167,13 +1170,30 @@ namespace SewagePlantIMS.Controllers
 
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
             book.Write(ms);
-            System.Web.HttpContext.Current.Response.AddHeader("Content-Disposition", string.Format("attachment; filename=" + HttpUtility.UrlEncode(excelName + ".xls", System.Text.Encoding.UTF8) ));
+            System.Web.HttpContext.Current.Response.AddHeader("Content-Disposition", string.Format("attachment; filename=" + HttpUtility.UrlEncode(excelName + ".xls", System.Text.Encoding.UTF8)));
             System.Web.HttpContext.Current.Response.BinaryWrite(ms.ToArray());
             book = null;
             ms.Close();
             ms.Dispose();
         }
         #endregion
+        //导出维修清单用
+        public string OutputDeviceRepairList()
+        {
+            //创建工作簿对象
+            HSSFWorkbook hssfworkbook;
+            using (FileStream file = new FileStream(HttpContext.Request.PhysicalApplicationPath + @"ExcelModel\DeviceRepair.xls", FileMode.Open, FileAccess.Read))
+            {
+                hssfworkbook = new HSSFWorkbook(file);
+                ISheet sheet1 = hssfworkbook.GetSheet("Sheet1");
+                //往表中插入数据
+                sheet1.GetRow(1).GetCell(1).SetCellValue(Request["rrrr"].ToString());
 
+            }
+            MemoryStream mstream = new MemoryStream();
+            hssfworkbook.Write(mstream);
+            DownloadFile(mstream, "测试");
+            return "";
+        }
     }
 }
