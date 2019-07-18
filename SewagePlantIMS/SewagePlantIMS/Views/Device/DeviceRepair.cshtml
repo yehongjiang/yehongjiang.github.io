@@ -207,19 +207,8 @@
                     } else {
                         /*console.log(insTb.config);
                         table.exportFile(insTb.config.id, checkRows.data, 'xls');*/
-                        $.ajax({
-                            type: 'post',
-                            url: "/Device/OutputDeviceRepairList",
-                            data: {"rrrr":"10"},
-                            contentType: "application/json",
-                            //dataType: "json",
-                            success: function (result) {
-                                layer.msg("导出维修记录成功！！！");
-                            },
-                            error: function () {
-                                layer.msg("导出失败！！！请联系管理员探讨问题所在~");
-                            }
-                        })
+                        table.exportFile(ins1.config.id, data);
+
                     }
                 });
 

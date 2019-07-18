@@ -836,16 +836,24 @@ namespace SewagePlantIMS.Controllers
             con.Close();
             if (check == 1)
             {
-                //SaveAs将文件保存到指定文件夹中
-                file.SaveAs(ImageUrl);
-                //压缩一下            
-                CompressPic cp = new CompressPic();
-                bool temp = cp.CompressImage(ImageUrl, ImageUrl2, 80, 150, true);
-                //删除未压缩图片
-                FileInfo del_file = new FileInfo(ImageUrl);
-                if (del_file.Exists)
+                if (extName == ".jpg" || extName == ".png")
                 {
-                    del_file.Delete();
+                    //SaveAs将文件保存到指定文件夹中
+                    file.SaveAs(ImageUrl);
+                    //如果是JPG或者PNG文件压缩一下
+
+                    CompressPic cp = new CompressPic();
+                    bool temp = cp.CompressImage(ImageUrl, ImageUrl2, 80, 150, true);
+                    //删除未压缩图片
+                    FileInfo del_file = new FileInfo(ImageUrl);
+                    if (del_file.Exists)
+                    {
+                        del_file.Delete();
+                    }
+                }
+                else
+                {
+                    file.SaveAs(ImageUrl2);
                 }
                 //建立JSON字符串返回
                 string str = "\"src\": " + id;
@@ -1178,7 +1186,13 @@ namespace SewagePlantIMS.Controllers
         }
         #endregion
         //导出维修清单用
-        public string OutputDeviceRepairList()
+        public void OutputDeviceRepairList(List<int> l)
+        {
+
+            dddd();
+
+        }
+        public void dddd()
         {
             //创建工作簿对象
             HSSFWorkbook hssfworkbook;
@@ -1187,13 +1201,11 @@ namespace SewagePlantIMS.Controllers
                 hssfworkbook = new HSSFWorkbook(file);
                 ISheet sheet1 = hssfworkbook.GetSheet("Sheet1");
                 //往表中插入数据
-                sheet1.GetRow(1).GetCell(1).SetCellValue(Request["rrrr"].ToString());
-
+                sheet1.GetRow(1).GetCell(1).SetCellValue("测试一下而已");
+                MemoryStream mstream = new MemoryStream();
+                hssfworkbook.Write(mstream);
+                DownloadFile(mstream, "测试");
             }
-            MemoryStream mstream = new MemoryStream();
-            hssfworkbook.Write(mstream);
-            DownloadFile(mstream, "测试");
-            return "";
         }
     }
 }
