@@ -1186,14 +1186,25 @@ namespace SewagePlantIMS.Controllers
         }
         #endregion
         //导出维修清单用
-        public void OutputDeviceRepairList(List<int> l)
+        public void OutputDeviceRepairListModel(string data)
         {
+            List<int> idd = new List<int>();
+            string temp = "";
+            foreach (char c in data)
+            {
+                if (c == 'n') break;
+                if (c >= '0' && c <= '9')
+                {
+                    temp += c;
+                }
+                else
+                {
+                    idd.Add(Convert.ToInt32(temp));
+                    temp = "";
+                }
 
-            dddd();
 
-        }
-        public void dddd()
-        {
+            }
             //创建工作簿对象
             HSSFWorkbook hssfworkbook;
             using (FileStream file = new FileStream(HttpContext.Request.PhysicalApplicationPath + @"ExcelModel\DeviceRepair.xls", FileMode.Open, FileAccess.Read))
@@ -1204,7 +1215,7 @@ namespace SewagePlantIMS.Controllers
                 sheet1.GetRow(1).GetCell(1).SetCellValue("测试一下而已");
                 MemoryStream mstream = new MemoryStream();
                 hssfworkbook.Write(mstream);
-                DownloadFile(mstream, "测试");
+                DownloadFile(mstream, "ceshi");
             }
         }
     }

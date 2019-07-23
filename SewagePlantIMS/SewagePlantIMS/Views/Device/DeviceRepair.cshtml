@@ -125,6 +125,10 @@
                 var insTb = table.render({
                     elem: '#tableTbBas',
                     url: '/Device/SelectDeviceRepairList', //数据接口
+                    //给表格增加导出打印筛选列自动功能
+                    toolbar: true,
+                    title: '导出的设备维修清单',
+                    totalrow:true,
                     page: true,
                     cellMinWidth: 100,
                     cols: [[
@@ -194,7 +198,8 @@
                     } else if (layEvent === 'print2') { // 打印2
                         layer.msg('点击了下拉菜单打印');
                     } else if (layEvent === 'output') { // 输出Excel
-                        window.location.href = "/Device/OutputDeiveRepairExcel?id=" + data["id"];
+                         window.location.href = "/Device/OutputDeiveRepairExcel?id=" + data["id"];
+                       
                     }
                     dropdown.hideAll();
                 });
@@ -207,7 +212,14 @@
                     } else {
                         /*console.log(insTb.config);
                         table.exportFile(insTb.config.id, checkRows.data, 'xls');*/
-                        table.exportFile(ins1.config.id, data);
+                        //table.exportFile(ins1.config.id, data);
+                        var data = "";
+                        for (i = 0; i < checkRows.data.length; i++) {
+                            data += checkRows.data[i].id;
+                            data += '-';
+                        }
+                        data += 'n';
+                        window.location.href = "/Device/outputDeviceRepairListModel?data=" + data;
 
                     }
                 });
