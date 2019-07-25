@@ -1208,20 +1208,89 @@ namespace SewagePlantIMS.Controllers
 
 
             }
+            //连接数据库
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            SqlCommand cmd;
+            SqlDataReader reader;
+            string sql;
+            int i = 1;
+            int rows = 2;
             //创建工作簿对象
-            /*HSSFWorkbook hssfworkbook;
-            using (FileStream file = new FileStream(HttpContext.Request.PhysicalApplicationPath + @"ExcelModel\DeviceRepair.xls", FileMode.Open, FileAccess.Read))
+            HSSFWorkbook hssfworkbook;
+            using (FileStream file = new FileStream(HttpContext.Request.PhysicalApplicationPath + @"ExcelModel\RepairListModel.xls", FileMode.Open, FileAccess.Read))
             {
                 hssfworkbook = new HSSFWorkbook(file);
-                ISheet sheet1 = hssfworkbook.GetSheet("Sheet1");
-                //往表中插入数据
-                sheet1.GetRow(1).GetCell(1).SetCellValue("测试一下而已");
+                ISheet sheet1 = hssfworkbook.GetSheet("sheet1");
+                //设置单元格样式
+                ICellStyle cellstyle = hssfworkbook.CreateCellStyle();
+                //设置单元格上下左右边框线
+                cellstyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                cellstyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                cellstyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                cellstyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                cellstyle.WrapText = true;
+                cellstyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                cellstyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
+                //开始遍历查询
+                ICell Cell;
+                foreach (int item in idd)
+                {
+                    sql = "select * from dm_device_repair where id = " + item + ";";
+                    cmd = new SqlCommand(sql, con);
+                    reader = cmd.ExecuteReader();
+                    
+                    while (reader.Read())
+                    {
+                        //往表中插入数据
+                        //序号                       
+                        Cell = sheet1.GetRow(rows).GetCell(0);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(0).SetCellValue(i);
+                        //维修日期
+                        Cell = sheet1.GetRow(rows).GetCell(1);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(1).SetCellValue(Convert.ToDateTime(reader["repair_date"]).ToString("yyyy-MM-dd"));
+                        //设备
+                        Cell = sheet1.GetRow(rows).GetCell(2);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(2).SetCellValue(reader["repair_title"].ToString());
+                        //设备数量
+                        Cell = sheet1.GetRow(rows).GetCell(3);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(3).SetCellValue(Convert.ToInt32(reader["repair_nums"]));
+                        //原因
+                        Cell = sheet1.GetRow(rows).GetCell(4);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(4).SetCellValue(reader["repair_reasons"].ToString());
+                        //消耗
+                        Cell = sheet1.GetRow(rows).GetCell(5);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(5).SetCellValue(reader["repair_consumption"].ToString());
+                        //维修情况
+                        Cell = sheet1.GetRow(rows).GetCell(6);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(6).SetCellValue(reader["repair_conclusion"].ToString());
+                        //维修时间
+                        Cell = sheet1.GetRow(rows).GetCell(7);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(7).SetCellValue(Convert.ToDateTime(reader["repair_finsh"]).ToString("yyyy-MM-dd"));
+                        //备注
+                        Cell = sheet1.GetRow(rows).GetCell(8);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(8).SetCellValue(reader["repair_mark"].ToString());
+                        i += 1;
+                    }
+                    rows += 1;
+                    reader.Close();
+                }
+               
                 //下面是设置单元格边框的示例
                 MemoryStream mstream = new MemoryStream();
                 hssfworkbook.Write(mstream);
-                DownloadFile(mstream, "ceshi");
-            }*/
-
+                DownloadFile(mstream, "设备电气维修记录" + DateTime.Now.ToString("d"));
+            }
+            /*示例
             HSSFWorkbook workbook = new HSSFWorkbook();// 创建一个Excel文件   
             ISheet sheet = workbook.CreateSheet("Sheet1");
             ICellStyle cellstyle = workbook.CreateCellStyle();
@@ -1239,6 +1308,7 @@ namespace SewagePlantIMS.Controllers
             MemoryStream mstream = new MemoryStream();
             workbook.Write(mstream);
             DownloadFile(mstream, "ceshi");
+            */
         }
     }
 }
