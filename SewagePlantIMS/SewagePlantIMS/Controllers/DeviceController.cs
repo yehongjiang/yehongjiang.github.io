@@ -23,6 +23,9 @@ using NPOI.XSSF.Util;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 
+
+
+
 namespace SewagePlantIMS.Controllers
 {
     [LoginAttribute(isNeed = true)]
@@ -1206,17 +1209,36 @@ namespace SewagePlantIMS.Controllers
 
             }
             //创建工作簿对象
-            HSSFWorkbook hssfworkbook;
+            /*HSSFWorkbook hssfworkbook;
             using (FileStream file = new FileStream(HttpContext.Request.PhysicalApplicationPath + @"ExcelModel\DeviceRepair.xls", FileMode.Open, FileAccess.Read))
             {
                 hssfworkbook = new HSSFWorkbook(file);
                 ISheet sheet1 = hssfworkbook.GetSheet("Sheet1");
                 //往表中插入数据
                 sheet1.GetRow(1).GetCell(1).SetCellValue("测试一下而已");
+                //下面是设置单元格边框的示例
                 MemoryStream mstream = new MemoryStream();
                 hssfworkbook.Write(mstream);
                 DownloadFile(mstream, "ceshi");
-            }
+            }*/
+
+            HSSFWorkbook workbook = new HSSFWorkbook();// 创建一个Excel文件   
+            ISheet sheet = workbook.CreateSheet("Sheet1");
+            ICellStyle cellstyle = workbook.CreateCellStyle();
+            //设置单元格上下左右边框线
+            cellstyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellstyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellstyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellstyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellstyle.WrapText = true;
+            //把样式赋到对应的单元格上
+            ICell Cell = sheet.CreateRow(1).CreateCell(1);
+            Cell.CellStyle = cellstyle;
+            Cell.SetCellValue("测试格式效果");
+            //在前端进行下载
+            MemoryStream mstream = new MemoryStream();
+            workbook.Write(mstream);
+            DownloadFile(mstream, "ceshi");
         }
     }
 }
