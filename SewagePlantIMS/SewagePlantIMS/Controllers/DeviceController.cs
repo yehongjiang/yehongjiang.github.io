@@ -640,7 +640,7 @@ namespace SewagePlantIMS.Controllers
             reader.Close();
             con.Close();
             return json.ToString();
-        }
+        }       
         //一个测试的方法，暂时存放在这里
         public string test()
         {
@@ -1309,6 +1309,68 @@ namespace SewagePlantIMS.Controllers
             workbook.Write(mstream);
             DownloadFile(mstream, "ceshi");
             */
+        }
+
+
+        /////////////////////////////////下面是设备保养的内容///////////////////////
+        public ActionResult DeviceMaintenancePlan()
+        {
+            return View();
+        }
+        public string SelectDeviceMaintenancePlanList()
+        {
+            string str = "";
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+
+            //先将对应的设备ID取出生成字典备用
+            string sql = "select ID,title from dm_device";
+            Dictionary<int, string> dic_device = new Dictionary<int, string>();
+            SqlCommand cmd = new SqlCommand(sql, con);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                dic_device.Add(Convert.ToInt32(reader["id"]), reader["title"].ToString());
+            }
+            reader.Close();
+            //最后把设备维保养计划表给查询出来
+            string month;
+            if (Request["month"] == null) month = DateTime.Now.Month.ToString();
+            else if (Request["month"] == "") month = "";
+            else month = Request["month"].ToString();
+            sql = "select * from dm_device_maintenance_plan where  Right(100+dmp_month,2) like '%" +   month + "%' order by dmp_weekend,order_id;";
+            cmd = new SqlCommand(sql, con);
+            reader = cmd.ExecuteReader();
+            //设置一个变量count来记录数据条数
+            int count = 0;
+            while (reader.Read())    // 判断数据是否读到尾. 
+            {
+                str += "{\"id\":\"" + reader["id"].ToString() + "\",";
+                str += "\"device_id\":\"" + dic_device[Convert.ToInt32(reader["device_id"])] + "\",";
+                str += "\"user_id\":\"" + reader["user_id"].ToString() + "\",";
+                str += "\"order_id\":\"" + Convert.ToInt32(reader["order_id"]) + "\",";
+                str += "\"dmp_content\":\"" + reader["dmp_content"].ToString() + "\",";
+                str += "\"dmp_consumption\":\"" + reader["dmp_consumption"].ToString() + "\",";
+                if (Convert.ToInt32(reader["dmp_isfinish"]) == 1)
+                {
+                    str += "\"dmp_isfinish\":\"" + "已完成" + "\",";
+                }
+                else
+                {
+                    str += "\"dmp_isfinish\":\"" + "未完成" + "\",";
+                }
+                str += "\"dmp_month\":\"" + Convert.ToInt32(reader["dmp_month"]) + "月\",";
+                str += "\"dmp_weekend\":\"第" + Convert.ToInt32(reader["dmp_weekend"]) + "周\",";
+                str += "\"remark\":\"" + reader["remark"].ToString() + "\"},";
+                count += 1;
+            }
+            str = "{\"code\": 0,\"count\":" + count + ",\"data\": [" + str;
+            str = str + "]}";
+            JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
+            reader.Close();
+            con.Close();
+
+            return json.ToString();
         }
     }
 }

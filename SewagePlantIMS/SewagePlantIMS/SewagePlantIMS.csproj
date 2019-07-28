@@ -229,6 +229,10 @@
     <Compile Include="Models\chemical_device.cs" />
     <Compile Include="Models\chemical_device_pic.cs" />
     <Compile Include="Models\Device.cs" />
+    <Compile Include="Models\DeviceMaintenance.cs" />
+    <Compile Include="Models\DeviceMaintenancePlan.cs" />
+    <Compile Include="Models\DeviceMaintenanceSteps.cs" />
+    <Compile Include="Models\DeviceMaintenanceStepsSpecific.cs" />
     <Compile Include="Models\DevicePic.cs" />
     <Compile Include="Models\DeviceRepair.cs" />
     <Compile Include="Models\DeviceRepairPic.cs" />
@@ -527,6 +531,7 @@
     <Content Include="ExcelModel\RepairListModel.xls" />
     <None Include="Properties\PublishProfiles\SewagePlantIMS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\DataTableExtend.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -577,6 +582,7 @@
     <Content Include="Views\Device\AddDeviceRepair.cshtml" />
     <Content Include="Views\Device\ModifyDeviceRepair.cshtml" />
     <Content Include="Views\Device\DeviceRepairPic.cshtml" />
+    <Content Include="Views\Device\DeviceMaintenancePlan.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
