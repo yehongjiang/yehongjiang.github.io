@@ -1372,5 +1372,11 @@ namespace SewagePlantIMS.Controllers
 
             return json.ToString();
         }
+
+        public ActionResult AddDeviceMaintenancePlan()
+        {
+
+            return View();
+        }
     }
 }

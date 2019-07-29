@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewBag.Title = "新增保养计划";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<fieldset>
+    <legend style="color:#5b9bd1">新增保养计划</legend>
+</fieldset>
+@using (Ajax.BeginForm("AddDeviceRepair_Post", "Device", new AjaxOptions
+{
+    HttpMethod = "POST",
+    InsertionMode = InsertionMode.Replace,
+
+}))
+{
+
