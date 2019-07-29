@@ -1,17 +1,53 @@
-﻿
+﻿@model SewagePlantIMS.Models.DeviceMaintenancePlan
 @{
     ViewBag.Title = "新增保养计划";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <fieldset>
     <legend style="color:#5b9bd1">新增保养计划</legend>
+
+    <ol class="breadcrumb">
+        <li><a href="#">导入Excel</a></li>
+        <li><a href="#">模板下载</a></li>
+    </ol>
+
 </fieldset>
-@using (Ajax.BeginForm("AddDeviceRepair_Post", "Device", new AjaxOptions
+@using (Ajax.BeginForm("AddDeviceMaintenancePlan_Post", "Device", new AjaxOptions
 {
     HttpMethod = "POST",
     InsertionMode = InsertionMode.Replace,
 
 }))
 {
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.device_id, htmlAttributes: new { @class = "control-label" })
+        @Html.DropDownListFor(model => model.device_id, new SelectList(ViewBag.list_device, "Value", "Text"), new { @class = "btn btn-default dropdown-toggle form-control", @onchange = "selectOnchang(this)" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.dmp_content, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.dmp_content, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入保养内容" } })
+        @Html.ValidationMessageFor(model => model.dmp_content, "", new { @class = "text-danger" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.dmp_consumption, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.dmp_consumption, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入保养内容" } })
+        @Html.ValidationMessageFor(model => model.dmp_consumption, "", new { @class = "text-danger" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.dmp_month, htmlAttributes: new { @class = "control-label" })
+        @Html.DropDownListFor(model => model.dmp_month, new SelectList(ViewBag.month, "Value", "Text"), new { @class = "btn btn-default dropdown-toggle form-control", @onchange = "selectOnchang(this)" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.dmp_weekend, htmlAttributes: new { @class = "control-label" })
+        @Html.DropDownListFor(model => model.dmp_weekend, new SelectList(ViewBag.weekend, "Value", "Text"), new { @class = "btn btn-default dropdown-toggle form-control", @onchange = "selectOnchang(this)" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.remark, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.remark, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入相关备注" } })
+        @Html.ValidationMessageFor(model => model.remark, "", new { @class = "text-danger" })
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">添加保养计划</button>
+}
+
+<button class="btn btn-default btn-block" onclick="javascrtpt: window.location.href = 'DeviceMaintenancePlan'">返回</button>
 

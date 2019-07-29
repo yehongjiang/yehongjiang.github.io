@@ -640,7 +640,7 @@ namespace SewagePlantIMS.Controllers
             reader.Close();
             con.Close();
             return json.ToString();
-        }       
+        }
         //一个测试的方法，暂时存放在这里
         public string test()
         {
@@ -1239,7 +1239,7 @@ namespace SewagePlantIMS.Controllers
                     sql = "select * from dm_device_repair where id = " + item + ";";
                     cmd = new SqlCommand(sql, con);
                     reader = cmd.ExecuteReader();
-                    
+
                     while (reader.Read())
                     {
                         //往表中插入数据
@@ -1284,7 +1284,7 @@ namespace SewagePlantIMS.Controllers
                     rows += 1;
                     reader.Close();
                 }
-               
+
                 //下面是设置单元格边框的示例
                 MemoryStream mstream = new MemoryStream();
                 hssfworkbook.Write(mstream);
@@ -1338,7 +1338,7 @@ namespace SewagePlantIMS.Controllers
             if (Request["month"] == null) month = DateTime.Now.Month.ToString();
             else if (Request["month"] == "") month = "";
             else month = Request["month"].ToString();
-            sql = "select * from dm_device_maintenance_plan where  Right(100+dmp_month,2) like '%" +   month + "%' order by dmp_weekend,order_id;";
+            sql = "select * from dm_device_maintenance_plan where  Right(100+dmp_month,2) like '%" + month + "%' order by dmp_weekend,order_id;";
             cmd = new SqlCommand(sql, con);
             reader = cmd.ExecuteReader();
             //设置一个变量count来记录数据条数
@@ -1375,8 +1375,74 @@ namespace SewagePlantIMS.Controllers
 
         public ActionResult AddDeviceMaintenancePlan()
         {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //1)查出所有的设备名称以及对应的工艺段
+            string sqlStr = "select dm_device.ID,dm_device.title,dm_technology.title from dm_device,dm_technology where technology_id = dm_technology.id order by technology_id; ";
+            SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            List<SelectListItem> list_device = new List<SelectListItem>();
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                list_device.Add(new SelectListItem() { Value = "" + ds.Tables[0].Rows[mDr][0].ToString() + "", Text = "" + ds.Tables[0].Rows[mDr][2].ToString() + " 丨 " + ds.Tables[0].Rows[mDr][1].ToString() + "" });
+            }
+            ViewBag.list_device = list_device;
+            //设置月份下拉菜单
+            var selectStatusList = new List<SelectListItem>() {
+            new SelectListItem() { Value = "1", Text = "1月" },
+            new SelectListItem() { Value = "2", Text = "2月" },
+            new SelectListItem() { Value = "3", Text = "3月" },
+            new SelectListItem() { Value = "4", Text = "4月" },
+            new SelectListItem() { Value = "5", Text = "5月" },
+            new SelectListItem() { Value = "6", Text = "6月" },
+            new SelectListItem() { Value = "7", Text = "7月" },
+            new SelectListItem() { Value = "8", Text = "8月" },
+            new SelectListItem() { Value = "9", Text = "9月" },
+            new SelectListItem() { Value = "10", Text = "10月" },
+            new SelectListItem() { Value = "11", Text = "11月" },
+            new SelectListItem() { Value = "12", Text = "12月" },
 
+        };
+            ViewBag.month = selectStatusList;
+            //设置周下拉菜单
+            var selectStatusList2 = new List<SelectListItem>() {
+            new SelectListItem() { Value = "1", Text = "第1周" },
+            new SelectListItem() { Value = "2", Text = "第2周" },
+            new SelectListItem() { Value = "3", Text = "第3周" },
+            new SelectListItem() { Value = "4", Text = "第4周" },
+            new SelectListItem() { Value = "5", Text = "第5周" },
+
+        };
+            ViewBag.weekend = selectStatusList2;
+            con.Close();
             return View();
+        }
+        public JavaScriptResult AddDeviceMaintenancePlan_post(DeviceMaintenancePlan model)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "select  Max(order_id) from dm_device_maintenance_plan where dmp_month = '" + model.dmp_month + "' and dmp_weekend='" + model.dmp_weekend + "';";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            //设置order_id排序变量
+            int order_id;
+            if(cmd.ExecuteScalar()== System.DBNull.Value)
+            {
+                order_id = 1;
+            }
+            else
+            {
+                order_id = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+            //正式插入数据
+            sql = "insert into dm_device_maintenance_plan(device_id,user_id,order_id,dmp_content,dmp_consumption,dmp_isfinish,dmp_month,dmp_weekend,remark) values(" + model.device_id + "," + Convert.ToInt32(Session["user_id"]) + "," + order_id + ",'" + model.dmp_content + "','" + model.dmp_consumption + "'," + 0 + "," + model.dmp_month + "," + model.dmp_weekend + ",'" + model.remark + "');";
+            cmd = new SqlCommand(sql, con);
+            int check = Convert.ToInt32(cmd.ExecuteNonQuery());
+            con.Close();
+            if (check == 1)
+                return JavaScript("swal_success();jump_DeviceMaintenancePlan();");
+            else
+                return JavaScript("swal_error();");
         }
     }
 }
