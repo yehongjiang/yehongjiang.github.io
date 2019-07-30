@@ -113,16 +113,17 @@
         </ul>
     </script>
     <script>
-        layui.use(['layer', 'form', 'table', 'util', 'dropdown'], function () {
+        layui.use(['layer', 'form', 'table', 'util', 'dropdown','tableX'], function () {
             var $ = layui.jquery;
             var layer = layui.layer;
             var form = layui.form;
             var table = layui.table;
             var util = layui.util;
             var dropdown = layui.dropdown;
-
+            //没有这一条表格分页会失效
+            var tableX = layui.tableX;
             // 渲染表格
-            var insTb = table.render({
+            var insTb = tableX.renderFront({
                 elem: '#tableTbBas',
                 url: '/Device/SelectDeviceRepairList', //数据接口
                 //给表格增加导出打印筛选列自动功能

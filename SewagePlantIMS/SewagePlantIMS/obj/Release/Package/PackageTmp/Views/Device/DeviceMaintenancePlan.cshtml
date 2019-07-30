@@ -8,7 +8,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>DeviceMaintenancePlan</title>
+    <title>设备保养计划</title>
     <link rel="stylesheet" href="~/assets/libs/layui/css/layui.css" />
     <link rel="stylesheet" href="~/assets/module/admin.css?v=312" />
     <!--没有下面两个JS则后台javascript返回失效-->
@@ -60,14 +60,16 @@
                                 <button class="layui-btn icon-btn" lay-filter="formSubSearchTbBas" lay-submit>
                                     <i class="layui-icon">&#xe615;</i>搜索
                                 </button>
-                                <a class="layui-btn" href="AddDeviceRepair">
+                                <a class="layui-btn" href="">
                                     <i class="layui-icon layui-icon-form"></i>保养清单
                                 </a>
 
                                 <button id="btnExportTbBas" class="layui-btn icon-btn">
                                     <i class="layui-icon layui-icon-unlink"></i>初始化
                                 </button>
-
+                                <a class="layui-btn" ew-href="~/Device/AddDeviceMaintenancePlan" ew-title="新增保养计划">
+                                    <i class="layui-icon layui-icon-add-circle-fine"></i>新增
+                                </a>
                             </div>
 
                         </div>
@@ -80,7 +82,7 @@
     </div>
     <!-- 表格操作列 -->
     <script type="text/html" id="tableBarTbBas">
-        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="finish" name="finish">完成</a>
+        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="finish" name="finish" id="finish">完成</a>
 
         <a class="layui-btn layui-btn-xs" data-dropdown="#dropUser{{d.LAY_INDEX}}" no-shade="true">
             更多<i class="layui-icon layui-icon-drop" style="font-size: 12px;margin-right: 0;"></i>
@@ -93,14 +95,14 @@
         </ul>
     </script>
     <script>
-        layui.use(['layer', 'form', 'table', 'util', 'dropdown'], function () {
+        layui.use(['layer', 'form', 'table', 'util', 'dropdown', 'tableX'], function () {
             var $ = layui.jquery;
             var layer = layui.layer;
             var form = layui.form;
             var table = layui.table;
             var util = layui.util;
             var dropdown = layui.dropdown;
-
+            var tableX = layui.tableX;
             // 渲染表格
             var insTb = table.render({
                 elem: '#tableTbBas',
@@ -133,7 +135,7 @@
                     //LayUIDataTable.HideField(['num','match_guest']);// 隐藏列-多列模式
 
                     var currentRowDataList = LayUIDataTable.ParseDataTable(function (index, currentData, rowData) {
-                        console.log("当前页数据条数:" + currentRowDataList.length)
+                        /*console.log("当前页数据条数:" + currentRowDataList.length)
                         console.log("当前行索引：" + index);
                         console.log("触发的当前行单元格：" + currentData);
                         console.log("当前行数据：" + JSON.stringify(rowData));
@@ -142,12 +144,12 @@
                         layer.msg(msg, {
                             time: 10000,
 
-                        })
-                       
+                        })*/
+
                     })
                     $.each(currentRowDataList, function (index, obj) {
                         console.log(obj);
-                        if (obj['dmp_isfinish'].value =='已完成') {
+                        if (obj['dmp_isfinish'].value == '已完成') {
                             obj['dmp_isfinish'].row.css("background-color", "#009688");
                             obj['dmp_isfinish'].row.css("color", "#ffffff");
                             //document.getElementsByName("finish")[index].style.display = "none";
@@ -194,6 +196,7 @@
                             }
                         })
                     }
+
                     else {
                         layer.msg('取消了删除');
                     }
@@ -207,6 +210,25 @@
                 } else if (layEvent === 'output') { // 输出Excel
                     window.location.href = "/Device/OutputDeiveRepairExcel?id=" + data["id"];
 
+                } else if (layEvent === 'finish') {
+                 
+                        layer.open({
+                            type: 1,
+                            title: '是否完成该计划',
+                            area: ['500px', '200px'],
+                            shadeClose: true, //点击遮罩关闭
+                            content: '\<\div style="padding:20px;">请选择该计划完成时间\<\/div>'
+                            , btn: ['确认', '取消']
+                            , yes: function (index, layero) {
+                                //按钮【按钮一】的回调
+                            }, btn2: function (index, layero) {
+                                layer.close(index);
+                            }
+                         , cancel: function (index) {
+                             layer.close(index);
+                         }
+                        });
+                
                 }
                 dropdown.hideAll();
             });
@@ -217,11 +239,11 @@
                 if (checkRows.data.length == 0) {
                     layer.msg('请选择要初始化的数据', { icon: 2 });
                 } else {
-                    if(confirm("确认需要初始化吗?初始化后完成选项可以重新提交!")){ 
-                        return true; 
-                    } 
-                    return false; 
-            
+                    if (confirm("确认需要初始化吗?初始化后完成选项可以重新提交!")) {
+                        return true;
+                    }
+                    return false;
+
 
                 }
             });

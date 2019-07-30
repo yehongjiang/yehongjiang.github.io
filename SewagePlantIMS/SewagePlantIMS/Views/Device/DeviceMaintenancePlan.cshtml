@@ -28,7 +28,7 @@
             <span></span><span></span><span></span><span></span>
         </div>
     </div>
-    
+
     <!-- 正文开始 -->
     <div class="layui-fluid">
         <div class="layui-card">
@@ -82,7 +82,7 @@
     </div>
     <!-- 表格操作列 -->
     <script type="text/html" id="tableBarTbBas">
-        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="finish" name="finish">完成</a>
+        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="finish" name="finish" id="finish">完成</a>
 
         <a class="layui-btn layui-btn-xs" data-dropdown="#dropUser{{d.LAY_INDEX}}" no-shade="true">
             更多<i class="layui-icon layui-icon-drop" style="font-size: 12px;margin-right: 0;"></i>
@@ -95,14 +95,14 @@
         </ul>
     </script>
     <script>
-        layui.use(['layer', 'form', 'table', 'util', 'dropdown'], function () {
+        layui.use(['layer', 'form', 'table', 'util', 'dropdown', 'tableX'], function () {
             var $ = layui.jquery;
             var layer = layui.layer;
             var form = layui.form;
             var table = layui.table;
             var util = layui.util;
             var dropdown = layui.dropdown;
-
+            var tableX = layui.tableX;
             // 渲染表格
             var insTb = table.render({
                 elem: '#tableTbBas',
@@ -145,11 +145,11 @@
                             time: 10000,
 
                         })*/
-                       
+
                     })
                     $.each(currentRowDataList, function (index, obj) {
                         console.log(obj);
-                        if (obj['dmp_isfinish'].value =='已完成') {
+                        if (obj['dmp_isfinish'].value == '已完成') {
                             obj['dmp_isfinish'].row.css("background-color", "#009688");
                             obj['dmp_isfinish'].row.css("color", "#ffffff");
                             //document.getElementsByName("finish")[index].style.display = "none";
@@ -196,6 +196,7 @@
                             }
                         })
                     }
+
                     else {
                         layer.msg('取消了删除');
                     }
@@ -209,6 +210,25 @@
                 } else if (layEvent === 'output') { // 输出Excel
                     window.location.href = "/Device/OutputDeiveRepairExcel?id=" + data["id"];
 
+                } else if (layEvent === 'finish') {
+                 
+                        layer.open({
+                            type: 1,
+                            title: '是否完成该计划',
+                            area: ['500px', '200px'],
+                            shadeClose: true, //点击遮罩关闭
+                            content: '\<\div style="padding:20px;">请选择该计划完成时间\<\/div>'
+                            , btn: ['确认', '取消']
+                            , yes: function (index, layero) {
+                                //按钮【按钮一】的回调
+                            }, btn2: function (index, layero) {
+                                layer.close(index);
+                            }
+                         , cancel: function (index) {
+                             layer.close(index);
+                         }
+                        });
+                
                 }
                 dropdown.hideAll();
             });
@@ -219,11 +239,11 @@
                 if (checkRows.data.length == 0) {
                     layer.msg('请选择要初始化的数据', { icon: 2 });
                 } else {
-                    if(confirm("确认需要初始化吗?初始化后完成选项可以重新提交!")){ 
-                        return true; 
-                    } 
-                    return false; 
-            
+                    if (confirm("确认需要初始化吗?初始化后完成选项可以重新提交!")) {
+                        return true;
+                    }
+                    return false;
+
 
                 }
             });
