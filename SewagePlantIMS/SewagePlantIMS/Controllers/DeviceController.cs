@@ -1444,5 +1444,36 @@ namespace SewagePlantIMS.Controllers
             else
                 return JavaScript("swal_error();");
         }
+        //将保养计划添加至保养清单中去
+        public string DeviceMaintenancePlanFinish(string id,string date)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //查出设备保养计划表的内容
+            string sql = "select * from dm_device_maintenance_plan where id = " + id;
+            SqlCommand cmd = new SqlCommand(sql, con);
+            SqlDataReader reader = cmd.ExecuteReader();
+            //定义一个保养计划类
+            DeviceMaintenancePlan dmp = new DeviceMaintenancePlan();
+            while (reader.Read())
+            {
+                dmp.device_id = Convert.ToInt32(reader["device_id"]);
+                dmp.dmp_content = reader["dmp_content"].ToString();
+                dmp.dmp_consumption = reader["dmp_consumption"].ToString();
+                dmp.dmp_month = Convert.ToInt32(reader["dmp_month"]);
+                dmp.dmp_weekend = Convert.ToInt32(reader["dmp_weekend"]);
+                dmp.remark = reader["remark"].ToString();
+            }
+            reader.Close();
+            //将数据插入到保养清单中去
+            sql = "insert into dm_device_maintenance values(" + dmp.device_id + "," + Convert.ToInt32(Session["user_id"]) + ",'" + dmp.dmp_content + "','" + dmp.dmp_consumption + "'," + 1 + ",'" + date + "'," + dmp.dmp_weekend + "," + 0 + ",'" + dmp.remark + "');";
+            //更新保养计划的isfinish列
+            sql += "update dm_device_maintenance_plan set dmp_isfinish = " + 1 + " where id = "+ id + ";";
+            cmd = new SqlCommand(sql, con);
+            int check = Convert.ToInt32(cmd.ExecuteNonQuery());   
+            con.Close();
+            if (check == 2) return "已完成该项保养！！";
+            else return "保养添加失败，请联系管理员解决！！";
+        }
     }
 }

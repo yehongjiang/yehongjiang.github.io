@@ -21,6 +21,8 @@
     <!--没有它就无法执行双击行弹出内容，高亮等功能-->
     <script src="~/Scripts/DataTableExtend.js"></script>
 </head>
+
+
 <body>
     <!-- 加载动画 -->
     <div class="page-loading">
@@ -211,24 +213,43 @@
                     window.location.href = "/Device/OutputDeiveRepairExcel?id=" + data["id"];
 
                 } else if (layEvent === 'finish') {
-                 
-                        layer.open({
-                            type: 1,
-                            title: '是否完成该计划',
-                            area: ['500px', '200px'],
-                            shadeClose: true, //点击遮罩关闭
-                            content: '\<\div style="padding:20px;">请选择该计划完成时间\<\/div>'
-                            , btn: ['确认', '取消']
-                            , yes: function (index, layero) {
-                                //按钮【按钮一】的回调
-                            }, btn2: function (index, layero) {
-                                layer.close(index);
+
+                    layer.open({
+                        type: 1,
+                        title: ['是否完成该计划', 'background:#029687;color:#ffffff;'],
+                        area: ['300px', '200px'],
+                        shadeClose: true, //点击遮罩关闭
+                        shade: 0,
+                        content: '\<\div style="padding:20px;text-align:center;">请选择该计划完成时间\<\input id="DMPdate" name="DMPdate" type="date" class="layui-btn layui-btn-primary" \/>\<\/div>'
+                        , btn: ['确认', '取消']
+                        , yes: function (index, layero) {
+                            if (document.getElementById("DMPdate").value == "") {
+                                layer.msg("您还未选择相应的完成时间！！");
                             }
-                         , cancel: function (index) {
-                             layer.close(index);
-                         }
-                        });
-                
+                            else {
+                                $.ajax({
+                                    type: "POST", //提交数据的类型 分为POST和GET
+                                    url: '/Device/DeviceMaintenancePlanFinish',  //提交url 注意url必须小写
+                                    data: { "id": data["id"], "date": document.getElementById("DMPdate").value },
+                                    success: function (return_data) {
+                                        layer.msg(return_data);
+                                        layer.close(index);
+                                        parent.location.reload();
+                                    },
+                                    error: function (return_date) {
+                                        layer.msg(return_data);
+                                        layer.close(index);
+                                    }
+                                })
+                            }
+                        }, btn2: function (index, layero) {
+                            layer.close(index);
+                        }
+                     , cancel: function (index) {
+                         layer.close(index);
+                     }
+                    });
+
                 }
                 dropdown.hideAll();
             });
@@ -255,13 +276,6 @@
 
         });
     </script>
-    <script>
-        //删除图片成功的返回
 
-        function delete_device_repair2() {
-            layer.msg("删除失败！！！请联系管理员探讨问题所在~");
-
-        }
-    </script>
 </body>
 </html>
