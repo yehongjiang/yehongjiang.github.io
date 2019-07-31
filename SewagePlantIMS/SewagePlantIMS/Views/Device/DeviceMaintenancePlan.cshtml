@@ -1,6 +1,7 @@
 ﻿
 @{
     Layout = null;
+    int idd = 0;
 }
 
 <!DOCTYPE html>
@@ -84,7 +85,8 @@
     </div>
     <!-- 表格操作列 -->
     <script type="text/html" id="tableBarTbBas">
-        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="finish" name="finish" id="finish">完成</a>
+
+        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="finish" name="finish" >完成</a>
 
         <a class="layui-btn layui-btn-xs" data-dropdown="#dropUser{{d.LAY_INDEX}}" no-shade="true">
             更多<i class="layui-icon layui-icon-drop" style="font-size: 12px;margin-right: 0;"></i>
@@ -104,6 +106,7 @@
             var table = layui.table;
             var util = layui.util;
             var dropdown = layui.dropdown;
+            //没有这一条表格分页会失效
             var tableX = layui.tableX;
             // 渲染表格
             var insTb = table.render({
@@ -129,6 +132,10 @@
                 ]]
                 , done: function (res, curr, count) {// 表格渲染完成之后的回调
 
+                    /* $('*[name="finish"]').each(function () {
+                         $(this).hide()
+                     })*/
+
                     $(".layui-table th").css("font-weight", "bold");// 设定表格标题字体加粗
 
                     LayUIDataTable.SetJqueryObj($);// 第一步：设置jQuery对象
@@ -149,15 +156,46 @@
                         })*/
 
                     })
+                    //遍历一遍，给btn都附上不同的id
+                    /*$("a[name='finish']").each(function () {
+                        $(this).attr({ id: "finish" +  });
+                       
+                    })*/
+                    var xiabiao = 1;
+                    var myArray = new Array();
+                    var finishlist = new Array();
                     $.each(currentRowDataList, function (index, obj) {
-                        console.log(obj);
+
+                        console.log(obj['id'].value);
+                        document.getElementsByName("finish")[index].setAttribute('id', 'finish' + obj['id'].value);
+                        xiabiao = xiabiao + 1;
+                        myArray.push('finish' + obj['id'].value);
                         if (obj['dmp_isfinish'].value == '已完成') {
+                            finishlist.push('finish' + obj['id'].value);
                             obj['dmp_isfinish'].row.css("background-color", "#009688");
                             obj['dmp_isfinish'].row.css("color", "#ffffff");
-                            //document.getElementsByName("finish")[index].style.display = "none";
-                            document.getElementsByName("finish")[index].className = "layui-btn layui-btn-primary layui-btn-xs layui-btn-disabled";
+
+
+                            //document.getElementsByName("finish")[index].style.visibility = "collapse";
+                            //document.getElementsByName("finish")[index].className = "layui-btn layui-btn-primary layui-btn-xs";
+                            //document.getElementsByName("finish")[index].disabled = true;
+                            //document.getElementsByName("finish")[index].style.display="none";
                         }
                     })
+                    var temp = 0;
+                    $("a[name='finish']").each(function () {
+                        if (xiabiao <= 1) {
+                            $(this).attr({ 'id': myArray[temp] });
+                            temp = temp + 1;
+                            console.log(myArray[temp]);
+                        }
+                        xiabiao = xiabiao - 1;
+
+                    })
+                    for (j = 0, len = finishlist.length; j < len; j++) {
+                        $("#" + finishlist[j] + "").hide();
+                        $("#" + finishlist[j] + "").hide();
+                    }
                 }
             });
 
@@ -219,7 +257,7 @@
                         title: ['是否完成该计划', 'background:#029687;color:#ffffff;'],
                         area: ['300px', '200px'],
                         shadeClose: true, //点击遮罩关闭
-                        shade: 0,
+                        //shade: 0,
                         content: '\<\div style="padding:20px;text-align:center;">请选择该计划完成时间\<\input id="DMPdate" name="DMPdate" type="date" class="layui-btn layui-btn-primary" \/>\<\/div>'
                         , btn: ['确认', '取消']
                         , yes: function (index, layero) {
