@@ -1338,7 +1338,7 @@ namespace SewagePlantIMS.Controllers
             if (Request["month"] == null) month = DateTime.Now.Month.ToString();
             else if (Request["month"] == "") month = "";
             else month = Request["month"].ToString();
-            sql = "select * from dm_device_maintenance_plan where  Right(100+dmp_month,2) like '%" + month + "%' order by dmp_weekend,order_id;";
+            sql = "select * from dm_device_maintenance_plan where  Right(100+dmp_month,2) like '%" + month + "%' order by dmp_weekend,order_id,dmp_isfinish;";
             cmd = new SqlCommand(sql, con);
             reader = cmd.ExecuteReader();
             //设置一个变量count来记录数据条数
@@ -1584,5 +1584,6 @@ namespace SewagePlantIMS.Controllers
             }
             
         }
+ 
     }
 }
