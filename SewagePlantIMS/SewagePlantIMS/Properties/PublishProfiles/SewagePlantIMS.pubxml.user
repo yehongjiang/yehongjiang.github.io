@@ -1243,10 +1243,10 @@
       <publishTime>07/30/2019 08:43:41</publishTime>
     </File>
     <File Include="Views/Device/DeviceMaintenancePlan.cshtml">
-      <publishTime>07/31/2019 16:32:42</publishTime>
+      <publishTime>08/01/2019 14:18:09</publishTime>
     </File>
     <File Include="Views/Device/DeviceRepair.cshtml">
-      <publishTime>07/30/2019 13:51:44</publishTime>
+      <publishTime>08/01/2019 13:57:56</publishTime>
     </File>
     <File Include="Views/Device/DeviceRepairPic.cshtml">
       <publishTime>07/30/2019 08:43:41</publishTime>

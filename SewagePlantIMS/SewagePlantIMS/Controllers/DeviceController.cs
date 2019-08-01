@@ -1426,7 +1426,7 @@ namespace SewagePlantIMS.Controllers
             SqlCommand cmd = new SqlCommand(sql, con);
             //设置order_id排序变量
             int order_id;
-            if(cmd.ExecuteScalar()== System.DBNull.Value)
+            if (cmd.ExecuteScalar() == System.DBNull.Value)
             {
                 order_id = 1;
             }
@@ -1445,7 +1445,7 @@ namespace SewagePlantIMS.Controllers
                 return JavaScript("swal_error();");
         }
         //将保养计划添加至保养清单中去
-        public string DeviceMaintenancePlanFinish(string id,string date)
+        public string DeviceMaintenancePlanFinish(string id, string date)
         {
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
@@ -1468,12 +1468,121 @@ namespace SewagePlantIMS.Controllers
             //将数据插入到保养清单中去
             sql = "insert into dm_device_maintenance values(" + dmp.device_id + "," + Convert.ToInt32(Session["user_id"]) + ",'" + dmp.dmp_content + "','" + dmp.dmp_consumption + "'," + 1 + ",'" + date + "'," + dmp.dmp_weekend + "," + 0 + ",'" + dmp.remark + "');";
             //更新保养计划的isfinish列
-            sql += "update dm_device_maintenance_plan set dmp_isfinish = " + 1 + " where id = "+ id + ";";
+            sql += "update dm_device_maintenance_plan set dmp_isfinish = " + 1 + " where id = " + id + ";";
             cmd = new SqlCommand(sql, con);
-            int check = Convert.ToInt32(cmd.ExecuteNonQuery());   
+            int check = Convert.ToInt32(cmd.ExecuteNonQuery());
             con.Close();
             if (check == 2) return "已完成该项保养！！";
             else return "保养添加失败，请联系管理员解决！！";
+        }
+
+        //修改保养计划内容
+        public ActionResult ModifyDeviceMaintenancePlan(string id)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //先查出对应的设备来
+            //1)查出所有的设备名称以及对应的工艺段
+            string sqlStr = "select dm_device.ID,dm_device.title,dm_technology.title from dm_device,dm_technology where technology_id = dm_technology.id order by technology_id; ";
+            SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            List<SelectListItem> list_device = new List<SelectListItem>();
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                list_device.Add(new SelectListItem() { Value = "" + ds.Tables[0].Rows[mDr][0].ToString() + "", Text = "" + ds.Tables[0].Rows[mDr][2].ToString() + " 丨 " + ds.Tables[0].Rows[mDr][1].ToString() + "" });
+            }
+            ViewBag.list_device = list_device;
+            //设置月份下拉菜单
+            var selectStatusList = new List<SelectListItem>() {
+            new SelectListItem() { Value = "1", Text = "1月" },
+            new SelectListItem() { Value = "2", Text = "2月" },
+            new SelectListItem() { Value = "3", Text = "3月" },
+            new SelectListItem() { Value = "4", Text = "4月" },
+            new SelectListItem() { Value = "5", Text = "5月" },
+            new SelectListItem() { Value = "6", Text = "6月" },
+            new SelectListItem() { Value = "7", Text = "7月" },
+            new SelectListItem() { Value = "8", Text = "8月" },
+            new SelectListItem() { Value = "9", Text = "9月" },
+            new SelectListItem() { Value = "10", Text = "10月" },
+            new SelectListItem() { Value = "11", Text = "11月" },
+            new SelectListItem() { Value = "12", Text = "12月" },
+
+        };
+            ViewBag.month = selectStatusList;
+            //设置周下拉菜单
+            var selectStatusList2 = new List<SelectListItem>() {
+            new SelectListItem() { Value = "1", Text = "第1周" },
+            new SelectListItem() { Value = "2", Text = "第2周" },
+            new SelectListItem() { Value = "3", Text = "第3周" },
+            new SelectListItem() { Value = "4", Text = "第4周" },
+            new SelectListItem() { Value = "5", Text = "第5周" },
+
+        };
+            ViewBag.weekend = selectStatusList2;
+            //开始干正事
+            string sql = "select * from dm_device_maintenance_plan where id = " + id + ";";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            SqlDataReader reader = cmd.ExecuteReader();
+            DeviceMaintenancePlan model = new Models.DeviceMaintenancePlan();
+            while (reader.Read())
+            {
+                model.id = Convert.ToInt32(id);
+                model.device_id = Convert.ToInt32(reader["device_id"]);
+                model.dmp_content = reader["dmp_content"].ToString();
+                model.dmp_consumption = reader["dmp_consumption"].ToString();
+                model.dmp_month = Convert.ToInt32(reader["dmp_month"]);
+                model.dmp_weekend = Convert.ToInt32(reader["dmp_weekend"]);
+                model.remark = reader["remark"].ToString();
+            }
+            reader.Close();
+            con.Close();
+            return View(model);
+        }
+        //修改保养计划提交
+        public JavaScriptResult ModifyDeviceMaintenancePlan_Post(DeviceMaintenancePlan model)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "update dm_device_maintenance_plan set device_id =" + model.device_id +
+                ",user_id = " + Convert.ToInt32(Session["user_id"]) +
+                ",dmp_content = '" + model.dmp_content +
+                "',dmp_consumption = '" + model.dmp_consumption +
+                "',dmp_isfinish = " + 0 +
+                ",dmp_month = " + model.dmp_month +
+                ",dmp_weekend = " + model.dmp_weekend +
+                ",remark = '" + model.remark + "' where id = " + Request.Form["modify"] + ";";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check == 1)
+            {
+                return JavaScript("jump_DeviceMaintenancePlan();");
+            }
+            else
+            {
+                return JavaScript("swal_error();");
+            }
+            
+        }
+        //删除保养计划
+        public string DeleteDeviceMaintenancePlan(string id)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "delete from dm_device_maintenance_plan where id = " + id + ";";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check == 1)
+            {
+                return "";
+            }
+            else
+            {
+                return "";
+            }
+            
         }
     }
 }

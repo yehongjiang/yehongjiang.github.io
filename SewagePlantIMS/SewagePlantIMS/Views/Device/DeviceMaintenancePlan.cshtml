@@ -185,17 +185,18 @@
                     var temp = 0;
                     $("a[name='finish']").each(function () {
                         if (xiabiao <= 1) {
-                            $(this).attr({ 'id': myArray[temp] });
+                            $(this).attr({ 'id': myArray[temp] + "another" });
                             temp = temp + 1;
-                            console.log(myArray[temp]);
+                            //console.log(myArray[temp]);
                         }
                         xiabiao = xiabiao - 1;
 
                     })
                     for (j = 0, len = finishlist.length; j < len; j++) {
                         $("#" + finishlist[j] + "").hide();
-                        $("#" + finishlist[j] + "").hide();
+                        $("#" + finishlist[j] + "another").hide();
                     }
+                   
                 }
             });
 
@@ -204,32 +205,34 @@
                 var data = obj.data; //获得当前行数据
                 var layEvent = obj.event; //获得 lay-event 对应的值
 
-                if (layEvent === 'edit') { // 查看
-                    //layer.msg(data["id"]);
+                if (layEvent === 'edit') { // 修改
+ 
                     /*$.ajax({
                          type: "POST", //提交数据的类型 分为POST和GET
-                         url: '/Device/test',  //提交url 注意url必须小写
+                         url: '/Device/ModifyDeviceMaintenancePlan',  //提交url 注意url必须小写
                          data: { "data": data["id"] },
                          success: function (return_data) {
-                             alert(return_data + "修改成功！");
+                             layer.msg("修改成功");
+                             insTb.reload({ where: data.field }, 'data');
                          },
                          error: function () {
-                             alert("按钮出错~");
+                             layer.msg("修改失败~");
                          }
                      });*/
-                    window.location.href = "/Device/ModifyDeviceRepair?id=" + data["id"];
+                    window.location.href = "/Device/ModifyDeviceMaintenancePlan?id=" + data["id"];
+                    
                 } else if (layEvent === 'del') { // 删除
                     var flag = confirm("确定要删除？？？");
                     if (flag) {
                         $.ajax({
                             type: 'post',
-                            url: "/Device/DeleteDeviceRepair?id=" + data["id"],
+                            url: "/Device/DeleteDeviceMaintenancePlan?id=" + data["id"],
                             data: "{}",
                             contentType: "application/json",
                             //dataType: "json",
                             success: function (result) {
-                                layer.msg("删除维修记录成功！！！");
-                                window.location.href = "/Device/DeviceRepair";
+                                layer.msg("删除该保养计划成功！！！");
+                                insTb.reload({ where: data.field }, 'data');
                             },
                             error: function () {
                                 layer.msg("删除失败！！！请联系管理员探讨问题所在~");
