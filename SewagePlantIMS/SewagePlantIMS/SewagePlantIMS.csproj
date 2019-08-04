@@ -585,6 +585,9 @@
     <Content Include="Views\Device\DeviceMaintenancePlan.cshtml" />
     <Content Include="Views\Device\AddDeviceMaintenancePlan.cshtml" />
     <Content Include="Views\Device\ModifyDeviceMaintenancePlan.cshtml" />
+    <Content Include="Views\Device\DeviceMaintenance.cshtml" />
+    <Content Include="Views\Device\AddDeviceMaintenance.cshtml" />
+    <Content Include="Views\Device\ModifyDeviceMaintenance.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

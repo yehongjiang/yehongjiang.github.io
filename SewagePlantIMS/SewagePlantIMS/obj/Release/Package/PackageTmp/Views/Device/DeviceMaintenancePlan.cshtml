@@ -1,7 +1,6 @@
 ﻿
 @{
     Layout = null;
-    int idd = 0;
 }
 
 <!DOCTYPE html>
@@ -63,11 +62,11 @@
                                 <button class="layui-btn icon-btn" lay-filter="formSubSearchTbBas" lay-submit>
                                     <i class="layui-icon">&#xe615;</i>搜索
                                 </button>
-                                <a class="layui-btn" href="">
+                                <a class="layui-btn" ew-href="~/Device/DeviceMaintenance">
                                     <i class="layui-icon layui-icon-form"></i>保养清单
                                 </a>
 
-                                <button id="btnExportTbBas" class="layui-btn icon-btn">
+                                <button id="initialize" class="layui-btn icon-btn">
                                     <i class="layui-icon layui-icon-unlink"></i>初始化
                                 </button>
                                 <a class="layui-btn" ew-href="~/Device/AddDeviceMaintenancePlan" ew-title="新增保养计划">
@@ -109,14 +108,14 @@
             //没有这一条表格分页会失效
             var tableX = layui.tableX;
             // 渲染表格
-            var insTb = tableX.renderFront({
+            var insTb = table.render({
                 elem: '#tableTbBas',
                 url: '/Device/SelectDeviceMaintenancePlanList', //数据接口
                 //给表格增加导出打印筛选列自动功能
                 toolbar: true,
                 title: '导出的设备维修清单',
                 totalrow: true,
-                page: true,
+                page: false,
                 cellMinWidth: 100,
                 cols: [[
                     { type: 'checkbox', fixed: 'left' },
@@ -154,27 +153,55 @@
                             time: 10000,
 
                         })*/
-
+                        //var msg = JSON.stringify(rowData);
+                        //console.log(rowData.device_id);
+                        //配置一个透明的询问框
+                        layer.msg('<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>保养设备</legend></fieldset>' + rowData.device_id + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>保养内容</legend></fieldset>' + rowData.dmp_content + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>物品消耗</legend></fieldset>' + rowData.dmp_consumption + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>' + rowData.dmp_month + '</legend></fieldset>' + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>保养内容</legend></fieldset>' + rowData.dmp_content + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>物品消耗</legend></fieldset>' + rowData.dmp_consumption + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>' + rowData.dmp_weekend + '</legend></fieldset>' + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>备注</legend></fieldset>' + rowData.remark + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>' + rowData.dmp_isfinish + '</legend></fieldset>', {
+                            time: 20000, //20s后自动关闭
+                            btn: ['知道了']
+                        });
+                        
                     })
                     //遍历一遍，给btn都附上不同的id
                     /*$("a[name='finish']").each(function () {
                         $(this).attr({ id: "finish" +  });
                        
                     })*/
-                    
+                    var xiabiao = 1;
+                    var myArray = new Array();
+                    var finishlist = new Array();
                     $.each(currentRowDataList, function (index, obj) {
 
-                        
-                    
+                        //console.log(obj['id'].value);
+                        document.getElementsByName("finish")[index].setAttribute('id', 'finish' + obj['id'].value);
+                        xiabiao = xiabiao + 1;
+                        myArray.push('finish' + obj['id'].value);
                         if (obj['dmp_isfinish'].value == '已完成') {
                             finishlist.push('finish' + obj['id'].value);
                             obj['dmp_isfinish'].row.css("background-color", "#009688");
                             obj['dmp_isfinish'].row.css("color", "#ffffff");
 
 
-              
+                            //document.getElementsByName("finish")[index].style.visibility = "collapse";
+                            //document.getElementsByName("finish")[index].className = "layui-btn layui-btn-primary layui-btn-xs";
+                            //document.getElementsByName("finish")[index].disabled = true;
+                            //document.getElementsByName("finish")[index].style.display="none";
                         }
                     })
+                    var temp = 0;
+                    $("a[name='finish']").each(function () {
+                        if (xiabiao <= 1) {
+                            $(this).attr({ 'id': myArray[temp] + "another" });
+                            temp = temp + 1;
+                            //console.log(myArray[temp]);
+                        }
+                        xiabiao = xiabiao - 1;
+
+                    })
+                    for (j = 0, len = finishlist.length; j < len; j++) {
+                        $("#" + finishlist[j] + "").hide();
+                        $("#" + finishlist[j] + "another").hide();
+                    }
                    
                 }
             });
@@ -184,32 +211,34 @@
                 var data = obj.data; //获得当前行数据
                 var layEvent = obj.event; //获得 lay-event 对应的值
 
-                if (layEvent === 'edit') { // 查看
-                    //layer.msg(data["id"]);
+                if (layEvent === 'edit') { // 修改
+ 
                     /*$.ajax({
                          type: "POST", //提交数据的类型 分为POST和GET
-                         url: '/Device/test',  //提交url 注意url必须小写
+                         url: '/Device/ModifyDeviceMaintenancePlan',  //提交url 注意url必须小写
                          data: { "data": data["id"] },
                          success: function (return_data) {
-                             alert(return_data + "修改成功！");
+                             layer.msg("修改成功");
+                             insTb.reload({ where: data.field }, 'data');
                          },
                          error: function () {
-                             alert("按钮出错~");
+                             layer.msg("修改失败~");
                          }
                      });*/
-                    window.location.href = "/Device/ModifyDeviceRepair?id=" + data["id"];
+                    window.location.href = "/Device/ModifyDeviceMaintenancePlan?id=" + data["id"];
+                    
                 } else if (layEvent === 'del') { // 删除
                     var flag = confirm("确定要删除？？？");
                     if (flag) {
                         $.ajax({
                             type: 'post',
-                            url: "/Device/DeleteDeviceRepair?id=" + data["id"],
+                            url: "/Device/DeleteDeviceMaintenancePlan?id=" + data["id"],
                             data: "{}",
                             contentType: "application/json",
                             //dataType: "json",
                             success: function (result) {
-                                layer.msg("删除维修记录成功！！！");
-                                window.location.href = "/Device/DeviceRepair";
+                                layer.msg("删除该保养计划成功！！！");
+                                insTb.reload({ where: data.field }, 'data');
                             },
                             error: function () {
                                 layer.msg("删除失败！！！请联系管理员探讨问题所在~");
@@ -273,13 +302,32 @@
             });
 
             // 导出excel
-            $('#btnExportTbBas').click(function () {
+            $('#initialize').click(function () {
                 var checkRows = table.checkStatus('tableTbBas');
                 if (checkRows.data.length == 0) {
                     layer.msg('请选择要初始化的数据', { icon: 2 });
                 } else {
                     if (confirm("确认需要初始化吗?初始化后完成选项可以重新提交!")) {
-                        return true;
+                        var data = "";
+                        for (i = 0; i < checkRows.data.length; i++) {
+                            data += checkRows.data[i].id;
+                            data += '-';
+                        }
+                        data += 'n';
+                        $.ajax({
+                            type: "POST", //提交数据的类型 分为POST和GET
+                            url: '/Device/DeviceMaintenancePlanInitialize',  //提交url 注意url必须小写
+                            data: { "data": data},
+                            success: function (return_data) {
+                                layer.msg(return_data);
+                                insTb.reload({ where: data.field }, 'data');                              
+                            },
+                            error: function (return_date) {
+                                layer.msg(return_data);
+                            }
+                        })
+                        
+                        
                     }
                     return false;
 

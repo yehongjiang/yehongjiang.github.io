@@ -1,0 +1,223 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>设备保养清单</title>
+    <link rel="stylesheet" href="~/assets/libs/layui/css/layui.css" />
+    <link rel="stylesheet" href="~/assets/module/admin.css?v=312" />
+    <!--没有下面两个JS则后台javascript返回失效-->
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <!-- js部分 -->
+    <script type="text/javascript" src="~/assets/libs/layui/layui.js"></script>
+    <script type="text/javascript" src="~/assets/js/common.js?v=312"></script>
+    <script src="/static/build/layui.js"></script>
+</head>
+<body>
+    <!-- 加载动画 -->
+    <div class="page-loading">
+        <div class="ball-loader">
+            <span></span><span></span><span></span><span></span>
+        </div>
+    </div>
+
+    <!-- 正文开始 -->
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-body">
+
+                <div class="layui-form toolbar">
+                    <div class="layui-form-item">
+                        <div>
+                            <div class="layui-inline layui-col-md2">
+                                <input name="keyword" class="layui-input" type="text" placeholder="输入关键字" />
+                            </div>
+                            <div class="layui-inline layui-col-md2">
+                                <select name="year" lay-verify="">
+                                    <option value="">年份</option>
+                                    <option value="2019">2019</option>
+                                </select>
+                            </div>
+                            <div class="layui-inline layui-col-md2">
+                                <select name="month" lay-verify="">
+                                    <option value="">月份</option>
+                                    <option value="12">12</option>
+                                    <option value="11">11</option>
+                                    <option value="10">10</option>
+                                    <option value="09">9</option>
+                                    <option value="08">8</option>
+                                    <option value="07">7</option>
+                                    <option value="06">6</option>
+                                    <option value="05">5</option>
+                                    <option value="04">4</option>
+                                    <option value="03">3</option>
+                                    <option value="02">2</option>
+                                    <option value="01">1</option>
+                                </select>
+                            </div>
+
+
+                            <div class="layui-inline">
+                                <button class="layui-btn icon-btn" lay-filter="formSubSearchTbBas" lay-submit>
+                                    <i class="layui-icon">&#xe615;</i>搜索
+                                </button>
+                                <a class="layui-btn" href="AddDeviceMaintenance">
+                                    <i class="layui-icon layui-icon-add-1"></i>额外保养
+                                </a>
+
+                                <button id="btnExportTbBas" class="layui-btn icon-btn">
+                                    <i class="layui-icon">&#xe67d;</i>导出
+                                </button>
+                                <!-- 下拉按钮
+                                <div class="dropdown-menu dropdown-hover">
+                                    <button class="layui-btn icon-btn">
+                                        &nbsp;更多 <i class="layui-icon layui-icon-drop"></i>
+                                    </button>
+                                    <ul class="dropdown-menu-nav">
+                                        <li><a><i class="layui-icon layui-icon-edit"></i>维修图片</a></li>
+                                    </ul>
+                                </div> -->
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <table class="layui-table" id="tableTbBas" lay-filter="tableTbBas"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 表格操作列 -->
+    <script type="text/html" id="tableBarTbBas">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+
+        <a class="layui-btn layui-btn-xs" data-dropdown="#dropUser{{d.LAY_INDEX}}" no-shade="true">
+            更多<i class="layui-icon layui-icon-drop" style="font-size: 12px;margin-right: 0;"></i>
+        </a>
+        <!-- 下拉菜单 -->
+        <ul class="dropdown-menu-nav dropdown-bottom-right layui-hide" id="dropUser{{d.LAY_INDEX}}">
+            <div class="dropdown-anchor"></div>
+            <li><a lay-event="del"><i class="layui-icon layui-icon-close-fill"></i>删除</a></li>
+        </ul>
+    </script>
+    <script>
+        layui.use(['layer', 'form', 'table', 'util', 'dropdown','tableX'], function () {
+            var $ = layui.jquery;
+            var layer = layui.layer;
+            var form = layui.form;
+            var table = layui.table;
+            var util = layui.util;
+            var dropdown = layui.dropdown;
+            //没有这一条表格分页会失效
+            var tableX = layui.tableX;
+            // 渲染表格
+            var insTb = tableX.renderFront({
+                elem: '#tableTbBas',
+                url: '/Device/DeviceMaintenanceList', //数据接口
+                //给表格增加导出打印筛选列自动功能
+                toolbar: true,
+                title: '导出的设备保养清单',
+                totalrow: true,
+                page: true,
+                cellMinWidth: 100,
+                cols: [[
+                    { type: 'checkbox', fixed: 'left' },
+                    { field: 'id', align: 'center', sort: true, title: 'id', hide: true },
+                    { field: 'device_id', align: 'center', sort: true, title: '对应设备' },
+                    { field: 'dm_content', align: 'center', sort: true, title: '保养内容' },
+                    { field: 'dm_consumption', align: 'center', sort: true, title: '物品使用' },
+                    { field: 'dm_date', align: 'center', sort: true, title: '保养时间' },
+                    { field: 'dm_weekend', align: 'center', sort: true, title: '保养周' },
+                    { field: 'dm_isextra', align: 'center', sort: true, title: '是否额外' },
+                    { field: 'remark', align: 'center', sort: true, title: '备注' },
+                    { align: 'center', toolbar: '#tableBarTbBas', title: '操作', minWidth: 130, fixed: 'right' }
+                ]]
+            });
+
+            //监听工具条
+            table.on('tool(tableTbBas)', function (obj) {
+                var data = obj.data; //获得当前行数据
+                var layEvent = obj.event; //获得 lay-event 对应的值
+
+                if (layEvent === 'edit') { // 修改
+                    window.location.href = "/Device/ModifyDeviceMaintenance?id=" + data["id"];
+                } else if (layEvent === 'del') { // 删除
+                    var flag = confirm("确定要删除？？？");
+                    if (flag) {
+                        $.ajax({
+                            type: 'post',
+                            url: "/Device/DeleteDeviceMaintenance?id=" + data["id"],
+                            data: "{}",
+                            contentType: "application/json",
+                            //dataType: "json",
+                            success: function (result) {
+                                insTb.reloadUrl({ where: data.field }, 'data');
+                                layer.msg("删除保养记录成功！！！");
+                                insTb.reloadUrl({ where: data.field }, 'data');
+                            },
+                            error: function () {
+                                layer.msg("删除失败！！！请联系管理员探讨问题所在~");
+                            }
+                        })
+                    }
+                    else {
+                        layer.msg('取消了删除');
+                    }
+
+                } 
+                 else if (layEvent === 'del2') { // 删除2
+                    layer.msg('点击了下拉菜单删除');
+                } else if (layEvent === 'print2') { // 打印2
+                    layer.msg('点击了下拉菜单打印');
+                } else if (layEvent === 'output') { // 输出Excel
+                    window.location.href = "/Device/OutputDeiveRepairExcel?id=" + data["id"];
+
+                }
+                dropdown.hideAll();
+            });
+
+            // 导出excel
+            $('#btnExportTbBas').click(function () {
+                var checkRows = table.checkStatus('tableTbBas');
+                if (checkRows.data.length == 0) {
+                    layer.msg('请选择要导出的数据', { icon: 2 });
+                } else {
+                    /*console.log(insTb.config);
+                    table.exportFile(insTb.config.id, checkRows.data, 'xls');*/
+                    //table.exportFile(ins1.config.id, data);
+                    var data = "";
+                    for (i = 0; i < checkRows.data.length; i++) {
+                        data += checkRows.data[i].id;
+                        data += '-';
+                    }
+                    data += 'n';
+                    window.location.href = "/Device/outputDeviceMaintenanceListModel?data=" + data;
+
+                }
+            });
+
+            // 搜索按钮点击事件
+            form.on('submit(formSubSearchTbBas)', function (data) {
+                insTb.reloadUrl({ where: data.field }, 'data');
+            });
+
+        });
+    </script>
+    <script>
+        //删除图片成功的返回
+
+        function delete_device_repair2() {
+            layer.msg("删除失败！！！请联系管理员探讨问题所在~");
+
+        }
+    </script>
+</body>
+
+</html>

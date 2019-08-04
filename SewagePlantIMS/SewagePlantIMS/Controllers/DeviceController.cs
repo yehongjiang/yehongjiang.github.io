@@ -1338,7 +1338,7 @@ namespace SewagePlantIMS.Controllers
             if (Request["month"] == null) month = DateTime.Now.Month.ToString();
             else if (Request["month"] == "") month = "";
             else month = Request["month"].ToString();
-            sql = "select * from dm_device_maintenance_plan where  Right(100+dmp_month,2) like '%" + month + "%' order by dmp_weekend,order_id,dmp_isfinish;";
+            sql = "select * from dm_device_maintenance_plan where  Right(100+dmp_month,2) like '%" + month + "%' order by dmp_isfinish,dmp_weekend,order_id;";
             cmd = new SqlCommand(sql, con);
             reader = cmd.ExecuteReader();
             //设置一个变量count来记录数据条数
@@ -1563,7 +1563,7 @@ namespace SewagePlantIMS.Controllers
             {
                 return JavaScript("swal_error();");
             }
-            
+
         }
         //删除保养计划
         public string DeleteDeviceMaintenancePlan(string id)
@@ -1582,8 +1582,224 @@ namespace SewagePlantIMS.Controllers
             {
                 return "";
             }
-            
+
         }
- 
+        //初始化保养计划
+        public string DeviceMaintenancePlanInitialize(string data)
+        {
+            List<int> idd = new List<int>();
+            string temp = "";
+            foreach (char c in data)
+            {
+                if (c == 'n') break;
+                if (c >= '0' && c <= '9')
+                {
+                    temp += c;
+                }
+                else
+                {
+                    idd.Add(Convert.ToInt32(temp));
+                    temp = "";
+                }
+
+
+            }
+            //连接数据库
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql;
+            SqlCommand cmd;
+            int check = 0;
+            foreach (int item in idd)
+            {
+                sql = "update dm_device_maintenance_plan set dmp_isfinish = 0 where id = " + item + ";";
+                cmd = new SqlCommand(sql, con);
+                check += cmd.ExecuteNonQuery();
+            }
+            con.Close();
+            if (check > 0) return "初始化成功！";
+            else return "初始化失败！";
+        }
+        //保养清单
+        public ActionResult DeviceMaintenance()
+        {
+            return View();
+        }
+        public string DeviceMaintenanceList()
+        {
+            string str = "";
+            string sql;
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            SqlCommand cmd;
+            SqlDataReader reader;
+            //最后把设备维保养表给查询出来
+            string month;
+            if (Request["month"] == null) month = DateTime.Now.Month.ToString();
+            else if (Request["month"] == "") month = "";
+            else month = Request["month"].ToString();
+            string year;
+            if (Request["year"] == null) year = DateTime.Now.Year.ToString();
+            else if (Request["year"] == "") year = "";
+            else year = Request["year"].ToString();
+            string keyword;
+            if (Request["keyword"] == null) keyword = "";
+            else if (Request["keyword"] == "") keyword = "";
+            else keyword = Request["keyword"].ToString();
+            sql = "select dm_device_maintenance.id,dm_device.title,dm_content,dm_consumption,dm_isfinish,dm_date,dm_weekend,dm_isextra,remark from dm_device_maintenance,dm_device where dm_device.id = device_id and Right(100+Month(dm_date),2) like '%" + month + "%' and dm_device.title like '%" + keyword + "%' and CONVERT(VARCHAR,Year(dm_date)) like '%" + year + "%' order by dm_weekend,dm_date desc;";
+            cmd = new SqlCommand(sql, con);
+            reader = cmd.ExecuteReader();
+            //设置一个变量count来记录数据条数
+            int count = 0;
+            while (reader.Read())    // 判断数据是否读到尾. 
+            {
+                str += "{\"id\":\"" + reader["id"].ToString() + "\",";
+                str += "\"device_id\":\"" + reader["title"].ToString() + "\",";
+                str += "\"dm_content\":\"" + reader["dm_content"].ToString() + "\",";
+                str += "\"dm_consumption\":\"" + reader["dm_consumption"].ToString() + "\",";
+                if (Convert.ToInt32(reader["dm_isfinish"]) == 1)
+                {
+                    str += "\"dm_isfinish\":\"" + "已完成" + "\",";
+                }
+                else
+                {
+                    str += "\"dm_isfinish\":\"" + "未完成" + "\",";
+                }
+
+                str += "\"dm_date\":\"" + Convert.ToDateTime(reader["dm_date"]).ToString("yyyy-MM-dd") + "\",";
+                str += "\"dm_weekend\":\"第" + Convert.ToInt32(reader["dm_weekend"]) + "周\",";
+                if (Convert.ToInt32(reader["dm_isextra"]) == 0)
+                {
+                    str += "\"dm_isextra\":\"" + "计划内" + "\",";
+                }
+                else
+                {
+                    str += "\"dm_isextra\":\"" + "计划外" + "\",";
+                }
+                str += "\"remark\":\"" + reader["remark"].ToString() + "\"},";
+                count += 1;
+            }
+            str = "{\"code\": 0,\"count\":" + count + ",\"data\": [" + str;
+            str = str + "]}";
+            JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
+            reader.Close();
+            con.Close();
+
+            return json.ToString();
+        }
+        //额外保养的添加
+        public ActionResult AddDeviceMaintenance()
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //1)查出所有的设备名称以及对应的工艺段
+            string sqlStr = "select dm_device.ID,dm_device.title,dm_technology.title from dm_device,dm_technology where technology_id = dm_technology.id order by technology_id; ";
+            SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            List<SelectListItem> list_device = new List<SelectListItem>();
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                list_device.Add(new SelectListItem() { Value = "" + ds.Tables[0].Rows[mDr][0].ToString() + "", Text = "" + ds.Tables[0].Rows[mDr][2].ToString() + " 丨 " + ds.Tables[0].Rows[mDr][1].ToString() + "" });
+            }
+            ViewBag.list_device = list_device;
+            //设置周下拉菜单
+            var selectStatusList2 = new List<SelectListItem>() {
+            new SelectListItem() { Value = "1", Text = "第1周" },
+            new SelectListItem() { Value = "2", Text = "第2周" },
+            new SelectListItem() { Value = "3", Text = "第3周" },
+            new SelectListItem() { Value = "4", Text = "第4周" },
+            new SelectListItem() { Value = "5", Text = "第5周" },
+
+            };
+            ViewBag.weekend = selectStatusList2;
+            con.Close();
+
+            return View();
+        }
+        public JavaScriptResult AddDeviceMaintenance_Post(DeviceMaintenance model)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "insert into dm_device_maintenance(device_id,user_id,dm_content,dm_consumption,dm_isfinish,dm_date,dm_weekend,dm_isextra,remark) values(" + model.device_id+ "," + Convert.ToInt32(Session["user_id"]) + ",'" + model.dm_content+"','"+model.dm_consumption + "'," + 1 + ",'" + model.dm_date + "'," + model.dm_weekend + "," + 1 + ",'" + model.remark + "');";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check == 1) return JavaScript("swal_success();jump_DeviceMaintenance();");
+            else return JavaScript("swal_error();");
+        }
+        //修改保养内容
+        public ActionResult ModifyDeviceMaintenance(string id)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //1)查出所有的设备名称以及对应的工艺段
+            string sqlStr = "select dm_device.ID,dm_device.title,dm_technology.title from dm_device,dm_technology where technology_id = dm_technology.id order by technology_id; ";
+            SqlDataAdapter da = new SqlDataAdapter(sqlStr, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            List<SelectListItem> list_device = new List<SelectListItem>();
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                list_device.Add(new SelectListItem() { Value = "" + ds.Tables[0].Rows[mDr][0].ToString() + "", Text = "" + ds.Tables[0].Rows[mDr][2].ToString() + " 丨 " + ds.Tables[0].Rows[mDr][1].ToString() + "" });
+            }
+            ViewBag.list_device = list_device;
+            //设置周下拉菜单
+            var selectStatusList2 = new List<SelectListItem>() {
+            new SelectListItem() { Value = "1", Text = "第1周" },
+            new SelectListItem() { Value = "2", Text = "第2周" },
+            new SelectListItem() { Value = "3", Text = "第3周" },
+            new SelectListItem() { Value = "4", Text = "第4周" },
+            new SelectListItem() { Value = "5", Text = "第5周" },
+
+            };
+            ViewBag.weekend = selectStatusList2;
+            //查出对应设备保养内容
+            string sql = "select * from dm_device_maintenance where id = " + id + ";";
+            DeviceMaintenance model = new Models.DeviceMaintenance();
+            SqlCommand cmd = new SqlCommand(sql, con);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                model.id = Convert.ToInt32(reader["id"]);
+                model.device_id = Convert.ToInt32(reader["device_id"]);
+                model.dm_content = reader["dm_content"].ToString();
+                model.dm_consumption = reader["dm_consumption"].ToString();
+                model.dm_date = Convert.ToDateTime(Convert.ToDateTime(reader["dm_date"]).ToString("yyyy-MM-dd"));
+                model.dm_weekend = Convert.ToInt32(reader["dm_weekend"]);
+                model.remark = reader["remark"].ToString();
+            }
+            con.Close();
+            return View(model);
+        }
+        public JavaScriptResult ModifyDeviceMaintenance_Post(DeviceMaintenance model)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "update dm_device_maintenance set device_id = " + model.device_id +
+                ",user_id = " + Convert.ToInt32(Session["user_id"]) +
+                ",dm_content = '" + model.dm_content +
+                "',dm_consumption = '" + model.dm_consumption +
+                "',dm_date = '" + model.dm_date +
+                "',dm_weekend = " + model.dm_weekend +
+                ",remark = '" + model.remark + "' where id = " + Request.Form["idd"].ToString() + ";";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check == 1) return JavaScript("swal_success();jump_DeviceMaintenance();");
+            else return JavaScript("swal_error();");
+        }
+        //删除保养记录
+        public string DeleteDeviceMaintenance(string id)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "delete from dm_device_maintenance where id=" + id + ";";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check == 1) return "";
+            else return "";
+        }
     }
 }
