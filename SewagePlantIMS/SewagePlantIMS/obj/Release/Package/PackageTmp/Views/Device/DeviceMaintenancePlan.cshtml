@@ -156,7 +156,7 @@
                         //var msg = JSON.stringify(rowData);
                         //console.log(rowData.device_id);
                         //配置一个透明的询问框
-                        layer.msg('<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>保养设备</legend></fieldset>' + rowData.device_id + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>保养内容</legend></fieldset>' + rowData.dmp_content + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>物品消耗</legend></fieldset>' + rowData.dmp_consumption + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>' + rowData.dmp_month + '</legend></fieldset>' + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>保养内容</legend></fieldset>' + rowData.dmp_content + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>物品消耗</legend></fieldset>' + rowData.dmp_consumption + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>' + rowData.dmp_weekend + '</legend></fieldset>' + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>备注</legend></fieldset>' + rowData.remark + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>' + rowData.dmp_isfinish + '</legend></fieldset>', {
+                        layer.msg('<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>保养设备</legend></fieldset>' + rowData.device_id + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>保养内容</legend></fieldset>' + rowData.dmp_content + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>物品消耗</legend></fieldset>' + rowData.dmp_consumption + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>' + rowData.dmp_month + '</legend>'+ '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>物品消耗</legend></fieldset>' + rowData.dmp_consumption + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>' + rowData.dmp_weekend + '</legend></fieldset>' + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>备注</legend></fieldset>' + rowData.remark + '<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;"><legend>' + rowData.dmp_isfinish + '</legend></fieldset>', {
                             time: 20000, //20s后自动关闭
                             btn: ['知道了']
                         });
@@ -281,7 +281,8 @@
                                     success: function (return_data) {
                                         layer.msg(return_data);
                                         layer.close(index);
-                                        parent.location.reload();
+                                        //parent.location.reload();
+                                        insTb.reload({ where: data.field }, 'data');
                                     },
                                     error: function (return_date) {
                                         layer.msg(return_data);

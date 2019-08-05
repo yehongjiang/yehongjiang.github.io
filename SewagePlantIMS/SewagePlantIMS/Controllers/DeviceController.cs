@@ -1801,5 +1801,31 @@ namespace SewagePlantIMS.Controllers
             if (check == 1) return "";
             else return "";
         }
+        //调换设备保养计划同周期的两列数据的order_id
+        public string ResortDeviceMaintenancePlan(string data)
+        {
+            List<int> idd = new List<int>();
+            string temp = "";
+            foreach (char c in data)
+            {
+                if (c == 'n') break;
+                if (c >= '0' && c <= '9')
+                {
+                    temp += c;
+                }
+                else
+                {
+                    idd.Add(Convert.ToInt32(temp));
+                    temp = "";
+                }
+
+
+            }
+            //连接数据库
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "";
+
+        }
     }
 }
