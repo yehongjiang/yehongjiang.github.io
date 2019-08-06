@@ -1882,10 +1882,10 @@ namespace SewagePlantIMS.Controllers
             int weekend = 0;//用来分别周期
             //创建工作簿对象
             HSSFWorkbook hssfworkbook;
-            using (FileStream file = new FileStream(HttpContext.Request.PhysicalApplicationPath + @"ExcelModel\DeviceMaintenanceExcelModel.xls", FileMode.Open, FileAccess.Read))
+            using (FileStream file = new FileStream(HttpContext.Request.PhysicalApplicationPath + @"ExcelModel\MaintenanceListModel.xls", FileMode.Open, FileAccess.Read))
             {
                 hssfworkbook = new HSSFWorkbook(file);
-                ISheet sheet1 = hssfworkbook.GetSheet("Sheet1");
+                ISheet sheet1 = hssfworkbook.GetSheet("sheet1");
                 //设置单元格样式
                 ICellStyle cellstyle = hssfworkbook.CreateCellStyle();
                 //设置单元格上下左右边框线
@@ -1898,6 +1898,7 @@ namespace SewagePlantIMS.Controllers
                 cellstyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
                 //开始遍历查询
                 ICell Cell;
+                
                 foreach (int item in idd)
                 {
                     sql = "select dm_device_maintenance.id,dm_device.title,dm_content,dm_consumption,dm_date,dm_weekend,dm_isextra,remark from dm_device,dm_device_maintenance where dm_device.id=dm_device_maintenance.id and dm_device.id =  " + item + ";";
