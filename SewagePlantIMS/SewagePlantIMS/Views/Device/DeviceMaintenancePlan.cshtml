@@ -354,12 +354,14 @@
                             for (i = 0; i < checkRows.data.length; i++) {
                                 data += checkRows.data[i].id;
                                 data += '-';
+                                order += checkRows.data[i].order_id;
+                                order += '-';
                             }
                             data += 'n';
                             $.ajax({
                                 type: "POST", //提交数据的类型 分为POST和GET
                                 url: '/Device/ResortDeviceMaintenancePlan',  //提交url 注意url必须小写
-                                data: { "data": data },
+                                data: { "data": data,"order":order },
                                 success: function (return_data) {
                                     layer.msg(return_data);
                                     insTb.reload({ where: data.field }, 'data');

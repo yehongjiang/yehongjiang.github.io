@@ -1721,7 +1721,7 @@ namespace SewagePlantIMS.Controllers
         {
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string sql = "insert into dm_device_maintenance(device_id,user_id,dm_content,dm_consumption,dm_isfinish,dm_date,dm_weekend,dm_isextra,remark) values(" + model.device_id+ "," + Convert.ToInt32(Session["user_id"]) + ",'" + model.dm_content+"','"+model.dm_consumption + "'," + 1 + ",'" + model.dm_date + "'," + model.dm_weekend + "," + 1 + ",'" + model.remark + "');";
+            string sql = "insert into dm_device_maintenance(device_id,user_id,dm_content,dm_consumption,dm_isfinish,dm_date,dm_weekend,dm_isextra,remark) values(" + model.device_id + "," + Convert.ToInt32(Session["user_id"]) + ",'" + model.dm_content + "','" + model.dm_consumption + "'," + 1 + ",'" + model.dm_date + "'," + model.dm_weekend + "," + 1 + ",'" + model.remark + "');";
             SqlCommand cmd = new SqlCommand(sql, con);
             int check = cmd.ExecuteNonQuery();
             con.Close();
@@ -1802,7 +1802,57 @@ namespace SewagePlantIMS.Controllers
             else return "";
         }
         //调换设备保养计划同周期的两列数据的order_id
-        public string ResortDeviceMaintenancePlan(string data)
+        public string ResortDeviceMaintenancePlan(string data, string order)
+        {
+            //获取对应的两个ID数据
+            List<int> idd = new List<int>();
+            string temp = "";
+            foreach (char c in data)
+            {
+                if (c == 'n') break;
+                if (c >= '0' && c <= '9')
+                {
+                    temp += c;
+                }
+                else
+                {
+                    idd.Add(Convert.ToInt32(temp));
+                    temp = "";
+                }
+
+
+            }
+            //获取对应的两个order_id数据
+            List<int> order_id = new List<int>();
+            temp = "";
+            foreach (char c in order)
+            {
+                if (c == 'n') break;
+                if (c >= '0' && c <= '9')
+                {
+                    temp += c;
+                }
+                else
+                {
+                    order_id.Add(Convert.ToInt32(temp));
+                    temp = "";
+                }
+
+            }
+            //连接数据库
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "update dm_device_maintenance_plan set order_id = " + order_id[1] + " where id = " + idd[0] + ";";
+            sql += "update dm_device_maintenance_plan set order_id = " + order_id[0] + " where id = " + idd[1] + ";";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check == 2) return "调换顺序成功！";
+            else return "调换顺序出错，请及时联系管理员解决~！";
+
+        }
+        //保养内容excel导出
+        public void OutputDeviceMaintenance(string data)
         {
             List<int> idd = new List<int>();
             string temp = "";
@@ -1824,8 +1874,99 @@ namespace SewagePlantIMS.Controllers
             //连接数据库
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string sql = "";
+            SqlCommand cmd;
+            SqlDataReader reader;
+            string sql;
+            int i = 1;
+            int rows = 2;
+            int weekend = 0;//用来分别周期
+            //创建工作簿对象
+            HSSFWorkbook hssfworkbook;
+            using (FileStream file = new FileStream(HttpContext.Request.PhysicalApplicationPath + @"ExcelModel\DeviceMaintenanceExcelModel.xls", FileMode.Open, FileAccess.Read))
+            {
+                hssfworkbook = new HSSFWorkbook(file);
+                ISheet sheet1 = hssfworkbook.GetSheet("Sheet1");
+                //设置单元格样式
+                ICellStyle cellstyle = hssfworkbook.CreateCellStyle();
+                //设置单元格上下左右边框线
+                cellstyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                cellstyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                cellstyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                cellstyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                cellstyle.WrapText = true;
+                cellstyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                cellstyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
+                //开始遍历查询
+                ICell Cell;
+                foreach (int item in idd)
+                {
+                    sql = "select dm_device_maintenance.id,dm_device.title,dm_content,dm_consumption,dm_date,dm_weekend,dm_isextra,remark from dm_device,dm_device_maintenance where dm_device.id=dm_device_maintenance.id and dm_device.id =  " + item + ";";
+                    cmd = new SqlCommand(sql, con);
+                    reader = cmd.ExecuteReader();
 
+                    while (reader.Read())
+                    {
+                        //如果周期不符则合并一行单元格显示第几周
+                        if(Convert.ToInt32(reader["dm_weekend"]) != weekend)
+                        {
+                            sheet1.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(rows, rows, 0, 7));
+                           for(int j = 0; j < 8; j++)
+                            {
+                                Cell = sheet1.GetRow(rows).GetCell(j);
+                                Cell.CellStyle = cellstyle;
+                            }
+                            //写入第几周的数据
+                            sheet1.GetRow(rows).GetCell(0).SetCellValue("第" + reader["dm_weekend"].ToString() + "周");
+                            weekend = Convert.ToInt32(reader["dm_weekend"]);
+                            rows += 1;
+                        }
+                        //往表中插入数据
+                        //序号                       
+                        Cell = sheet1.GetRow(rows).GetCell(0);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(0).SetCellValue(i);
+                        //保养设备
+                        Cell = sheet1.GetRow(rows).GetCell(1);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(1).SetCellValue(reader["title"].ToString());
+                        //保养项目
+                        Cell = sheet1.GetRow(rows).GetCell(2);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(2).SetCellValue(reader["dm_content"].ToString());
+                        //物品使用情况
+                        Cell = sheet1.GetRow(rows).GetCell(3);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(3).SetCellValue(reader["dm_consumption"].ToString());
+                        //保养进度
+                        Cell = sheet1.GetRow(rows).GetCell(4);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(4).SetCellValue("已完成");
+                        //保养日期
+                        Cell = sheet1.GetRow(rows).GetCell(5);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(5).SetCellValue(Convert.ToDateTime(reader["dm_date"]).ToString("yyyy-MM-dd"));
+                        //是否按计划执行
+                        Cell = sheet1.GetRow(rows).GetCell(6);
+                        Cell.CellStyle = cellstyle;
+                        if(Convert.ToInt32(reader["dm_isextra"])==0)
+                            sheet1.GetRow(rows).GetCell(6).SetCellValue("计划内");
+                        else
+                            sheet1.GetRow(rows).GetCell(6).SetCellValue("计划外");
+                        //备注
+                        Cell = sheet1.GetRow(rows).GetCell(7);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(rows).GetCell(7).SetCellValue(reader["remark"].ToString());
+                        i += 1;
+                    }
+                    rows += 1;
+                    reader.Close();
+                }
+
+                //下面是设置单元格边框的示例
+                MemoryStream mstream = new MemoryStream();
+                hssfworkbook.Write(mstream);
+                DownloadFile(mstream, "设备保养记录" + DateTime.Now.ToString("d"));
+            }
         }
     }
 }

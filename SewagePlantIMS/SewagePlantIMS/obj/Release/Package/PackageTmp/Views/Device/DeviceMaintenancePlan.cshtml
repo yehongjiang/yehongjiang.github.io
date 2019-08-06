@@ -72,6 +72,9 @@
                                 <a class="layui-btn" ew-href="~/Device/AddDeviceMaintenancePlan" ew-title="新增保养计划">
                                     <i class="layui-icon layui-icon-add-circle-fine"></i>新增
                                 </a>
+                                <button id="resort" class="layui-btn icon-btn">
+                                    <i class="layui-icon layui-icon-app"></i>调换
+                                </button>
                             </div>
 
                         </div>
@@ -302,7 +305,7 @@
                 dropdown.hideAll();
             });
 
-            // 导出excel
+            // 初始化数据
             $('#initialize').click(function () {
                 var checkRows = table.checkStatus('tableTbBas');
                 if (checkRows.data.length == 0) {
@@ -335,7 +338,48 @@
 
                 }
             });
+            //调换两行同周期数据的位置
+            $('#resort').click(function () {
+                var checkRows = table.checkStatus('tableTbBas');
+                if (checkRows.data.length != 2) {
+                    layer.msg('请选择要调换顺序的两行同周期数据', { icon: 2 });
+                } else {
+                    if (checkRows.data[0].dmp_weekend != checkRows.data[1].dmp_weekend) {
+                        layer.msg('未选择同周期数据！', { icon: 2 });
+                    }
+                    else {
+                        if (confirm("确认是否调换！")) {
+                            var data = "";
+                            var order = "";
+                            for (i = 0; i < checkRows.data.length; i++) {
+                                data += checkRows.data[i].id;
+                                data += '-';
+                                order += checkRows.data[i].order_id;
+                                order += '-';
+                            }
+                            data += 'n';
+                            $.ajax({
+                                type: "POST", //提交数据的类型 分为POST和GET
+                                url: '/Device/ResortDeviceMaintenancePlan',  //提交url 注意url必须小写
+                                data: { "data": data,"order":order },
+                                success: function (return_data) {
+                                    layer.msg(return_data);
+                                    insTb.reload({ where: data.field }, 'data');
+                                },
+                                error: function (return_date) {
+                                    layer.msg(return_data);
+                                }
+                            })
 
+
+                        }
+                    }
+                    
+                    return false;
+
+
+                }
+            });
             // 搜索按钮点击事件
             form.on('submit(formSubSearchTbBas)', function (data) {
                 insTb.reload({ where: data.field }, 'data');
