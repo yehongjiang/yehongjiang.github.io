@@ -1554,6 +1554,25 @@ namespace SewagePlantIMS.Controllers
                 ",remark = '" + model.remark + "' where id = " + Request.Form["modify"] + ";";
             SqlCommand cmd = new SqlCommand(sql, con);
             int check = cmd.ExecuteNonQuery();
+            //这里还需要加一条，就是给这条更新数据所在的月和周的所有数据重新赋予新的排序编号
+            //1）先查出新的该月该周的所有数据id
+            List<int> temp_id = new List<int>();
+            sql = "select id from dm_device_maintenance_plan where dmp_month = " + model.dmp_month + " and dmp_weekend = " + model.dmp_weekend + ";";
+            cmd = new SqlCommand(sql, con);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                temp_id.Add(Convert.ToInt32(reader["id"]));
+            }
+            reader.Close();
+            //2)for循环给每个order_id重新编号
+            int temp;
+            for(int j = 0; j < temp_id.Count; j++)
+            {
+                sql = "update dm_device_maintenance_plan set order_id = " + j + " where id = " + temp_id[j] + ";";
+                cmd = new SqlCommand(sql, con);
+                temp = cmd.ExecuteNonQuery();
+            }
             con.Close();
             if (check == 1)
             {
@@ -1901,7 +1920,7 @@ namespace SewagePlantIMS.Controllers
                 
                 foreach (int item in idd)
                 {
-                    sql = "select dm_device_maintenance.id,dm_device.title,dm_content,dm_consumption,dm_date,dm_weekend,dm_isextra,remark from dm_device,dm_device_maintenance where dm_device.id=dm_device_maintenance.id and dm_device.id =  " + item + ";";
+                    sql = "select dm_device_maintenance.id,dm_device.title,dm_content,dm_consumption,dm_date,dm_weekend,dm_isextra,remark from dm_device,dm_device_maintenance where dm_device.id=dm_device_maintenance.device_id and dm_device_maintenance.id =  " + item + ";";
                     cmd = new SqlCommand(sql, con);
                     reader = cmd.ExecuteReader();
 
