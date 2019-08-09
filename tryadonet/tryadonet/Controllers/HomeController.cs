@@ -564,5 +564,10 @@ namespace tryadonet.Controllers
             con.Close();
             return View(model);
         }
+        public ActionResult testtabletb()
+        {
+            ViewBag.Content = "<p>第一行</p><p>第二行</p>";
+            return View();
+        }
     }
 }

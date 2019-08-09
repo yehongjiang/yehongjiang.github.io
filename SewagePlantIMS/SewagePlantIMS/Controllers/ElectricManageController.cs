@@ -615,6 +615,7 @@ namespace SewagePlantIMS.Controllers
             con.Close();
             return View(elec);
         }
+        [ValidateInput(false)]
         public JavaScriptResult ModifyElectricl_Post()
         {
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);

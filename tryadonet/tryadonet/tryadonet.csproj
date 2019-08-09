@@ -228,6 +228,7 @@
     <Content Include="Views\Home\temp22.cshtml" />
     <Content Include="Views\Home\refresh_view.cshtml" />
     <Content Include="Views\Home\TestSelectTable.cshtml" />
+    <Content Include="Views\Home\testtabletb.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

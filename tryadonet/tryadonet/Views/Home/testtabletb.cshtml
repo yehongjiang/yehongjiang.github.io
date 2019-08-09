@@ -1,0 +1,30 @@
+﻿
+@{
+    Layout = null;
+  
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>testtabletb</title>
+</head>
+<body>
+    <div> 
+        <table>
+            <thead>
+                <tr>
+                    <th>标题行</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Html.Raw(ViewBag.Content)  </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
