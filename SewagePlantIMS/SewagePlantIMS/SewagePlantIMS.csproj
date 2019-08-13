@@ -592,6 +592,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="ExcelModel\Upload\" />
     <Folder Include="images\ChemicalDevicePic\" />
     <Folder Include="images\ChemicalDevicePic_Pre\" />
     <Folder Include="images\DeviceRepairPic\" />

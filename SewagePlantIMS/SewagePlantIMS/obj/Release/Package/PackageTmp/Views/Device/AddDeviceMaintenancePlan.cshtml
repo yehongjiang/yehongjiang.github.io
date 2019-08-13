@@ -15,6 +15,7 @@
 <script src="/static/build/layui.js"></script>
 <!--没有它就无法执行双击行弹出内容，高亮等功能-->
 <script src="~/Scripts/DataTableExtend.js"></script>
+<!--设置弹窗用-->
 <script>
 layui.use('layer', function(){ //独立版的layer无需执行这一句
   var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
@@ -56,45 +57,7 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
         btn: ['明白了', '知道了', '哦']
       });
     }
-    ,notice: function(){
-      //示范一个公告层
-      layer.open({
-        type: 1
-        ,title: false //不显示标题栏
-        ,closeBtn: false
-        ,area: '300px;'
-        ,shade: 0.8
-        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-        ,btn: ['火速围观', '残忍拒绝']
-        ,btnAlign: 'c'
-        ,moveType: 1 //拖拽模式，0或者1
-        ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">你知道吗？亲！<br>layer ≠ layui<br><br>layer只是作为Layui的一个弹层模块，由于其用户基数较大，所以常常会有人以为layui是layerui<br><br>layer虽然已被 Layui 收编为内置的弹层模块，但仍然会作为一个独立组件全力维护、升级。<br><br>我们此后的征途是星辰大海 ^_^</div>'
-        ,success: function(layero){
-          var btn = layero.find('.layui-layer-btn');
-          btn.find('.layui-layer-btn0').attr({
-            href: 'http://www.layui.com/'
-            ,target: '_blank'
-          });
-        }
-      });
-    }
-    ,offset: function(othis){
-      var type = othis.data('type')
-      ,text = othis.text();
-
-      layer.open({
-        type: 1
-        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-        ,id: 'layerDemo'+type //防止重复弹出
-        ,content: '<div style="padding: 20px 100px;">'+ text +'</div>'
-        ,btn: '关闭全部'
-        ,btnAlign: 'c' //按钮居中
-        ,shade: 0 //不显示遮罩
-        ,yes: function(){
-          layer.closeAll();
-        }
-      });
-    }
+    
   };
 
   $('#layerDemo .layui-btn').on('click', function(){
@@ -107,13 +70,13 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 <div style="margin:10px 10px 10px 10px">
     <fieldset>
         <legend style="color:#5b9bd1">新增保养计划</legend>
-
         <blockquote class="layui-elem-quote layui-quote-nm">
             <div class="site-demo-button" id="layerDemo" style="margin-bottom: 0;">
                 <a class="layui-btn" data-method="confirmTrans">EXCEL模板下载</a>
             </div>
+            <h4 style="padding:5px;">导入保养计划</h4><div class="layui-upload"><button type="button" class="layui-btn layui-btn-normal" id="test8">选择文件</button><button type="button" class="layui-btn" id="test9">开始上传</button></div>
         </blockquote>
-
+        
     </fieldset>
     
 
@@ -158,3 +121,29 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 
 
 </div>
+<!--导入excel用-->
+<script>
+layui.use('upload', function(){
+  var $ = layui.jquery
+  ,upload = layui.upload;
+
+
+  //选完文件后不自动上传
+  upload.render({
+    elem: '#test8'
+    , url: '/Device/InputDeviceMaintenancePlan'
+    , auto: false
+    , accept: 'file' //普通文件
+    , exts: 'xls' //只允许上传xls结尾的excel文件
+    //,multiple: true
+    ,bindAction: '#test9'
+    ,done: function(res){
+        console.log(res);
+        console.log(res.code);
+    }
+  });
+
+  
+
+});
+</script>

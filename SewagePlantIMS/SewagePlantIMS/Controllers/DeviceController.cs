@@ -1988,5 +1988,35 @@ namespace SewagePlantIMS.Controllers
                 DownloadFile(mstream, "设备保养记录" + DateTime.Now.ToString("d"));
             }
         }
+        //导入设备保养计划
+        public string InputDeviceMaintenancePlan()
+        {
+            HttpPostedFileBase ff = Request.Files["file"];
+            //获得保存文件
+             string filePath = Path.Combine(HttpContext.Server.MapPath("../ExcelModel/Upload"),
+            Path.GetFileName(ff.FileName));
+            ff.SaveAs(filePath);
+            string name = ff.FileName;
+            using (FileStream file = new FileStream(HttpContext.Server.MapPath("../ExcelModel/Upload/") + ff.FileName, FileMode.Open, FileAccess.Read))
+            {
+                HSSFWorkbook hssfworkbook = new HSSFWorkbook(file);
+                //删除原有文件
+                //删除对应的实体文件
+                string filePath2 = HttpContext.Server.MapPath("../ExcelModel/Upload/") + ff.FileName;//路径 
+                FileInfo file2 = new FileInfo(filePath);
+                if (file2.Exists)
+                {
+                    file2.Delete();
+                }
+                ISheet sheet1 = hssfworkbook.GetSheet("sheet1");
+                name = sheet1.GetRow(0).GetCell(0).ToString();
+            }
+                /*string str = "{\"code\": 0,\"count\":" + 1 + ",\"data\": [" + "";
+                str = str + "]}";*/
+                string str = "{\"code\": \""+name+"\"}";
+            JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
+         
+            return json.ToString();
+        }
     }
 }
