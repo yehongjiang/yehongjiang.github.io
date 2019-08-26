@@ -1,0 +1,12 @@
+<view>
+  <text>请输入第1个数字：</text>
+  <input type="number"></input>
+</view>
+<view>
+  <text>请输入第2个数字：</text>
+  <input type="number"></input>
+</view>
+<button>比较</button>
+<view>
+  <text>比较结果：</text>
+</view>

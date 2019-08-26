@@ -1,0 +1,7 @@
+{
+  "usingComponents": {},
+  "navigationBarBackgroundColor": "#f72a2a",
+  "navigationBarTitleText": "比较文字大小",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": true
+}

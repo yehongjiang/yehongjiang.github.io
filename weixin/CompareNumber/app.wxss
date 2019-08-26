@@ -1,0 +1,4 @@
+/**app.wxss**/
+button{
+  letter-spacing: 20rpx;
+}
