@@ -1,6 +1,7 @@
 ﻿
 @{
     Layout = null;
+    int idd = 1;
 }
 
 <!DOCTYPE html>
@@ -34,7 +35,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label w-auto">设备：</label>
                             <div class="layui-input-inline mr0">
-                                <input name="username" class="layui-input" type="text" placeholder="输入设备名称" />
+                                <input name="devicename" class="layui-input" type="text" placeholder="输入设备名称" />
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -64,15 +65,15 @@
     <!-- 表单弹窗 -->
     <script type="text/html" id="modelUser">
         <form id="modelUserForm" lay-filter="modelUserForm" class="layui-form model-form">
-            <input name="userId" type="hidden" />
+            <input name="id" type="hidden" />
             <div class="layui-form-item">
                 <label class="layui-form-label">设备名称</label>
                 <div class="layui-input-block">
-                    <select name="DeivceId" lay-verType="tips" lay-verify="required">                       
+                    <select name="device_id" lay-verType="tips" lay-verify="required">
                         @{
-                            foreach (var item in ViewBag.DeviceName)
+                            foreach (var item in ViewBag.DeviceName.Keys)
                             {
-                                <option value=@item>@item</option>
+                                <option value=@item>@ViewBag.DeviceName[item]</option>
                             }
                         }
                     </select>
@@ -126,150 +127,157 @@
     <script type="text/javascript" src="../../assets/libs/layui/layui.js"></script>
     <script type="text/javascript" src="../../assets/js/common.js?v=312"></script>
     <script>
-    layui.use(['layer', 'form', 'table', 'util', 'admin'], function () {
-        var $ = layui.jquery;
-        var layer = layui.layer;
-        var form = layui.form;
-        var table = layui.table;
-        var util = layui.util;
-        var admin = layui.admin;
+        layui.use(['layer', 'form', 'table', 'util', 'admin'], function () {
+            var $ = layui.jquery;
+            var layer = layui.layer;
+            var form = layui.form;
+            var table = layui.table;
+            var util = layui.util;
+            var admin = layui.admin;
 
-        // 渲染表格
-        var insTb = table.render({
-            elem: '#tableUser',
-            url: '/Supcon/SupconPointListGet',
-            page: true,
-            cellMinWidth: 100,
-            cols: [[
-                {type: 'numbers', title: '#'},
-                {field: 'device_id', sort: true, title: '设备名称'},
-                { field: 'old_point', sort: true, title: '原点位' },
-                { field: 'new_point', sort: true, title: '新点位' },
-                { field: 'indatabase', sort: true, title: '所在数据库' },
-                { field: 'point_type', sort: true, title: '类型' },
-                { field: 'describe', sort: true, title: '描述' },
-                {align: 'center', toolbar: '#tableBarUser', title: '操作', minWidth: 200}
-            ]]
-        });
+            // 渲染表格
+            var insTb = table.render({
+                elem: '#tableUser',
+                url: '/Supcon/SupconPointListGet',
+                page: true,
+                cellMinWidth: 100,
+                cols: [[
+                    { type: 'numbers', title: '#' },
+                    { field: 'id', align: 'center', sort: true, title: 'id', hide: true },
+                    { field: 'title', sort: true, title: '设备名称' },
+                    { field: 'device_id', sort: true, title: '设备名称',  hide: true },
+                    { field: 'old_point', sort: true, title: '原点位' },
+                    { field: 'new_point', sort: true, title: '新点位' },
+                    { field: 'indatabase', sort: true, title: '所在数据库' },
+                    { field: 'point_type', sort: true, title: '类型' },
+                    { field: 'describe', sort: true, title: '描述' },
+                    { align: 'center', toolbar: '#tableBarUser', title: '操作', minWidth: 200 }
+                ]]
+            });
 
-        // 添加
-        $('#btnAddNew').click(function () {
-            showEditModel();
-        });
+            // 添加
+            $('#btnAddNew').click(function () {
+                showEditModel();
+            });
 
-        // 搜索
-        form.on('submit(formSubSearchUser)', function (data) {
-            insTb.reload({where: data.field}, 'data');
-        });
+            // 搜索
+            form.on('submit(formSubSearchUser)', function (data) {
+                insTb.reload({ where: data.field }, 'data');
+            });
 
-        // 工具条点击事件
-        table.on('tool(tableUser)', function (obj) {
-            var data = obj.data;
-            var layEvent = obj.event;
-            if (layEvent === 'edit') { // 修改
-                showEditModel(data);
-            } else if (layEvent === 'del') { // 删除
-                doDel(data.userId, data.nickName);
-            } else if (layEvent === 'reset') { // 重置密码
-                resetPsw(data.userId, data.nickName);
+            // 工具条点击事件
+            table.on('tool(tableUser)', function (obj) {
+                var data = obj.data;
+                var layEvent = obj.event;
+                if (layEvent === 'edit') { // 修改
+                    showEditModel(data);
+                } else if (layEvent === 'del') { // 删除
+                    doDel(data.userId, data.device_id, data.point_type);
+                } else if (layEvent === 'reset') { // 重置密码
+                    resetPsw(data.userId, data.nickName);
+                }
+            });
+
+            // 显示表单弹窗
+            function showEditModel(mUser) {
+                admin.open({
+                    type: 1,
+                    title: (mUser ? '修改' : '添加') + '点位',
+                    content: $('#modelUser').html(),
+                    success: function (layero, dIndex) {
+                        $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                        var url = '/Supcon/SupconPointModify';
+                        // 回显数据
+                        form.val('modelUserForm', mUser);
+                        // 表单提交事件
+                        form.on('submit(modelSubmitUser)', function (data) {
+                            var url2 = '/Supcon/SupconPointModify';
+                            layer.load(2);
+                            $.get(url2, data.field, function (res) {
+                                console.log(data.field);
+                                layer.closeAll('loading');
+                                if (res.code == 200) {
+                                    layer.close(dIndex);
+                                    layer.msg(res.msg, { icon: 1 });
+                                    insTb.reload({}, 'data');
+                                } else {
+                                    layer.msg(res.msg, { icon: 2 });
+                                }
+                            }, 'json');
+                            return false;
+                        });
+                    }
+                });
             }
-        });
 
-        // 显示表单弹窗
-        function showEditModel(mUser) {
-            admin.open({
-                type: 1,
-                title: (mUser ? '修改' : '添加') + '点位',
-                content: $('#modelUser').html(),
-                success: function (layero, dIndex) {
-                    $(layero).children('.layui-layer-content').css('overflow', 'visible');
-                    var url = '/Supcon/SupconPointModify';
-                    // 回显数据
-                    form.val('modelUserForm', mUser);
-                    // 表单提交事件
-                    form.on('submit(modelSubmitUser)', function (data) {
-                        var url2 = '/Supcon/SupconPointSubmit';
-                        layer.load(2);
-                        $.get(url2, data.field, function (res) {
-                            console.log(data.field);
-                            layer.closeAll('loading');
-                            if (res.code == 200) {
-                                layer.close(dIndex);
-                                layer.msg(res.msg, {icon: 1});
-                                insTb.reload({}, 'data');
-                            } else {
-                                layer.msg(res.msg, {icon: 2});
-                            }
-                        }, 'json');
-                        return false;
-                    });
-                }
-            });
-        }
+            // 删除
+            function doDel(userId, nickName, temp) {
+                layer.confirm('确定要删除“' + nickName + '的' + temp + '”类型吗？', {
+                    skin: 'layui-layer-admin',
+                    shade: .1
+                }, function (i) {
+                    layer.close(i);
+                    layer.load(2);
+                    $.get('../../json/ok.json', {
+                        userId: userId
+                    }, function (res) {
+                        layer.closeAll('loading');
+                        if (res.code == 200) {
+                            layer.msg(res.msg, { icon: 1 });
+                            insTb.reload({}, 'data');
+                        } else {
+                            layer.msg(res.msg, { icon: 2 });
+                        }
+                    }, 'json');
+                });
+            }
 
-        // 删除
-        function doDel(userId, nickName) {
-            layer.confirm('确定要删除“' + nickName + '”吗？', {
-                skin: 'layui-layer-admin',
-                shade: .1
-            }, function (i) {
-                layer.close(i);
+            // 修改用户状态
+            form.on('switch(ckStateUser)', function (obj) {
                 layer.load(2);
                 $.get('../../json/ok.json', {
-                    userId: userId
+                    userId: obj.elem.value,
+                    state: obj.elem.checked ? 0 : 1
                 }, function (res) {
                     layer.closeAll('loading');
                     if (res.code == 200) {
-                        layer.msg(res.msg, {icon: 1});
-                        insTb.reload({}, 'data');
+                        layer.msg(res.msg, { icon: 1 });
                     } else {
-                        layer.msg(res.msg, {icon: 2});
+                        layer.msg(res.msg, { icon: 2 });
+                        $(obj.elem).prop('checked', !obj.elem.checked);
+                        form.render('checkbox');
                     }
                 }, 'json');
             });
-        }
 
-        // 修改用户状态
-        form.on('switch(ckStateUser)', function (obj) {
-            layer.load(2);
-            $.get('../../json/ok.json', {
-                userId: obj.elem.value,
-                state: obj.elem.checked ? 0 : 1
-            }, function (res) {
-                layer.closeAll('loading');
-                if (res.code == 200) {
-                    layer.msg(res.msg, {icon: 1});
-                } else {
-                    layer.msg(res.msg, {icon: 2});
-                    $(obj.elem).prop('checked', !obj.elem.checked);
-                    form.render('checkbox');
-                }
-            }, 'json');
+            // 重置密码
+            function resetPsw(userId, nickName) {
+                layer.confirm('确定要重置“' + nickName + '”的登录密码吗？', {
+                    skin: 'layui-layer-admin',
+                    shade: .1
+                }, function (i) {
+                    layer.close(i);
+                    layer.load(2);
+                    $.get('../../json/ok.json', {
+                        userId: userId
+                    }, function (res) {
+                        layer.closeAll('loading');
+                        if (res.code == 200) {
+                            layer.msg(res.msg, { icon: 1 });
+                        } else {
+                            layer.msg(res.msg, { icon: 2 });
+                        }
+                    }, 'json');
+                });
+            }
+
         });
-
-        // 重置密码
-        function resetPsw(userId, nickName) {
-            layer.confirm('确定要重置“' + nickName + '”的登录密码吗？', {
-                skin: 'layui-layer-admin',
-                shade: .1
-            }, function (i) {
-                layer.close(i);
-                layer.load(2);
-                $.get('../../json/ok.json', {
-                    userId: userId
-                }, function (res) {
-                    layer.closeAll('loading');
-                    if (res.code == 200) {
-                        layer.msg(res.msg, {icon: 1});
-                    } else {
-                        layer.msg(res.msg, {icon: 2});
-                    }
-                }, 'json');
-            });
-        }
-
-    });
     </script>
 
+    <script type="text/html" id="statechange">
+
+     
+
+    </script>
 </body>
 </html>
