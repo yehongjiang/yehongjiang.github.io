@@ -193,13 +193,14 @@
                         form.on('submit(modelSubmitUser)', function (data) {
                             var url2 = '/Supcon/SupconPointModify';
                             layer.load(2);
-                            $.get(url2, data.field, function (res) {
-                                console.log(data.field);
+                            //res是返回后台返回的JSON格式内容
+                            $.post(url2, data.field, function (res) {
+                                //console.log(data.field);  //返回修改后的新数据
                                 layer.closeAll('loading');
                                 if (res.code == 200) {
                                     layer.close(dIndex);
                                     layer.msg(res.msg, { icon: 1 });
-                                    insTb.reload({}, 'data');
+                                    insTb.reload();
                                 } else {
                                     layer.msg(res.msg, { icon: 2 });
                                 }

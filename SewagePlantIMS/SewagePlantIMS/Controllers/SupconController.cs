@@ -93,7 +93,7 @@ namespace SewagePlantIMS.Controllers
             JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
             return json.ToString();
         }
-        public void SupconPointModify()
+        public string SupconPointModify()
         {
             //先看看数据是否能够接收
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
@@ -102,6 +102,9 @@ namespace SewagePlantIMS.Controllers
             SqlCommand cmd = new SqlCommand(sql, con);
             int check = cmd.ExecuteNonQuery();
             con.Close();
+            string str = "{ \"code\": 200, \"msg\": \"操作成功\"}";
+            JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
+            return json.ToString();
             /*
             string str = "{ \"device_id\": \"测试二号\", \"describe\": \"d\", \"indatabase\": \"d\", \"new_point\": \"d\", \"old_point\": \"d\",\"point_type\":\"运行状态\"}";
             JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
