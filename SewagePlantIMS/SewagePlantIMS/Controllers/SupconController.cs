@@ -86,10 +86,20 @@ namespace SewagePlantIMS.Controllers
             JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
             return json.ToString();
         }
-        public string SupconPointSubmit(Object data)
+        public string SupconPointSubmit()
         {
-            
-            string str = "{ \"code\": 200, \"msg\": \"操作成功\"}";
+            //添加新的点位
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "insert into dm_supcon_point values(" + Request["device_id"] + ",'" + Request["old_point"] + "','" + Request["new_point"] + "','" + Request["indatabase"] + "','" + Request["point_type"] + "','" + Request["describe"] + "');";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int check  = cmd.ExecuteNonQuery();
+            con.Close();
+            string str = "";
+            if (check == 1)
+             str = "{ \"code\": 200, \"msg\": \"操作成功\"}";
+            else
+                str = "{ \"code\": 200, \"msg\": \"操作失败\"}";
             JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
             return json.ToString();
         }
@@ -98,7 +108,7 @@ namespace SewagePlantIMS.Controllers
             //先看看数据是否能够接收
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string sql = "update dm_supcon_point set device_id = " + Request["device_id"] + "where id = " + Request["id"];
+            string sql = "update dm_supcon_point set device_id = " + Request["device_id"]+",describe = '"+ Request["describe"]+"',indatabase = '"+ Request["indatabase"] + "',new_point='"+Request["new_point"]+"',old_point = '"+ Request["old_point"] + "',point_type = '"+Request["point_type"] + "' where id = " + Request["id"];
             SqlCommand cmd = new SqlCommand(sql, con);
             int check = cmd.ExecuteNonQuery();
             con.Close();
@@ -109,6 +119,22 @@ namespace SewagePlantIMS.Controllers
             string str = "{ \"device_id\": \"测试二号\", \"describe\": \"d\", \"indatabase\": \"d\", \"new_point\": \"d\", \"old_point\": \"d\",\"point_type\":\"运行状态\"}";
             JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
             return json.ToString();*/
+        }
+        public string DeleteSupconPoint(int id)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "delete dm_supcon_point where id = " + id;
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            string str = "";
+            if(check == 1)
+                str= "{ \"code\": 200, \"msg\": \"操作成功\"}";
+            else
+                str = "{ \"code\": 200, \"msg\": \"操作失败\"}";
+            JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
+            return json.ToString();
         }
     }
 }

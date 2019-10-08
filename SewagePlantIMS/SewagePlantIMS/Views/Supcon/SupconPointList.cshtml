@@ -186,15 +186,14 @@
                     content: $('#modelUser').html(),
                     success: function (layero, dIndex) {
                         $(layero).children('.layui-layer-content').css('overflow', 'visible');
-                        var url = '/Supcon/SupconPointModify';
                         // 回显数据
                         form.val('modelUserForm', mUser);
                         // 表单提交事件
                         form.on('submit(modelSubmitUser)', function (data) {
-                            var url2 = '/Supcon/SupconPointModify';
+                            var url = mUser ? '/Supcon/SupconPointModify' : '/Supcon/SupconPointSubmit';
                             layer.load(2);
                             //res是返回后台返回的JSON格式内容
-                            $.post(url2, data.field, function (res) {
+                            $.post(url, data.field, function (res) {
                                 //console.log(data.field);  //返回修改后的新数据
                                 layer.closeAll('loading');
                                 if (res.code == 200) {
@@ -219,7 +218,7 @@
                 }, function (i) {
                     layer.close(i);
                     layer.load(2);
-                    $.get('../../json/ok.json', {
+                    $.post('/Supcon/DeleteSupconPoint', {
                         userId: userId
                     }, function (res) {
                         layer.closeAll('loading');
