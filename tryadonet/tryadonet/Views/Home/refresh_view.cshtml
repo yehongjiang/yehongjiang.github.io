@@ -44,22 +44,7 @@
 <script src="~/scripts/jquery-2.1.1.min.js"></script>
 
 <script>
-    setInterval("to_refresh_timing()", 1000);  
-    function to_refresh_timing(){
-        $.ajax({
-            type: 'post',
-            url: '/Home/refresh_timing',
-            data: "{}",
-            contentType: "application/json",
-            //dataType: "json",
-            success: function (result) {
-                document.getElementById("score").innerHTML = parseInt(document.getElementById("score").innerHTML) + parseInt(result);
-            },
-            error: function () {
-                alert("传值失败~");
-            }
-        })
-    }
+    
     function UpdateName(stu) {
         document.getElementById("name").innerHTML = stu;
     }

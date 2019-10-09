@@ -514,11 +514,11 @@ namespace tryadonet.Controllers
         }
         public JavaScriptResult testlocalsql()
         {
-            SqlConnection Conn = new SqlConnection("Server=192.168.16.101;DataBase=Student; User Id=sa; Password=123456");
+            SqlConnection Conn = new SqlConnection("Server=10.10.70.113;DataBase=supcon; User Id=sa; Password=Aa12345678");
             Conn.Open();
             string stu_name = "曹家兵";
 
-            string sqlStr = "select stu_name from student where stu_age = 27";
+            string sqlStr = "select top 1 TagName from report5 ";
             SqlCommand cmd = new SqlCommand(sqlStr, Conn);
             stu_name = cmd.ExecuteScalar().ToString();
 

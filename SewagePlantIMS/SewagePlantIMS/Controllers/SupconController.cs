@@ -120,7 +120,7 @@ namespace SewagePlantIMS.Controllers
             JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
             return json.ToString();*/
         }
-        public string DeleteSupconPoint(int id)
+        public string DeleteSupconPoint(string id)
         {
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
@@ -135,6 +135,35 @@ namespace SewagePlantIMS.Controllers
                 str = "{ \"code\": 200, \"msg\": \"操作失败\"}";
             JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
             return json.ToString();
+        }
+
+       /////////////下面是设备状态的内容////////////////////
+       public ActionResult DeviceSPList()
+        {
+            return View();
+        }
+        public string GetDeviceSPList()
+        {
+            //连接中控数据库
+            
+            SqlConnection con_supcon = new SqlConnection("Server=10.10.70.113;DataBase=supcon; User Id=sa; Password=Aa12345678");
+            con_supcon.Open();
+            if(con_supcon.State != ConnectionState.Open)
+            {
+                string str = "{ \"code\": 200, \"msg\": \"无法正确连接至瓯江口污水厂中控数据库！！！\"}";
+                JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
+                return json.ToString();
+            }
+            else
+            {
+                /*SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = 
+            con.Close();*/
+            }
+
+
+            return "";
         }
     }
 }
