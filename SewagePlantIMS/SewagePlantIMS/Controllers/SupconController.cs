@@ -55,8 +55,8 @@ namespace SewagePlantIMS.Controllers
 
             string sql = "";
 
-            SqlCommand cmd ;
-            SqlDataReader reader ;
+            SqlCommand cmd;
+            SqlDataReader reader;
             //将sql变成查询中控表的语句
             //看看Request[devicename]是不是为空
             string devicename = "";
@@ -68,19 +68,19 @@ namespace SewagePlantIMS.Controllers
             {
                 devicename = Request["devicename"].ToString();
             }
-            sql = "select dm_supcon_point.id,device_id,old_point,new_point,indatabase,point_type,describe,title from dm_supcon_point,dm_device where dm_device.id = dm_supcon_point.device_id and dm_device.title like '%" + devicename +"%';";
+            sql = "select dm_supcon_point.id,device_id,old_point,new_point,indatabase,point_type,describe,title from dm_supcon_point,dm_device where dm_device.id = dm_supcon_point.device_id and dm_device.title like '%" + devicename + "%';";
             cmd = new SqlCommand(sql, con);
             reader = cmd.ExecuteReader();
             string str = "";
             int count = 0;
             while (reader.Read())    // 判断数据是否读到尾. 
             {
-                str += "{ \"device_id\": \"" + Convert.ToInt32(reader["device_id"]) + "\", \"describe\": \"" + reader["describe"].ToString() +"\", \"indatabase\": \""+reader["indatabase"].ToString()+"\", \"new_point\": \""+reader["new_point"].ToString()+"\", \"old_point\": \""+reader["old_point"].ToString()+"\",\"point_type\":\""+reader["point_type"].ToString()+ "\",\"id\":\"" + Convert.ToInt32(reader["id"]) + "\",\"title\":\"" + reader["title"].ToString() + "\"},";
+                str += "{ \"device_id\": \"" + Convert.ToInt32(reader["device_id"]) + "\", \"describe\": \"" + reader["describe"].ToString() + "\", \"indatabase\": \"" + reader["indatabase"].ToString() + "\", \"new_point\": \"" + reader["new_point"].ToString() + "\", \"old_point\": \"" + reader["old_point"].ToString() + "\",\"point_type\":\"" + reader["point_type"].ToString() + "\",\"id\":\"" + Convert.ToInt32(reader["id"]) + "\",\"title\":\"" + reader["title"].ToString() + "\"},";
                 count += 1;
             }
             reader.Close();
             con.Close();
-           
+
             str = "{\"code\": 0,\"count\":" + count + ",\"data\": [" + str;
             str = str + "]}";
             JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
@@ -93,11 +93,11 @@ namespace SewagePlantIMS.Controllers
             con.Open();
             string sql = "insert into dm_supcon_point values(" + Request["device_id"] + ",'" + Request["old_point"] + "','" + Request["new_point"] + "','" + Request["indatabase"] + "','" + Request["point_type"] + "','" + Request["describe"] + "');";
             SqlCommand cmd = new SqlCommand(sql, con);
-            int check  = cmd.ExecuteNonQuery();
+            int check = cmd.ExecuteNonQuery();
             con.Close();
             string str = "";
             if (check == 1)
-             str = "{ \"code\": 200, \"msg\": \"操作成功\"}";
+                str = "{ \"code\": 200, \"msg\": \"操作成功\"}";
             else
                 str = "{ \"code\": 200, \"msg\": \"操作失败\"}";
             JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
@@ -108,7 +108,7 @@ namespace SewagePlantIMS.Controllers
             //先看看数据是否能够接收
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string sql = "update dm_supcon_point set device_id = " + Request["device_id"]+",describe = '"+ Request["describe"]+"',indatabase = '"+ Request["indatabase"] + "',new_point='"+Request["new_point"]+"',old_point = '"+ Request["old_point"] + "',point_type = '"+Request["point_type"] + "' where id = " + Request["id"];
+            string sql = "update dm_supcon_point set device_id = " + Request["device_id"] + ",describe = '" + Request["describe"] + "',indatabase = '" + Request["indatabase"] + "',new_point='" + Request["new_point"] + "',old_point = '" + Request["old_point"] + "',point_type = '" + Request["point_type"] + "' where id = " + Request["id"];
             SqlCommand cmd = new SqlCommand(sql, con);
             int check = cmd.ExecuteNonQuery();
             con.Close();
@@ -129,41 +129,91 @@ namespace SewagePlantIMS.Controllers
             int check = cmd.ExecuteNonQuery();
             con.Close();
             string str = "";
-            if(check == 1)
-                str= "{ \"code\": 200, \"msg\": \"操作成功\"}";
+            if (check == 1)
+                str = "{ \"code\": 200, \"msg\": \"操作成功\"}";
             else
                 str = "{ \"code\": 200, \"msg\": \"操作失败\"}";
             JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
             return json.ToString();
         }
 
-       /////////////下面是设备状态的内容////////////////////
-       public ActionResult DeviceSPList()
+        /////////////下面是设备状态的内容////////////////////
+        public ActionResult DeviceSPList()
         {
             return View();
         }
         public string GetDeviceSPList()
         {
             //连接中控数据库
-            
+
             SqlConnection con_supcon = new SqlConnection("Server=10.10.70.113;DataBase=supcon; User Id=sa; Password=Aa12345678");
             con_supcon.Open();
-            if(con_supcon.State != ConnectionState.Open)
+            if (con_supcon.State != ConnectionState.Open)
             {
+                con_supcon.Close();
                 string str = "{ \"code\": 200, \"msg\": \"无法正确连接至瓯江口污水厂中控数据库！！！\"}";
                 JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
                 return json.ToString();
             }
             else
             {
-                /*SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
-            con.Open();
-            string sql = 
-            con.Close();*/
+                SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+                con.Open();
+                //先查出所有点位的最新信息并建立字典
+                /*Dictionary<string, int> PointValue = new Dictionary<string, int>();*/
+                //
+                string sql = "select dm_supcon_point.id,dm_supcon_point.device_id,dm_device.title,dm_technology.title as name,new_point,indatabase from dm_supcon_point,dm_device,dm_technology where dm_supcon_point.device_id=dm_device.id and dm_device.technology_id = dm_technology.id;";
+                SqlCommand cmd = new SqlCommand(sql, con);
+                SqlDataReader reader = cmd.ExecuteReader();
+                //预设一个中控数据的查询变量
+                string cs_str = "";
+                int tt = 0; //判断有无点位数据
+                int value = -1;
+                string jsonn = "";//返回前端的json字符串
+                int count = 0;//总数据条数
+                SqlCommand cmd_supcon;
+                while (reader.Read())
+                {
+                    cs_str = "select top 1 val from " + reader["indatabase"].ToString() + " where TagName = '" + reader["new_point"].ToString() + "' order by DateAndTime desc,Millitm desc;";
+                    try
+                    {
+                        cmd_supcon = new SqlCommand(cs_str, con_supcon);
+                        value = Convert.ToInt32(cmd_supcon.ExecuteScalar());
+                        jsonn += "{ \"id\": \"" + Convert.ToInt32(reader["id"]) + "\", \"device_id\": \"" + Convert.ToInt32(reader["device_id"]) + "\", \"title\": \"" + reader["title"].ToString() + "\", \"name\": \"" + reader["name"].ToString() + "\", \"state\": \"" + value + "\", \"new_point\": \"" + reader["new_point"].ToString() + "\"},";
+                        count += 1;
+                    }
+                    catch (Exception e)
+                    {
+
+                    }
+
+                    tt += 1;
+                }
+                reader.Close();
+                con_supcon.Close();
+                con.Close();
+                if (tt == 0)
+                {
+                    string str = "{ \"code\": 200, \"msg\": \"无点位数据信息\"}";
+                    JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
+                    return json.ToString();
+                }
+                else
+                {
+                    jsonn = "{\"code\": 0,\"count\":" + count + ",\"data\": [" + jsonn;
+                    jsonn = jsonn + "]}";
+                    JObject json = (JObject)JsonConvert.DeserializeObject(jsonn.ToString());
+                    return json.ToString();
+                }
             }
 
-
-            return "";
         }
+        public void OutputDeviceRunRecord(string date,string tagname)
+        {
+            //切割字符串
+            string begin_time = date.Substring(0,10);
+            string end_time = date.Substring(13,10);
+        }
+
     }
 }

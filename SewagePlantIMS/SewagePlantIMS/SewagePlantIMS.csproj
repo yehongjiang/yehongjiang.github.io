@@ -543,6 +543,9 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\laydate\laydate.js" />
+    <Content Include="Scripts\laydate\theme\default\font\iconfont.svg" />
+    <Content Include="Scripts\laydate\theme\default\laydate.css" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -593,6 +596,9 @@
     <Content Include="Views\Device\ModifyDeviceMaintenance.cshtml" />
     <Content Include="Views\Supcon\SupconPointList.cshtml" />
     <Content Include="Views\Supcon\DeviceSPList.cshtml" />
+    <Content Include="Scripts\laydate\theme\default\font\iconfont.eot" />
+    <Content Include="Scripts\laydate\theme\default\font\iconfont.ttf" />
+    <Content Include="Scripts\laydate\theme\default\font\iconfont.woff" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
