@@ -145,8 +145,8 @@ namespace SewagePlantIMS.Controllers
         public string GetDeviceSPList()
         {
             //连接中控数据库
-
-            SqlConnection con_supcon = new SqlConnection("Server=10.10.70.113;DataBase=supcon; User Id=sa; Password=Aa12345678");
+            SqlConnection con_supcon = new SqlConnection("server=(local);database=supcon;Integrated Security=True;");
+            //SqlConnection con_supcon = new SqlConnection("Server=10.10.70.113;DataBase=supcon; User Id=sa; Password=Aa12345678");
             con_supcon.Open();
             if (con_supcon.State != ConnectionState.Open)
             {
@@ -179,7 +179,7 @@ namespace SewagePlantIMS.Controllers
                     {
                         cmd_supcon = new SqlCommand(cs_str, con_supcon);
                         value = Convert.ToInt32(cmd_supcon.ExecuteScalar());
-                        jsonn += "{ \"id\": \"" + Convert.ToInt32(reader["id"]) + "\", \"device_id\": \"" + Convert.ToInt32(reader["device_id"]) + "\", \"title\": \"" + reader["title"].ToString() + "\", \"name\": \"" + reader["name"].ToString() + "\", \"state\": \"" + value + "\", \"new_point\": \"" + reader["new_point"].ToString() + "\"},";
+                        jsonn += "{ \"id\": \"" + Convert.ToInt32(reader["id"]) + "\", \"device_id\": \"" + Convert.ToInt32(reader["device_id"]) + "\", \"title\": \"" + reader["title"].ToString() + "\", \"name\": \"" + reader["name"].ToString() + "\", \"state\": \"" + value + "\", \"new_point\": \"" + reader["new_point"].ToString() + "\", \"indatabase\": \"" + reader["indatabase"].ToString() + "\"},";
                         count += 1;
                     }
                     catch (Exception e)
@@ -208,12 +208,79 @@ namespace SewagePlantIMS.Controllers
             }
 
         }
-        public void OutputDeviceRunRecord(string date,string tagname)
+        public void OutputDeviceRunRecord(string date,string tagname,string indatabase,string title)
         {
             //切割字符串
             string begin_time = date.Substring(0,10);
             string end_time = date.Substring(13,10);
-        }
+            //创建工作簿对象
+            HSSFWorkbook hssfworkbook;
+            using (FileStream file = new FileStream(HttpContext.Request.PhysicalApplicationPath + @"ExcelModel\DeviceStateRecord.xls", FileMode.Open, FileAccess.Read))
+            {
+                hssfworkbook = new HSSFWorkbook(file);
+                ISheet sheet1 = hssfworkbook.GetSheet("Sheet1");
+                //往表中插入数据
+                //连接中控数据库这里就不判断了，因为既然状态能显示出来就表示连接成功,但是实际上这是会报错的。
+                SqlConnection con_supcon = new SqlConnection("server=(local);database=supcon;Integrated Security=True;");
+                //SqlConnection con_supcon = new SqlConnection("Server=10.10.70.113;DataBase=supcon; User Id=sa; Password=Aa12345678");
+                con_supcon.Open();
+                string sql = "select * from " +  indatabase +" where TagName = '"+tagname+" ' and DateAndTime Between '"+begin_time+"' and '"+end_time+"' order by DateAndTime desc,Millitm desc;";
+                SqlCommand cmd = new SqlCommand(sql, con_supcon);
+                SqlDataReader reader = cmd.ExecuteReader();
+                int i = 2;
+                ICell Cell;
+                //设置单元格样式
+                ICellStyle cellstyle = hssfworkbook.CreateCellStyle();
+                //设置单元格上下左右边框线
+                cellstyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                cellstyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                cellstyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                cellstyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                cellstyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                cellstyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
+                while (reader.Read())
+                {
+                    //第一列
+                    Cell = sheet1.CreateRow(i).CreateCell(0);
+                    Cell.CellStyle = cellstyle;
+                    sheet1.GetRow(i).GetCell(0).SetCellValue(Convert.ToDateTime(reader["DateAndTime"]).ToString("yyyy-MM-dd HH:mm:ss"));
+                    //第二列
+                    Cell = sheet1.GetRow(i).CreateCell(1);
+                    Cell.CellStyle = cellstyle;
+                    sheet1.GetRow(i).GetCell(1).SetCellValue(title);
+                    //第三列
+                    Cell = sheet1.GetRow(i).CreateCell(2);
+                    Cell.CellStyle = cellstyle;
+                    if(Convert.ToInt32(reader["Val"])==1)
+                        sheet1.GetRow(i).GetCell(2).SetCellValue("运行");
+                    else
+                        sheet1.GetRow(i).GetCell(2).SetCellValue("暂停");
+                    i++;
+                }
+                reader.Close();
+                //sheet1.GetRow(1).GetCell(1).SetCellValue(model.repair_class);
+                con_supcon.Close();
+                MemoryStream mstream = new MemoryStream();
+                hssfworkbook.Write(mstream);
+                DownloadFile(mstream, title  + "启停记录");
+            }
+        }       
+        //转到浏览器下载
+        public static string DownloadFile(MemoryStream fs, string filename)//必须为FileStream或MemoryStream ，如果用Stream则生成的excel无法正常打开
+        {
+            string fileName = filename + ".xls";//客户端保存的文件名 //以字符流的形式下载文件 
+            byte[] bytes = fs.ToArray(); fs.Read(bytes, 0, bytes.Length); fs.Close();
+            System.Web.HttpContext.Current.Response.Clear();
+            System.Web.HttpContext.Current.Response.ClearContent();
+            System.Web.HttpContext.Current.Response.ClearHeaders();
+            System.Web.HttpContext.Current.Response.ContentType = "application/octet-stream";
 
+            //通知浏览器下载文件而不是打开  
+            System.Web.HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(fileName, System.Text.Encoding.UTF8));
+            System.Web.HttpContext.Current.Response.AddHeader("Content-Transfer-Encoding", "binary"); System.Web.HttpContext.Current.Response.BinaryWrite(bytes);
+            System.Web.HttpContext.Current.Response.Flush();
+            System.Web.HttpContext.Current.Response.End();
+            return null;
+        }
     }
 }

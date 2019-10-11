@@ -77,16 +77,16 @@
     <script type="text/javascript" src="../../assets/js/common.js?v=312"></script>
     
     <script>
-        layui.use(['layer', 'form', 'table', 'util', 'admin'], function () {
+        layui.use(['layer', 'form', 'table', 'util', 'admin','tableX'], function () {
             var $ = layui.jquery;
             var layer = layui.layer;
             var form = layui.form;
             var table = layui.table;
             var util = layui.util;
             var admin = layui.admin;
-
+            var tableX = layui.tableX;
             // 渲染表格
-            var insTb = table.render({
+            var insTb = tableX.renderFront({
                 elem: '#tableUser',
                 url: '/Supcon/GetDeviceSPList',
                 page: true,
@@ -95,6 +95,7 @@
                     { type: 'numbers', title: '#' },
                     { field: 'id', align: 'center', sort: true, title: 'id', hide: true },
                      { field: 'device_id', align: 'center', sort: true, title: 'device_id', hide: true },
+                     { field: 'indatabase', align: 'center', sort: true, title: 'indatabase', hide: true },
                      { field: 'new_point',  sort: true, title: 'new_point', hide: true },
                     { field: 'title', sort: true, title: '设备名称' },
                     { field: 'state', align: 'center', sort: true, templet: '#tableStateUser', title: '状态' },
@@ -102,8 +103,8 @@
                     { align: 'center', toolbar: '#tableBarUser', title: '操作', minWidth: 100 }
                 ]],
                 text: {
-                none: '未能正确连接至中控数据库！！！' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
-            }
+                    none: '未能正确连接至中控数据库！！！' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+                }
             });
 
             // 添加
@@ -121,8 +122,8 @@
                 var data = obj.data;
                 var layEvent = obj.event;
                 if (layEvent === 'output') { //输出启停记录
-                    //console.log(data.new_point);
-                    doOutput(data.new_point);
+                    //console.log(data.title);
+                    doOutput(data.new_point,data.indatabase,data.title);
                 } else if (layEvent === 'del') { // 删除
                     doDel(data.userId, data.device_id, data.point_type);
                 } else if (layEvent === 'reset') { // 重置密码
@@ -132,7 +133,7 @@
 
 
             // 导出excel
-            function doOutput(new_point) {
+            function doOutput(new_point, indatabase, title) {
                 layer.open({
                     type: 1,
                     title: ['请选择需要导出的时间范围', 'background:#029687;color:#ffffff;'],
@@ -147,7 +148,8 @@
                                 layer.msg("您还未选择相应的时间范围！！");
                             }
                             else {
-                                window.location.href = "/Supcon/OutputDeviceRunRecord?date=" + document.getElementById("test6").value + "&tagname=" + new_point;
+                                title = title.replace("#","号");
+                                window.location.href = "/Supcon/OutputDeviceRunRecord?date=" + document.getElementById("test6").value + "&tagname=" + new_point + "&indatabase=" + indatabase + "&title=" + title;
                                 /*$.ajax({
                                     type: "POST", //提交数据的类型 分为POST和GET
                                     url: '/Device/DeviceMaintenancePlanFinish',  //提交url 注意url必须小写
@@ -167,11 +169,12 @@
                         }, btn2: function (index, layero) {
                             layer.close(index);
                         }
-                     , cancel: function (index) {
-                         layer.close(index);
-                     }
-                });
-            }
+                , cancel: function (index) {
+                    layer.close(index);
+                }
+                })
+            };
+        
 
             // 修改用户状态
             form.on('switch(ckStateUser)', function (obj) {

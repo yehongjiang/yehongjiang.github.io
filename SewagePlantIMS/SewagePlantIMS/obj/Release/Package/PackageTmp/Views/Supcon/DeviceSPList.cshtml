@@ -77,16 +77,16 @@
     <script type="text/javascript" src="../../assets/js/common.js?v=312"></script>
     
     <script>
-        layui.use(['layer', 'form', 'table', 'util', 'admin'], function () {
+        layui.use(['layer', 'form', 'table', 'util', 'admin','tableX'], function () {
             var $ = layui.jquery;
             var layer = layui.layer;
             var form = layui.form;
             var table = layui.table;
             var util = layui.util;
             var admin = layui.admin;
-
+            var tableX = layui.tableX;
             // 渲染表格
-            var insTb = table.render({
+            var insTb = tableX.renderFront({
                 elem: '#tableUser',
                 url: '/Supcon/GetDeviceSPList',
                 page: true,
@@ -121,6 +121,7 @@
                 var data = obj.data;
                 var layEvent = obj.event;
                 if (layEvent === 'output') { //输出启停记录
+                    //console.log(data.new_point);
                     doOutput(data.new_point);
                 } else if (layEvent === 'del') { // 删除
                     doDel(data.userId, data.device_id, data.point_type);
@@ -146,7 +147,7 @@
                                 layer.msg("您还未选择相应的时间范围！！");
                             }
                             else {
-                                window.location.href = "/Supcon/OutputDeviceRunRecord?date=" + document.getElementById("test6").value;
+                                window.location.href = "/Supcon/OutputDeviceRunRecord?date=" + document.getElementById("test6").value + "&tagname=" + new_point;
                                 /*$.ajax({
                                     type: "POST", //提交数据的类型 分为POST和GET
                                     url: '/Device/DeviceMaintenancePlanFinish',  //提交url 注意url必须小写

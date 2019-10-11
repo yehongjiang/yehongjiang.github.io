@@ -532,6 +532,7 @@
     <Content Include="ExcelModel\DeviceRepair.xls" />
     <Content Include="ExcelModel\RepairListModel.xls" />
     <Content Include="ExcelModel\MaintenanceListModel.xls" />
+    <Content Include="ExcelModel\DeviceStateRecord.xls" />
     <None Include="Properties\PublishProfiles\SewagePlantIMS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\DataTableExtend.js" />

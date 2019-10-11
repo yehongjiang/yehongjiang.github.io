@@ -126,16 +126,16 @@
     <script type="text/javascript" src="../../assets/libs/layui/layui.js"></script>
     <script type="text/javascript" src="../../assets/js/common.js?v=312"></script>
     <script>
-        layui.use(['layer', 'form', 'table', 'util', 'admin'], function () {
+        layui.use(['layer', 'form', 'table', 'util', 'admin','tableX'], function () {
             var $ = layui.jquery;
             var layer = layui.layer;
             var form = layui.form;
             var table = layui.table;
             var util = layui.util;
             var admin = layui.admin;
-
+            var tableX = layui.tableX;
             // 渲染表格
-            var insTb = table.render({
+            var insTb = tableX.renderFront({
                 elem: '#tableUser',
                 url: '/Supcon/SupconPointListGet',
                 page: true,
@@ -198,7 +198,7 @@
                                 if (res.code == 200) {
                                     layer.close(dIndex);
                                     layer.msg(res.msg, { icon: 1 });
-                                    insTb.reload();
+                                    insTb.reloadUrl();
                                 } else {
                                     layer.msg(res.msg, { icon: 2 });
                                 }
@@ -224,7 +224,7 @@
                         layer.closeAll('loading');
                         if (res.code == 200) {
                             layer.msg(res.msg, { icon: 1 });
-                            insTb.reload({}, 'data');
+                            insTb.reloadUrl({}, 'data');
                         } else {
                             layer.msg(res.msg, { icon: 2 });
                         }
