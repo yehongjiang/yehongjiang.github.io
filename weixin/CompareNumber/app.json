@@ -4,11 +4,5 @@
     "pages/logs/logs",
     "pages/test/test"
   ],
-  "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "数值比较",
-    "navigationBarTextStyle": "black"
-  },
   "sitemapLocation": "sitemap26.json"
 }

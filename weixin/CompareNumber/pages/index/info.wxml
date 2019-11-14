@@ -1,0 +1,52 @@
+<scroll-view class="content-info" scroll-y>
+  <!--<view style="background:#eee;height:1000px"></view>
+  <view>已到达底部</view>-->
+  <swiper class="content-info-slide" indicator-color="rgba(255,255,255,.5)" indicator-active-color="#fff" indicator-dots circular  autoplay>
+    <swiper-item>
+      <image src="/pages/images/music3.jpg"></image>
+    </swiper-item>
+    <swiper-item>
+      <image src="/pages/images/music3.jpg"></image>
+    </swiper-item>
+    <swiper-item>
+      <image src="/pages/images/music3.jpg"></image>
+    </swiper-item>
+  </swiper>
+  <view class="content-info-portal">
+    <view>
+      <image src="/pages/images/01.png"></image>
+      <text>私人FM</text>
+    </view>
+    <view>
+      <image src="/pages/images/01.png"></image>
+      <text>每日歌曲推荐</text>
+    </view>
+    <view>
+      <image src="/pages/images/01.png"></image>
+      <text>云音乐新歌榜</text>
+    </view>
+  </view>
+  <view class="content-info-list">
+      <view class="list-title">推荐歌曲</view>
+      <view class="list-inner">
+        <view class="list-item">
+          <image src="/pages/images/music4.jpg"></image><view>紫罗兰</view>
+        </view>
+        <view class="list-item">
+          <image src="/pages/images/music4.jpg"></image><view>五月之歌</view>
+        </view>
+        <view class="list-item">
+          <image src="/pages/images/music4.jpg"></image><view>菩提树</view>
+        </view>
+        <view class="list-item">
+          <image src="/pages/images/music4.jpg"></image><view>欢乐颂</view>
+        </view>
+        <view class="list-item">
+          <image src="/pages/images/music4.jpg"></image><view>安魂曲</view>
+        </view>
+        <view class="list-item">
+          <image src="/pages/images/music4.jpg"></image><view>摇篮曲</view>
+        </view>
+      </view>
+  </view>
+</scroll-view>

@@ -303,7 +303,13 @@
                         <a><i class="layui-icon layui-icon-util"></i>&emsp;<cite>设备管理</cite></a>
                         <dl class="layui-nav-child">
                             <dd><a lay-href="~/Device/DeviceList">设备清单</a></dd>
-                            <dd><a lay-href="~/Device/DeviceRepair">设备维修</a></dd>
+                            <dd >
+                                <a><i class="layui-icon"></i><cite>设备维修</cite></a>
+                                <dl class="layui-nav-child">
+                                    <dd><a lay-href="">维修预报</a></dd>
+                                    <dd><a lay-href="~/Device/DeviceRepair">维修清单</a></dd>
+                                </dl>
+                            </dd>
                             <dd><a lay-href="~/Device/DeviceMaintenancePlan">设备保养</a></dd>
                         </dl>
                     </li>

@@ -145,8 +145,8 @@ namespace SewagePlantIMS.Controllers
         public string GetDeviceSPList()
         {
             //连接中控数据库
-            SqlConnection con_supcon = new SqlConnection("server=(local);database=supcon;Integrated Security=True;");
-            //SqlConnection con_supcon = new SqlConnection("Server=10.10.70.113;DataBase=supcon; User Id=sa; Password=Aa12345678");
+            //SqlConnection con_supcon = new SqlConnection("server=(local);database=supcon;Integrated Security=True;");
+            SqlConnection con_supcon = new SqlConnection("Server=10.10.70.113;DataBase=supcon; User Id=sa; Password=Aa12345678");
             con_supcon.Open();
             if (con_supcon.State != ConnectionState.Open)
             {
@@ -221,8 +221,8 @@ namespace SewagePlantIMS.Controllers
                 ISheet sheet1 = hssfworkbook.GetSheet("Sheet1");
                 //往表中插入数据
                 //连接中控数据库这里就不判断了，因为既然状态能显示出来就表示连接成功,但是实际上这是会报错的。
-                SqlConnection con_supcon = new SqlConnection("server=(local);database=supcon;Integrated Security=True;");
-                //SqlConnection con_supcon = new SqlConnection("Server=10.10.70.113;DataBase=supcon; User Id=sa; Password=Aa12345678");
+                //SqlConnection con_supcon = new SqlConnection("server=(local);database=supcon;Integrated Security=True;");
+                SqlConnection con_supcon = new SqlConnection("Server=10.10.70.113;DataBase=supcon; User Id=sa; Password=Aa12345678");
                 con_supcon.Open();
                 string sql = "select * from " +  indatabase +" where TagName = '"+tagname+" ' and DateAndTime Between '"+begin_time+"' and '"+end_time+"' order by DateAndTime desc,Millitm desc;";
                 SqlCommand cmd = new SqlCommand(sql, con_supcon);

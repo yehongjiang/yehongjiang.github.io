@@ -1,14 +1,94 @@
 /**index.wxss**/
-view {
-  margin: 50rpx;
+page{
+  display: flex;
+  flex-direction: column;
+  background: #17181a;
+  color: #ccc;
+  height: 100%;
 }
-input{
-  width:650rpx;
-  margin-top:20rpx;
-  border-bottom:2rpx solid #ccc;
+.tab{
+  display: flex;
 }
-button{
-  margin:50rpx;
-  color: white;
-  background-color: red;
+.tab-item{
+  flex:1;
+  /**display: flex;
+  align-items: center;
+  justify-content: center;**/
+  text-align: center;
+  border-bottom: 6rpx solid #eee;
+  line-height: 72rpx;
+}
+.content{
+  flex:1;
+}
+.content>swiper{
+  height: 100%;
+}
+.player{
+  background: #222;
+  border-top:1px solid #252525;
+  height: 112rpx;
+}
+.active{
+  color: #c25b5b;
+  border-bottom-color: #c25b5b;
+}
+.content-info{
+  height: 100%;
+}
+::-webkit-scrollbar{
+  width: 0;
+  height: 0;
+  color:transparent;
+}
+.content-info-slide image{
+  width:100%;
+  height: 100%;
+}
+.content-info-slide{
+  height: 302rpx;
+  margin-bottom: 20px;
+}
+.content-info-portal{
+  display: flex;
+  margin-bottom: 15px;
+}
+.content-info-portal>view{
+  flex:1;
+  font-size: 11pt;
+  text-align: center;
+}
+.content-info-portal image{
+  width:120rpx;
+  height: 120rpx;
+  margin: 20rpx auto;
+  display: block;
+}
+.content-info-list{
+    font-size: 11pt;
+    margin-bottom: 20rpx;
+}
+.content-info-list>.list-title{
+  margin:20rpx 35rpx;
+}
+.list-inner{
+  display: flex;
+  flex-wrap: wrap;
+  margin : 0 20rpx;
+}
+.list-item{
+  flex:1;
+}
+.list-item>image{
+  display: block;
+  width: 200rpx;
+  height: 200rpx;
+    margin :  auto;
+  border-radius: 10rpx;
+  border:1rpx solid #555;
+}
+.list-item>view{
+  width: 200rpx;
+  margin:10rpx auto;
+  font-size: 10pt;
 }
