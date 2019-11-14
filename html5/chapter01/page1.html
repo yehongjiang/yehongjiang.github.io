@@ -1,0 +1,45 @@
+﻿<!doctype html>
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>邀请函</title>
+		<style>
+			html,body{ 
+				height:100%; 
+				color:#ffffff;
+			}
+			body{
+				background:url(background.jpg) center center;
+				background-size:cover;
+				margin:0;
+				padding:0;
+				position:relative;
+			}
+			#container{
+				width:100%;
+				text-align:center;
+				position:absolute;
+				top:50%;
+			}
+		</style>
+	</head>
+	<body><!--书里把body比作空房间-->
+		<div id="container"><!--容器或区块，也可看做是衣柜等-->
+			<h1>Let's Learn Html5</h1><!--标题标签共有h1到h6-->
+			<p>发挥您的美感于想象力，探索Web开发的无限可能性，现诚邀您一同踏上HTML5的学习之路。</p>
+			<a href="#">邀您参加</a>
+		</div>
+	</body>
+</html>
+<!--相对定位会按照元素的原始位置对该元素进行移动-->
+<!--把背景图像扩展至足够大，以使背景图像完全覆盖背景区域，原图比例不会改变。背景图像的某些部分也许无法显示在背景定位区域中（当宽比较小的时候）。-->
+
+<!--其实绝对定位absolute的参照对象是“离它最近的已定位的祖先元素”，
+这句话里有两个关键，一个是“离它最近的祖先元素”，意思是那个参照元素不一定是父元素，
+也可以是它的爷爷、爷爷的爷爷等等，如果它的祖先里同时有2个及以上的定位元素，
+就参照离它最近的一个元素定位还有一个是“已定位”，这个定位也不一定非要是相对定位，
+也可以是绝对定位，为什么一般都是用相对定位呢，因为相对定位的特性是虽然它定位了，
+就算给了偏移量它离开了原来的地方，但是它原来占的地方也不会让出来的，
+这样的好处是原来在它周围的其他元素不会因为它的离开而改变位置而使页面乱套，
+所以用相对定位是非常合适的（如果你另有其他需要，祖先元素绝对定位也不是不可以）-->
