@@ -19,6 +19,8 @@ namespace SewagePlantIMS.Models
         public DateTime add_date { get; set; }
         [Display(Name = "对应的设备维修")]
         public int repair_id { get; set; }
+        [Display(Name = "图片类型")]
+        public int type { get; set; }
 
     }
 }

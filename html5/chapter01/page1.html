@@ -4,32 +4,23 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>邀请函</title>
-		<style>
-			html,body{ 
-				height:100%; 
-				color:#ffffff;
-			}
-			body{
-				background:url(background.jpg) center center;
-				background-size:cover;
-				margin:0;
-				padding:0;
-				position:relative;
-			}
-			#container{
-				width:100%;
-				text-align:center;
-				position:absolute;
-				top:50%;
-			}
-		</style>
+		<link  href="css.css" rel="stylesheet"/>
 	</head>
 	<body><!--书里把body比作空房间-->
 		<div id="container"><!--容器或区块，也可看做是衣柜等-->
 			<h1>Let's Learn Html5</h1><!--标题标签共有h1到h6-->
 			<p>发挥您的美感于想象力，探索Web开发的无限可能性，现诚邀您一同踏上HTML5的学习之路。</p>
-			<a href="#">邀您参加</a>
+			<a href="#" id="enroll">邀您参加</a>
 		</div>
+        <script type="text/javascript">
+            var enroll = document.getElementById("enroll");
+            enroll.onclick = function (e) {     /*e代表调用函数的onclick事件参数*/
+                e.preventDefault();/*阻止跳转*/
+                enroll.innerHTML = "报名成功";
+                enroll.style.background = "#27cb8b";
+                enroll.style.borderColor = "#27cb8b";
+            }
+        </script>
 	</body>
 </html>
 <!--相对定位会按照元素的原始位置对该元素进行移动-->

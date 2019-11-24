@@ -1,0 +1,48 @@
+@charset "UTF-8";
+html, body {
+    height: 100%;
+    color: #ffffff;
+    font-family: sans-serif; /*算是可以理解为系统默认的最佳字体*/
+}
+
+body {
+    background: url(background.jpg) center center; /*加了center以后就是缩小也是先显示图片的中间部分，不加就是左边部分*/
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+#container {
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%); /*将对应块上移其本身高度的一半，但是不同的浏览器对transform的支持不一样所以有如下改变*/
+    -ms-transform: translateY(-50%); /*IE9*/
+    -moz-transform: translateY(-50%); /*Firefox*/
+    -webkit-transform: translateY(-50%); /*Safari of Chrome*/
+    -o-transform: translateY(-50%); /*Opera*/
+}
+
+h1 {
+    font-size: 54px;
+    text-transform: uppercase; /*大写*/
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 21px;
+    margin-bottom: 40px;
+    margin-left:25px;
+    margin-right:25px;
+}
+
+a {
+    font-size: 18px;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 3px;
+    padding: 10px 100px;
+    text-decoration: none; /*取消下划线*/
+}

@@ -610,8 +610,11 @@ namespace SewagePlantIMS.Controllers
             }
             reader.Close();
             //最后把设备维修表给查询出来
-            //对月份做一个判断修改
-            sql = "select id,device_id,user_id,technology_id,repair_date,repair_finsh,repair_class,repair_title,repair_nums,repair_reasons,repair_conclusion,repair_join,repair_consumption,repair_mark from dm_device_repair where repair_title like '%" + Request["keyword"] + "%' and CONVERT(VARCHAR,Year(repair_date)) like '%" + Request["year"] + "%' and Right(100+Month(repair_date),2) like '%" + Request["month"] + "%' order by repair_date desc;";
+            //对年月份做一个判断修改,为的是显示当前的年份和月份
+            string year, month;
+            if (Request["year"] == null) year = DateTime.Now.Year.ToString(); else year = "";
+            if (Request["month"] == null) month = DateTime.Now.Month.ToString(); else month = "";
+            sql = "select id,device_id,user_id,technology_id,repair_date,repair_finsh,repair_class,repair_title,repair_nums,repair_reasons,repair_conclusion,repair_join,repair_consumption,repair_mark from dm_device_repair where repair_title like '%" + Request["keyword"] + "%' and CONVERT(VARCHAR,Year(repair_date)) like '%" + year + "%' and Right(100+Month(repair_date),2) like '%" + month + "%' order by repair_finsh desc;";
             cmd = new SqlCommand(sql, con);
             reader = cmd.ExecuteReader();
             //设置一个变量count来记录数据条数
@@ -668,8 +671,19 @@ namespace SewagePlantIMS.Controllers
             state.Add(new SelectListItem() { Value = "常规维护", Text = "常规维护" });
             state.Add(new SelectListItem() { Value = "故障检修", Text = "故障检修" });
             state.Add(new SelectListItem() { Value = "突发维修", Text = "突发维修" });
+            state.Add(new SelectListItem() { Value = "改装改造", Text = "改装改造" });
             state.Add(new SelectListItem() { Value = "其他", Text = "其他" });
             ViewBag.state = state;
+            //2.1）设置一下是否审批
+            List<SelectListItem> isapproval = new List<SelectListItem>();
+            isapproval.Add(new SelectListItem() { Value = "0", Text = "未审批" });
+            isapproval.Add(new SelectListItem() { Value = "1", Text = "已审批" });
+            ViewBag.isapproval = isapproval;
+            //2.2）设置一下是否完工
+            List<SelectListItem> isover = new List<SelectListItem>();
+            isover.Add(new SelectListItem() { Value = "0", Text = "未完工" });
+            isover.Add(new SelectListItem() { Value = "1", Text = "已完工" });
+            ViewBag.isover = isover;
             con.Close();
             return View();
         }
@@ -688,8 +702,8 @@ namespace SewagePlantIMS.Controllers
             }
             reader.Close();
             //插入对应的数据
-            sql = "insert into dm_device_repair(device_id,user_id,technology_id,repair_date,repair_finsh,repair_class,repair_title,repair_nums,repair_reasons,repair_conclusion,repair_join,repair_consumption,repair_mark) values(" +
-                    model.device_id + "," + Session["user_id"] + "," + dic_id[model.device_id] + ",'" + model.repair_date + "','" + model.repair_finsh + "','" + model.repair_class + "','" + model.repair_title + "'," + model.repair_nums + ",'" + model.repair_reasons + "','" + model.repair_conclusion + "','" + model.repair_join + "','" + model.repair_consumption + "','" + model.repair_mark + "')";
+            sql = "insert into dm_device_repair(device_id,user_id,technology_id,repair_date,repair_finsh,repair_class,repair_title,repair_nums,repair_reasons,repair_conclusion,repair_join,repair_consumption,repair_mark,repair_begin,repair_starts,repair_consume,manager_opinion,isapproval,isover) values(" +
+                    model.device_id + "," + Session["user_id"] + "," + dic_id[model.device_id] + ",'" + model.repair_date + "','" + model.repair_finsh + "','" + model.repair_class + "','" + model.repair_title + "'," + model.repair_nums + ",'" + model.repair_reasons + "','" + model.repair_conclusion + "','" + model.repair_join + "','" + model.repair_consumption + "','" + model.repair_mark + "','" + model.repair_begin + "','" + model.repair_starts + "'," + model.repair_consume + ",'" + model.manager_opinion + "'," + model.isapproval + "," + model.isover + ")";
             cmd = new SqlCommand(sql, con);
             int check = cmd.ExecuteNonQuery();
             con.Close();
@@ -721,10 +735,21 @@ namespace SewagePlantIMS.Controllers
             state.Add(new SelectListItem() { Value = "常规维护", Text = "常规维护" });
             state.Add(new SelectListItem() { Value = "故障检修", Text = "故障检修" });
             state.Add(new SelectListItem() { Value = "突发维修", Text = "突发维修" });
+            state.Add(new SelectListItem() { Value = "改装改造", Text = "改装改造" });
             state.Add(new SelectListItem() { Value = "其他", Text = "其他" });
             ViewBag.state = state;
+            //2.1）设置一下是否审批
+            List<SelectListItem> isapproval = new List<SelectListItem>();
+            isapproval.Add(new SelectListItem() { Value = "0", Text = "未审批" });
+            isapproval.Add(new SelectListItem() { Value = "1", Text = "已审批" });
+            ViewBag.isapproval = isapproval;
+            //2.2）设置一下是否完工
+            List<SelectListItem> isover = new List<SelectListItem>();
+            isover.Add(new SelectListItem() { Value = "0", Text = "未完工" });
+            isover.Add(new SelectListItem() { Value = "1", Text = "已完工" });
+            ViewBag.isover = isover;
             //3)查出对应ID的设备维修详细内容
-            sqlStr = "select id,device_id,user_id,technology_id,repair_date,repair_finsh,repair_class,repair_title,repair_nums,repair_reasons,repair_conclusion,repair_join,repair_consumption,repair_mark from dm_device_repair where id = " + id + ";";
+            sqlStr = "select id,device_id,user_id,technology_id,repair_date,repair_finsh,repair_class,repair_title,repair_nums,repair_reasons,repair_conclusion,repair_join,repair_consumption,repair_mark,repair_begin,repair_starts,repair_consume,manager_opinion,isapproval,isover from dm_device_repair where id = " + id + ";";
             DeviceRepair dr = new DeviceRepair();
             SqlCommand cmd = new SqlCommand(sqlStr, con);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -746,6 +771,12 @@ namespace SewagePlantIMS.Controllers
                 dr.repair_join = reader["repair_join"].ToString();
                 dr.repair_consumption = reader["repair_consumption"].ToString();
                 dr.repair_mark = reader["repair_mark"].ToString();
+                if(reader["repair_begin"]!=DBNull.Value) dr.repair_begin = Convert.ToDateTime(reader["repair_begin"]);
+                if (reader["repair_starts"] != DBNull.Value) dr.repair_starts = Convert.ToDateTime(reader["repair_starts"]);
+                if (reader["repair_consume"] != DBNull.Value) dr.repair_consume = Convert.ToDouble(reader["repair_consume"]);
+                if (reader["repair_starts"] != DBNull.Value) dr.manager_opinion = reader["manager_opinion"].ToString();
+                if (reader["isapproval"] != DBNull.Value) dr.isapproval = Convert.ToInt32(reader["isapproval"]);
+                if (reader["isover"] != DBNull.Value) dr.isover = Convert.ToInt32(reader["isover"]);
             }
             reader.Close();
             con.Close();
@@ -777,7 +808,13 @@ namespace SewagePlantIMS.Controllers
                   "update dm_device_repair set repair_conclusion = '" + model.repair_conclusion + "' where id = " + Request.Form["idd"] + ";" +
                   "update dm_device_repair set repair_join = '" + model.repair_join + "' where id = " + Request.Form["idd"] + ";" +
                   "update dm_device_repair set repair_consumption = '" + model.repair_consumption + "' where id = " + Request.Form["idd"] + ";" +
-                  "update dm_device_repair set repair_mark = '" + model.repair_mark + "' where id = " + Request.Form["idd"] + ";";
+                  "update dm_device_repair set repair_mark = '" + model.repair_mark + "' where id = " + Request.Form["idd"] + ";" +
+                  "update dm_device_repair set repair_begin = '" + model.repair_begin + "' where id = " + Request.Form["idd"] + ";" +
+                  "update dm_device_repair set repair_starts = '" + model.repair_starts + "' where id = " + Request.Form["idd"] + ";" +
+                  "update dm_device_repair set repair_consume = " + model.repair_consume + " where id = " + Request.Form["idd"] + ";" +
+                  "update dm_device_repair set manager_opinion = '" + model.manager_opinion + "' where id = " + Request.Form["idd"] + ";" +
+                  "update dm_device_repair set isapproval = " + model.isapproval + " where id = " + Request.Form["idd"] + ";" +
+                  "update dm_device_repair set isover = '" + model.isover + "' where id = " + Request.Form["idd"] + ";";
             cmd = new SqlCommand(sql, con);
             int check = cmd.ExecuteNonQuery();
             con.Close();
@@ -793,7 +830,7 @@ namespace SewagePlantIMS.Controllers
             //连接数据库
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string sql = "select pic_url,describe,id from dm_device_repair_pic where repair_id = " + id + ";";
+            string sql = "select pic_url,describe,id from dm_device_repair_pic where type = 1 and repair_id = " + id + ";";
             List<DeviceRepairPic> models = new List<DeviceRepairPic>();
             SqlDataAdapter da = new SqlDataAdapter(sql, con);
             DataSet ds = new DataSet();
@@ -833,7 +870,7 @@ namespace SewagePlantIMS.Controllers
             //连接数据库把图片地址还有描述等插入
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
-            string sql = "insert into dm_device_repair_pic(pic_url,describe,add_date,repair_id) values('" + "/images/DeviceRepairPic/" + fileNewName + extName + "','" + describe + "','" + DateTime.Now.ToString() + "'," + id + ");";
+            string sql = "insert into dm_device_repair_pic(pic_url,describe,add_date,repair_id,type) values('" + "/images/DeviceRepairPic/" + fileNewName + extName + "','" + describe + "','" + DateTime.Now.ToString() + "'," + id +",1" +  ");";
             SqlCommand cmd = new SqlCommand(sql, con);
             int check = cmd.ExecuteNonQuery();
             con.Close();
@@ -1009,7 +1046,7 @@ namespace SewagePlantIMS.Controllers
             cmd = new SqlCommand(sql, con);
             string technology_name = cmd.ExecuteScalar().ToString();
             //查询出对应的图片（最多四张）
-            sql = "select pic_url from dm_device_repair_pic where repair_id = " + model.id;
+            sql = "select pic_url from dm_device_repair_pic where type = 1 and repair_id = " + model.id;
             cmd = new SqlCommand(sql, con);
             reader = cmd.ExecuteReader();
             List<string> pic_url = new List<string>();

@@ -3,7 +3,9 @@
     ViewBag.Title = "新增设备维修记录";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<!--一个时间插件CSS-->
+<link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <fieldset>
     <legend style="color:#5b9bd1">新增设备维修信息</legend>
 </fieldset>
@@ -24,12 +26,38 @@
         @Html.DropDownListFor(model => model.device_id, new SelectList(ViewBag.list_device, "Value", "Text"), new { @class = "btn btn-default dropdown-toggle form-control", @onchange = "selectOnchang(this)" })
     </div>
     <div class="am-form-group">
+        @Html.LabelFor(model => model.repair_begin, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.repair_begin, new { htmlAttributes = new { @class = "form_datetime form-control", @type = "datetime", @readOnly = "readOnly " } })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.repair_starts, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.repair_starts, new { htmlAttributes = new { @class = "form_datetime form-control", @type = "datetime" , @readOnly = "readOnly " } })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.repair_consume, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.repair_consume, new { htmlAttributes = new { @class = "form-control", @placeholder = "预计耗时" } })
+        @Html.ValidationMessageFor(model => model.repair_consume, "", new { @class = "text-danger" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.manager_opinion, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.manager_opinion, new { htmlAttributes = new { @class = "form-control", @placeholder = "请输入经理意见" } })
+        @Html.ValidationMessageFor(model => model.manager_opinion, "", new { @class = "text-danger" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.isapproval, htmlAttributes: new { @class = "control-label" })
+        @Html.DropDownListFor(model => model.isapproval, new SelectList(ViewBag.isapproval, "Value", "Text"), new { @class = "btn btn-default dropdown-toggle form-control", @onchange = "selectOnchang(this)" })
+    </div>
+    <div class="am-form-group">
+        @Html.LabelFor(model => model.isover, htmlAttributes: new { @class = "control-label" })
+        @Html.DropDownListFor(model => model.isover, new SelectList(ViewBag.isover, "Value", "Text"), new { @class = "btn btn-default dropdown-toggle form-control", @onchange = "selectOnchang(this)" })
+    </div>
+    <div class="am-form-group">
         @Html.LabelFor(model => model.repair_date, htmlAttributes: new { @class = "control-label" })
-        @Html.EditorFor(model => model.repair_date, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+        @Html.EditorFor(model => model.repair_date, new { htmlAttributes = new { @class = "form_datetime form-control", @type = "datetime" , @readOnly = "readOnly " } })
     </div>
     <div class="am-form-group">
         @Html.LabelFor(model => model.repair_finsh, htmlAttributes: new { @class = "control-label" })
-        @Html.EditorFor(model => model.repair_finsh, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+        @Html.EditorFor(model => model.repair_finsh, new { htmlAttributes = new { @class = "form_datetime form-control", @type = "datetime" , @readOnly = "readOnly " } })
     </div>
     <div class="am-form-group">
         @Html.LabelFor(model => model.repair_class, htmlAttributes: new { @class = "control-label" })
@@ -68,3 +96,20 @@
     <button type="submit" class="btn btn-primary btn-block" >添加维修设备</button>
 }
 <button class="btn btn-default btn-block" onclick="javascrtpt: window.location.href = 'DeviceRepair'">返回</button>
+
+
+<!--时间插件相应的JS-->
+<script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">
+    $.fn.datetimepicker.dates['zh'] = {
+        days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
+        daysShort: ["日", "一", "二", "三", "四", "五", "六", "日"],
+        daysMin: ["日", "一", "二", "三", "四", "五", "六", "日"],
+        months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+        monthsShort: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
+        meridiem: ["上午", "下午"],
+        //suffix:      ["st", "nd", "rd", "th"],  
+        today: "今天"
+    };
+    $(".form_datetime").datetimepicker({ format: 'yyyy-mm-dd hh:ii', language: 'zh' });
+ </script>
