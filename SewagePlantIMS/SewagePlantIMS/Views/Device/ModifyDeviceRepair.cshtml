@@ -99,6 +99,15 @@
 
 <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
 <script>
+    $(".form_datetime").datetimepicker({ format: 'yyyy-mm-dd hh:ii', language: 'zh' });
+    //设置设备状态
+   //
+    //让input框显示默认值
+    $("#isapproval_select option[value='"+@Model.isapproval+"']").attr("selected", "selected");
+    //让input框显示默认值
+    $("#isover_select option[value='" + @Model.isover +"']").attr("selected", "selected");
+
+    $("#state_select option[value='" + @Model.repair_class +"']").attr("selected", "selected");
     $.fn.datetimepicker.dates['zh'] = {
         days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
         daysShort: ["日", "一", "二", "三", "四", "五", "六", "日"],
@@ -109,11 +118,5 @@
         //suffix:      ["st", "nd", "rd", "th"],
         today: "今天"
     };
-    $(".form_datetime").datetimepicker({ format: 'yyyy-mm-dd hh:ii', language: 'zh' });
-    //设置设备状态
-    $("#state_select option[value='" + @Model.repair_class +"']").attr("selected", "selected");
-    //让input框显示默认值
-    $("#isapproval_select option[value='"+@Model.isapproval+"']").attr("selected", "selected");
-    //让input框显示默认值
-    $("#isover_select option[value='" + @Model.isover +"']").attr("selected", "selected");
+
 </script>

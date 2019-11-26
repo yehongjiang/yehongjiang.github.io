@@ -612,8 +612,8 @@ namespace SewagePlantIMS.Controllers
             //最后把设备维修表给查询出来
             //对年月份做一个判断修改,为的是显示当前的年份和月份
             string year, month;
-            if (Request["year"] == null) year = DateTime.Now.Year.ToString(); else year = "";
-            if (Request["month"] == null) month = DateTime.Now.Month.ToString(); else month = "";
+            if (Request["year"] == null) year = DateTime.Now.Year.ToString(); else year = Request["year"].ToString();
+            if (Request["month"] == null) month = DateTime.Now.Month.ToString(); else month = Request["month"].ToString();
             sql = "select id,device_id,user_id,technology_id,repair_date,repair_finsh,repair_class,repair_title,repair_nums,repair_reasons,repair_conclusion,repair_join,repair_consumption,repair_mark from dm_device_repair where repair_title like '%" + Request["keyword"] + "%' and CONVERT(VARCHAR,Year(repair_date)) like '%" + year + "%' and Right(100+Month(repair_date),2) like '%" + month + "%' order by repair_finsh desc;";
             cmd = new SqlCommand(sql, con);
             reader = cmd.ExecuteReader();
