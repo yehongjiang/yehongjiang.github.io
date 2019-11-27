@@ -773,7 +773,7 @@ namespace SewagePlantIMS.Controllers
                 dr.repair_mark = reader["repair_mark"].ToString();
                 if(reader["repair_begin"]!=DBNull.Value) dr.repair_begin = Convert.ToDateTime(reader["repair_begin"]);
                 if (reader["repair_starts"] != DBNull.Value) dr.repair_starts = Convert.ToDateTime(reader["repair_starts"]);
-                if (reader["repair_consume"] != DBNull.Value) dr.repair_consume = Convert.ToDouble(reader["repair_consume"]);
+                if (reader["repair_consume"] != DBNull.Value) dr.repair_consume = double.Parse(reader["repair_consume"].ToString()); //不然会有很多小数点。
                 if (reader["repair_starts"] != DBNull.Value) dr.manager_opinion = reader["manager_opinion"].ToString();
                 if (reader["isapproval"] != DBNull.Value) dr.isapproval = Convert.ToInt32(reader["isapproval"]);
                 if (reader["isover"] != DBNull.Value) dr.isover = Convert.ToInt32(reader["isover"]);
@@ -823,6 +823,7 @@ namespace SewagePlantIMS.Controllers
             else
                 return JavaScript("swal_error();");
         }
+        //维修图片上传
         public ActionResult DeviceRepairPic(string id)
         {
             //获取传输过来的ID
@@ -972,6 +973,96 @@ namespace SewagePlantIMS.Controllers
                 return JavaScript("del_pic_error(" + idd + ");");
             }
         }
+        //上传维修故障图片
+        public ActionResult DeviceRepairFaultPic(string id)
+        {
+            //获取传输过来的ID
+            ViewBag.id = id;
+            //连接数据库
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "select pic_url,describe,id from dm_device_repair_pic where type = 0 and repair_id = " + id + ";";
+            List<DeviceRepairPic> models = new List<DeviceRepairPic>();
+            SqlDataAdapter da = new SqlDataAdapter(sql, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            DeviceRepairPic[] tc = new DeviceRepairPic[ds.Tables[0].Rows.Count];
+            for (int mDr = 0; mDr < ds.Tables[0].Rows.Count; mDr++)
+            {
+                tc[mDr] = new DeviceRepairPic();
+                tc[mDr].pic_url = ds.Tables[0].Rows[mDr][0].ToString();
+                tc[mDr].describe = ds.Tables[0].Rows[mDr][1].ToString();
+                tc[mDr].id = Convert.ToInt32(ds.Tables[0].Rows[mDr][2]);
+                models.Add(tc[mDr]);
+            }
+            return View(models);
+        }
+        public string DeviceRepairFaultPic_Post()
+        {
+
+            HttpFileCollectionBase files = Request.Files;
+            HttpPostedFileBase file = files[0];
+            //获取文件名后缀
+            string extName = Path.GetExtension(file.FileName).ToLower();
+            //获取保存目录的物理路径
+            if (System.IO.Directory.Exists(Server.MapPath("/images/DeviceRepairPic/")) == false)//如果不存在就创建images文件夹
+            {
+                System.IO.Directory.CreateDirectory(Server.MapPath("/images/DeviceRepairPic/"));
+            }
+            string path = Server.MapPath("/images/DeviceRepairPic/"); //path为某个文件夹的绝对路径，不要直接保存到数据库
+                                                                      //    string path = "F:\\TgeoSmart\\Image\\";
+                                                                      //生成新文件的名称，guid保证某一时刻内图片名唯一（文件不会被覆盖）
+            string fileNewName = Guid.NewGuid().ToString();
+            //获取前端图片描述
+            string describe = Request["describe"];
+            string id = Request["id"];
+            string ImageUrl = path + fileNewName + "_cp" + extName;
+            string ImageUrl2 = path + fileNewName + extName; //压缩备用
+            //连接数据库把图片地址还有描述等插入
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "insert into dm_device_repair_pic(pic_url,describe,add_date,repair_id,type) values('" + "/images/DeviceRepairPic/" + fileNewName + extName + "','" + describe + "','" + DateTime.Now.ToString() + "'," + id + ",0" + ");";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check == 1)
+            {
+                if (extName == ".jpg" || extName == ".png")
+                {
+                    //SaveAs将文件保存到指定文件夹中
+                    file.SaveAs(ImageUrl);
+                    //如果是JPG或者PNG文件压缩一下
+
+                    CompressPic cp = new CompressPic();
+                    bool temp = cp.CompressImage(ImageUrl, ImageUrl2, 80, 150, true);
+                    //删除未压缩图片
+                    FileInfo del_file = new FileInfo(ImageUrl);
+                    if (del_file.Exists)
+                    {
+                        del_file.Delete();
+                    }
+                }
+                else
+                {
+                    file.SaveAs(ImageUrl2);
+                }
+                //建立JSON字符串返回
+                string str = "\"src\": " + id;
+                str = "{\"code\": 0,\"data\": {" + str;
+                str = str + "}}";
+                JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
+                return json.ToString();
+            }
+            else
+            {
+                string str = "";
+                JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
+                return json.ToString();
+            }
+
+
+
+        }
         //删除与维修记录有关一切信息
         public string DeleteDeviceRepair(string id)
         {
@@ -1007,6 +1098,11 @@ namespace SewagePlantIMS.Controllers
             {
                 return "";
             }
+
+        }
+        //导出维修审批表
+        public void OutputDeiveRepairApprovalExcel(string id)
+        {
 
         }
         //导出维修记录表
@@ -1107,6 +1203,205 @@ namespace SewagePlantIMS.Controllers
                 MemoryStream mstream = new MemoryStream();
                 hssfworkbook.Write(mstream);
                 DownloadFile(mstream, model.repair_title);
+            }
+            con.Close();
+        }
+        //导出老式的经理审批表
+        public void OutputDeiveOldRepairExcel(string id)
+        {
+            //连接数据库
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //查询出对应的维修数据
+            string sql = "select * from dm_device_repair where id = " + id;
+            SqlCommand cmd = new SqlCommand(sql, con);
+            DeviceRepair model = new DeviceRepair();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                model.id = Convert.ToInt32(reader["id"]);
+                model.device_id = Convert.ToInt32(reader["device_id"]);
+                model.technology_id = Convert.ToInt32(reader["technology_id"]);
+                model.repair_date = Convert.ToDateTime(reader["repair_date"]);
+                model.repair_finsh = Convert.ToDateTime(reader["repair_finsh"]);
+                model.repair_class = reader["repair_class"].ToString();
+                model.repair_title = reader["repair_title"].ToString();
+                model.repair_nums = Convert.ToInt32(reader["repair_nums"]);
+                model.repair_reasons = reader["repair_reasons"].ToString();
+                model.repair_conclusion = reader["repair_conclusion"].ToString();
+                model.repair_join = reader["repair_join"].ToString();
+                model.repair_consumption = reader["repair_consumption"].ToString();
+                model.repair_mark = reader["repair_mark"].ToString();
+            }
+            reader.Close();
+            //查询出对应的设备名称
+            sql = "select title from dm_device where id = " + model.device_id;
+            cmd = new SqlCommand(sql, con);
+            string device_name = cmd.ExecuteScalar().ToString();
+            //查询出对应工艺段的名称
+            sql = "select title from dm_technology where id = " + model.technology_id;
+            cmd = new SqlCommand(sql, con);
+            string technology_name = cmd.ExecuteScalar().ToString();
+            //查询出对应的图片（最多四张）
+            sql = "select pic_url from dm_device_repair_pic where type = 1 and repair_id = " + model.id;
+            cmd = new SqlCommand(sql, con);
+            reader = cmd.ExecuteReader();
+            List<string> pic_url = new List<string>();
+
+
+            while (reader.Read())
+            {
+                pic_url.Add(Server.MapPath(reader["pic_url"].ToString()));
+            }
+            reader.Close();
+            //创建工作簿对象
+            HSSFWorkbook hssfworkbook;
+            using (FileStream file = new FileStream(HttpContext.Request.PhysicalApplicationPath + @"ExcelModel\DeviceRepairOldApproval.xls", FileMode.Open, FileAccess.Read))
+            {
+                hssfworkbook = new HSSFWorkbook(file);
+                ISheet sheet1 = hssfworkbook.GetSheet("Sheet1");
+                //往表中插入数据
+                model.repair_class = model.repair_class.Trim();
+                sheet1.GetRow(1).GetCell(1).SetCellValue(model.repair_class);
+                sheet1.GetRow(2).GetCell(1).SetCellValue(device_name);
+                sheet1.GetRow(3).GetCell(1).SetCellValue(model.repair_title);
+                sheet1.GetRow(4).GetCell(1).SetCellValue(model.repair_nums);
+                sheet1.GetRow(5).GetCell(1).SetCellValue(technology_name);
+                sheet1.GetRow(6).GetCell(1).SetCellValue(model.repair_date.ToString("D"));
+                sheet1.GetRow(7).GetCell(1).SetCellValue(model.repair_finsh.ToString("D"));
+                sheet1.GetRow(8).GetCell(1).SetCellValue(model.repair_reasons);
+                sheet1.GetRow(9).GetCell(1).SetCellValue(model.repair_conclusion);
+                sheet1.GetRow(13).GetCell(1).SetCellValue(model.repair_mark);
+                //再往表格中插入前四张图片
+                int index = 0;
+                int temp = 1;
+                int row = 10;
+                int col = 1;
+                while (index < pic_url.Count && temp <= 4)
+                {
+                    AddPieChart(sheet1, hssfworkbook, pic_url[index], row, col, ".png");
+                    index += 1;
+                    temp += 1;
+                    if (temp == 2)
+                    {
+                        row = 10;
+                        col = 2;
+                    }
+                    else if (temp == 3)
+                    {
+                        row = 11;
+                        col = 1;
+                    }
+                    else if (temp == 4)
+                    {
+                        row = 11;
+                        col = 2;
+                    }
+
+                }
+                //AddPieChart(sheet1, hssfworkbook, sql, 1, 1,".png");
+                MemoryStream mstream = new MemoryStream();
+                hssfworkbook.Write(mstream);
+                DownloadFile(mstream, model.repair_title+"审批表");
+            }
+            con.Close();
+        }
+        //导出维修审批表（也就是要等经理预先审批后才行动的表）
+        public void OutputDeivePreRepairExcel(string id)
+        {
+            //连接数据库
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //查询出对应的维修数据
+            string sql = "select * from dm_device_repair where id = " + id;
+            SqlCommand cmd = new SqlCommand(sql, con);
+            DeviceRepair model = new DeviceRepair();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                model.id = Convert.ToInt32(reader["id"]);
+                model.device_id = Convert.ToInt32(reader["device_id"]);
+                model.technology_id = Convert.ToInt32(reader["technology_id"]);
+                model.repair_begin = Convert.ToDateTime(reader["repair_begin"]);
+                model.repair_starts = Convert.ToDateTime(reader["repair_starts"]);
+                model.repair_class = reader["repair_class"].ToString();
+                model.repair_title = reader["repair_title"].ToString();
+                model.repair_nums = Convert.ToInt32(reader["repair_nums"]);
+                model.repair_reasons = reader["repair_reasons"].ToString();
+                model.repair_consume = double.Parse(reader["repair_consume"].ToString());
+
+                model.repair_mark = reader["repair_mark"].ToString();
+            }
+            reader.Close();
+            //查询出对应的设备名称
+            sql = "select title from dm_device where id = " + model.device_id;
+            cmd = new SqlCommand(sql, con);
+            string device_name = cmd.ExecuteScalar().ToString();
+            //查询出对应工艺段的名称
+            sql = "select title from dm_technology where id = " + model.technology_id;
+            cmd = new SqlCommand(sql, con);
+            string technology_name = cmd.ExecuteScalar().ToString();
+            //查询出对应的图片（最多四张）
+            sql = "select pic_url from dm_device_repair_pic where type = 0 and repair_id = " + model.id;
+            cmd = new SqlCommand(sql, con);
+            reader = cmd.ExecuteReader();
+            List<string> pic_url = new List<string>();
+
+
+            while (reader.Read())
+            {
+                pic_url.Add(Server.MapPath(reader["pic_url"].ToString()));
+            }
+            reader.Close();
+            //创建工作簿对象
+            HSSFWorkbook hssfworkbook;
+            using (FileStream file = new FileStream(HttpContext.Request.PhysicalApplicationPath + @"ExcelModel\DeviceRepairPreApproval.xls", FileMode.Open, FileAccess.Read))
+            {
+                hssfworkbook = new HSSFWorkbook(file);
+                ISheet sheet1 = hssfworkbook.GetSheet("Sheet1");
+                //往表中插入数据
+                model.repair_class = model.repair_class.Trim();
+                sheet1.GetRow(1).GetCell(1).SetCellValue(model.repair_class);
+                sheet1.GetRow(2).GetCell(1).SetCellValue(device_name);
+                sheet1.GetRow(3).GetCell(1).SetCellValue(model.repair_title);
+                sheet1.GetRow(4).GetCell(1).SetCellValue(model.repair_nums);
+                sheet1.GetRow(5).GetCell(1).SetCellValue(technology_name);
+                sheet1.GetRow(6).GetCell(1).SetCellValue(model.repair_begin.ToString("D"));
+                sheet1.GetRow(7).GetCell(1).SetCellValue(model.repair_starts.ToString("D"));
+                sheet1.GetRow(8).GetCell(1).SetCellValue(model.repair_consume);
+                sheet1.GetRow(9).GetCell(1).SetCellValue(model.repair_reasons);
+                sheet1.GetRow(13).GetCell(1).SetCellValue(model.repair_mark);
+                //再往表格中插入前四张图片
+                int index = 0;
+                int temp = 1;
+                int row = 10;
+                int col = 1;
+                while (index < pic_url.Count && temp <= 4)
+                {
+                    AddPieChart(sheet1, hssfworkbook, pic_url[index], row, col, ".png");
+                    index += 1;
+                    temp += 1;
+                    if (temp == 2)
+                    {
+                        row = 10;
+                        col = 2;
+                    }
+                    else if (temp == 3)
+                    {
+                        row = 11;
+                        col = 1;
+                    }
+                    else if (temp == 4)
+                    {
+                        row = 11;
+                        col = 2;
+                    }
+
+                }
+                //AddPieChart(sheet1, hssfworkbook, sql, 1, 1,".png");
+                MemoryStream mstream = new MemoryStream();
+                hssfworkbook.Write(mstream);
+                DownloadFile(mstream, model.repair_title + "审批表");
             }
             con.Close();
         }
