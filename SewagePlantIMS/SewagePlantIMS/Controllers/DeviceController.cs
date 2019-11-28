@@ -1405,6 +1405,174 @@ namespace SewagePlantIMS.Controllers
             }
             con.Close();
         }
+        //提前维修后审批的导出样式
+        public void OutputDeiveAfterRepairExcel(string id)
+        {
+            //连接数据库
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //查询出对应的维修数据
+            string sql = "select * from dm_device_repair where id = " + id;
+            SqlCommand cmd = new SqlCommand(sql, con);
+            DeviceRepair model = new DeviceRepair();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                model.id = Convert.ToInt32(reader["id"]);
+                model.device_id = Convert.ToInt32(reader["device_id"]);
+                model.technology_id = Convert.ToInt32(reader["technology_id"]);
+                model.repair_date = Convert.ToDateTime(reader["repair_date"]);
+                model.repair_finsh = Convert.ToDateTime(reader["repair_finsh"]);
+                model.repair_class = reader["repair_class"].ToString();
+                model.repair_title = reader["repair_title"].ToString();
+                model.repair_nums = Convert.ToInt32(reader["repair_nums"]);
+                model.repair_reasons = reader["repair_reasons"].ToString();
+                model.repair_conclusion = reader["repair_conclusion"].ToString();
+                model.repair_join = reader["repair_join"].ToString();
+                model.repair_consumption = reader["repair_consumption"].ToString();
+                model.repair_mark = reader["repair_mark"].ToString();
+            }
+            reader.Close();
+            //查询出对应的设备名称
+            sql = "select title from dm_device where id = " + model.device_id;
+            cmd = new SqlCommand(sql, con);
+            string device_name = cmd.ExecuteScalar().ToString();
+            //查询出对应工艺段的名称
+            sql = "select title from dm_technology where id = " + model.technology_id;
+            cmd = new SqlCommand(sql, con);
+            string technology_name = cmd.ExecuteScalar().ToString();
+            //查询出对应的图片（查出所有区分故障和维修图片）
+            sql = "select pic_url,describe,type from dm_device_repair_pic  where repair_id = " + model.id + "order by type;";
+            cmd = new SqlCommand(sql, con);
+            reader = cmd.ExecuteReader();
+            //设置一个记录图片数量的变量
+            int pic_num = 0;
+            //设置一个关于图片的列表
+
+            List<DeviceRepairPic> drp = new List<Models.DeviceRepairPic>();
+            //建立一个对象用来复制用
+            DeviceRepairPic temp_content ;
+
+            while (reader.Read())
+            {
+                temp_content = new Models.DeviceRepairPic();
+                temp_content.pic_url = (Server.MapPath(reader["pic_url"].ToString()));
+                temp_content.describe = reader["describe"].ToString();
+                temp_content.type = Convert.ToInt32(reader["type"]);
+                drp.Add(temp_content);
+                pic_num++;
+            }
+            reader.Close();
+            //创建工作簿对象
+            HSSFWorkbook hssfworkbook;
+            using (FileStream file = new FileStream(HttpContext.Request.PhysicalApplicationPath + @"ExcelModel\DeviceRepairAfterApproval.xls", FileMode.Open, FileAccess.Read))
+            {
+                hssfworkbook = new HSSFWorkbook(file);
+                ISheet sheet1 = hssfworkbook.GetSheet("Sheet1");
+                //往表中插入数据
+                model.repair_class = model.repair_class.Trim();
+                sheet1.GetRow(1).GetCell(1).SetCellValue(model.repair_class);
+                sheet1.GetRow(2).GetCell(1).SetCellValue(device_name);
+                sheet1.GetRow(3).GetCell(1).SetCellValue(model.repair_title);
+                sheet1.GetRow(4).GetCell(1).SetCellValue(model.repair_nums);
+                sheet1.GetRow(5).GetCell(1).SetCellValue(technology_name);
+                sheet1.GetRow(6).GetCell(1).SetCellValue(model.repair_date.ToString("f"));
+                sheet1.GetRow(7).GetCell(1).SetCellValue(model.repair_finsh.ToString("f"));
+                sheet1.GetRow(8).GetCell(1).SetCellValue(model.repair_reasons);
+                sheet1.GetRow(9).GetCell(1).SetCellValue(model.repair_conclusion);
+                sheet1.GetRow(10).GetCell(1).SetCellValue(model.repair_consumption);
+                sheet1.GetRow(12).GetCell(1).SetCellValue(model.repair_mark);
+                //准备插入图片
+
+                if (pic_num == 0)
+                {
+                    
+                    sheet1.GetRow(13).GetCell(0).SetCellValue("此登记表无配图");
+                }
+                else
+                {
+                   
+                    sheet1.GetRow(13).GetCell(0).SetCellValue("此表配图共" + pic_num + "张，详情请见图片附件");
+                    //设置单元格样式
+                    ICell Cell;
+                    IRow Row;
+                    ICellStyle cellstyle = hssfworkbook.CreateCellStyle();
+                    //设置单元格上下左右边框线
+                    cellstyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                    cellstyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                    cellstyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                    cellstyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                    cellstyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                    cellstyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
+                    //开始遍历
+                    int row = 29;
+                    for (int i = 0; i < drp.Count; i++)
+                    {
+                        Cell = sheet1.CreateRow(row).CreateCell(0);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(row).GetCell(0).SetCellValue("类型");
+                        Cell = sheet1.GetRow(row).CreateCell(1);
+                        Cell.CellStyle = cellstyle;
+                        if(drp[i].type==0)
+                            sheet1.GetRow(row).GetCell(1).SetCellValue("故障/改造前图片");
+                        else
+                            sheet1.GetRow(row).GetCell(1).SetCellValue("维修/改造后图片");
+                        row++;
+                        Cell = sheet1.CreateRow(row).CreateCell(0);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(row).GetCell(0).SetCellValue("图片" + (i+1));
+                        Cell = sheet1.GetRow(row).CreateCell(1);
+                        Cell.CellStyle = cellstyle;
+                        Row = sheet1.GetRow(row);
+                        Row.Height = 20*355;
+                        AddPieChart(sheet1, hssfworkbook, drp[i].pic_url, row, 1, ".png");
+                        row++;
+                        Cell = sheet1.CreateRow(row).CreateCell(0);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(row).GetCell(0).SetCellValue("描述");
+                        Cell = sheet1.GetRow(row).CreateCell(1);
+                        Cell.CellStyle = cellstyle;
+                        sheet1.GetRow(row).GetCell(1).SetCellValue(drp[i].describe);
+                        row++;
+
+                    }                   
+                }
+                
+
+                /*//再往表格中插入前四张图片
+                int index = 0;
+                int temp = 1;
+                int row = 10;
+                int col = 1;
+                while (index < pic_url.Count && temp <= 4)
+                {
+                    AddPieChart(sheet1, hssfworkbook, pic_url[index], row, col, ".png");
+                    index += 1;
+                    temp += 1;
+                    if (temp == 2)
+                    {
+                        row = 10;
+                        col = 2;
+                    }
+                    else if (temp == 3)
+                    {
+                        row = 11;
+                        col = 1;
+                    }
+                    else if (temp == 4)
+                    {
+                        row = 11;
+                        col = 2;
+                    }
+
+                }*/
+                //AddPieChart(sheet1, hssfworkbook, sql, 1, 1,".png");
+                MemoryStream mstream = new MemoryStream();
+                hssfworkbook.Write(mstream);
+                DownloadFile(mstream, model.repair_title+"维修审核登记表");
+            }
+            con.Close();
+        }
         public static string DownloadFile(MemoryStream fs, string filename)//必须为FileStream或MemoryStream ，如果用Stream则生成的excel无法正常打开
         {
             string fileName = filename + ".xls";//客户端保存的文件名 //以字符流的形式下载文件 
