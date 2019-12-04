@@ -599,7 +599,11 @@ namespace SewagePlantIMS.Controllers
             JObject json = (JObject)JsonConvert.DeserializeObject(str.ToString());
             return json.ToString();
         }
-
+        //提交维修预报的内容
+        public string DevicePreRepairModify()
+        {
+            return "{ \"code\": 200, \"msg\": \"操作成功\"}";
+        }
 
         ///////////下面是和维修有关的内容//////////////////
         public ActionResult DeviceRepair()

@@ -54,7 +54,8 @@
 
     <!-- 表格操作列 -->
     <script type="text/html" id="tableBarUser">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改1</a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit2">修改2</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
     <!-- 表格状态列 -->
@@ -66,6 +67,13 @@
     <script type="text/html" id="modelUser">
         <form id="modelUserForm" lay-filter="modelUserForm" class="layui-form model-form">
             <input name="id" type="hidden" />
+            <div class="layui-form-item">
+                <label class="layui-form-label">维修详名</label>
+                <div class="layui-input-block">
+                    <input name="repair_title" placeholder="请输入维修名称" type="text" class="layui-input" maxlength="20"
+                           lay-verType="tips" lay-verify="required" required />
+                </div>
+            </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">设备名称</label>
                 <div class="layui-input-block">
@@ -80,39 +88,75 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">原点位名</label>
+                <label class="layui-form-label">故障/改造</label>
                 <div class="layui-input-block">
-                    <input name="old_point" placeholder="请输入原点位名" type="text" class="layui-input" maxlength="20"
+                    <input class="layui-input" name="repair_begin" id="time1" type="text" placeholder="故障/改造时间" maxlength="20">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">预计开工</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" name="repair_starts" id="time2" type="text" placeholder="预计开工时间" maxlength="20">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">预计耗时</label>
+                <div class="layui-input-block">
+                    <input name="repair_consume" class="layui-input" type="text" placeholder="预计耗时"  lay-verify="number">
+                </div>
+            </div>            
+            <div class="layui-form-item text-right">
+                <button class="layui-btn layui-btn-primary" type="button" ew-event="closePageDialog">取消</button>
+                <button class="layui-btn" lay-filter="modelSubmitUser" lay-submit>保存</button>
+            </div>
+        </form>
+    </script>
+    <!-- 表单弹窗222 -->
+    <script type="text/html" id="modelUser2">
+        <form id="modelUserForm2" lay-filter="modelUserForm2" class="layui-form model-form">
+            <input name="id" type="hidden" />
+            <div class="layui-form-item">
+                <label class="layui-form-label">维修详名</label>
+                <div class="layui-input-block">
+                    <input name="repair_title" placeholder="请输入维修名称" type="text" class="layui-input" maxlength="20"
                            lay-verType="tips" lay-verify="required" required />
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">新点位名</label>
+                <label class="layui-form-label">设备名称</label>
                 <div class="layui-input-block">
-                    <input name="new_point" placeholder="请输入新点位名" type="text" class="layui-input" maxlength="20"
-                           lay-verType="tips" lay-verify="required" required />
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">所在数据库表</label>
-                <div class="layui-input-block">
-                    <input name="indatabase" placeholder="请输入数据库表" type="text" class="layui-input" maxlength="20"
-                           lay-verType="tips" lay-verify="required" required />
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">数据类型</label>
-                <div class="layui-input-block">
-                    <select name="point_type" lay-verType="tips" lay-verify="required">
-                        <option value="运行状态">运行状态</option>
-                        <option value="故障状态">故障状态</option>
+                    <select name="device_id" lay-verType="tips" lay-verify="required">
+                        @{
+                            foreach (var item in ViewBag.DeviceName.Keys)
+                            {
+                                <option value=@item>@ViewBag.DeviceName[item]</option>
+                            }
+                        }
                     </select>
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">描述</label>
+                <label class="layui-form-label">维修日期</label>
                 <div class="layui-input-block">
-                    <input name="describe" placeholder="请输入相应描述" type="text" class="layui-input" maxlength="20"
+                    <input class="layui-input" name="repair_date" id="time1" type="text" placeholder="维修时间" maxlength="20">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">预计开工</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" name="repair_starts" id="time2" type="text" placeholder="预计开工时间" maxlength="20">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">预计耗时</label>
+                <div class="layui-input-block">
+                    <input name="repair_consume" class="layui-input" type="text" placeholder="预计耗时" lay-verify="number">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">维修原因</label>
+                <div class="layui-input-block">
+                    <input name="repair_reasons" placeholder="请输入维修原因" type="text" class="layui-input" maxlength="20"
                            lay-verType="tips" lay-verify="required" required />
                 </div>
             </div>
@@ -122,12 +166,11 @@
             </div>
         </form>
     </script>
-
     <!-- js部分 -->
     <script type="text/javascript" src="../../assets/libs/layui/layui.js"></script>
     <script type="text/javascript" src="../../assets/js/common.js?v=312"></script>
     <script>
-        layui.use(['layer', 'form', 'table', 'util', 'admin','tableX'], function () {
+        layui.use(['layer', 'form', 'table', 'util', 'admin','tableX','laydate'], function () {
             var $ = layui.jquery;
             var layer = layui.layer;
             var form = layui.form;
@@ -135,6 +178,8 @@
             var util = layui.util;
             var admin = layui.admin;
             var tableX = layui.tableX;
+
+            
             // 渲染表格
             var insTb = tableX.renderFront({
                 elem: '#tableUser',
@@ -142,15 +187,15 @@
                 page: true,
                 cellMinWidth: 100,
                 cols: [[
-                    { type: 'numbers', title: '#' },
+                    { type: 'numbers', title: '#',fixed: 'left' },
                     { field: 'id', align: 'center', sort: true, title: 'id', hide: true },
-                    { field: 'repair_title', sort: true, title: '维修名称' },
+                    { field: 'repair_title', sort: true, title: '维修名称',fixed: 'left' },
                     { field: 'devicename', sort: true, title: '设备名称' },
                     { field: 'device_id', sort: true, title: '设备ID',  hide: true },
                     { field: 'technology_id', sort: true, title: '工艺段ID', hide: true },
                     { field: 'techname', sort: true, title: '工艺段' },
-                    { field: 'repair_date', sort: true, title: '维修日期' },
-                    { field: 'repair_finsh', sort: true, title: '完工日期' },
+                    { field: 'repair_date', sort: true, title: '维修日期',minWidth: 120 },
+                    { field: 'repair_finsh', sort: true, title: '完工日期', minWidth: 120 },
                     { field: 'repair_class', sort: true, title: '维修类别' },
                     { field: 'repair_nums', sort: true, title: '设备数量' },
                     { field: 'repair_reasons', sort: true, title: '维修原因' },
@@ -158,13 +203,13 @@
                     { field: 'repair_join', sort: true, title: '参与人员' },
                     { field: 'repair_consumption', sort: true, title: '消耗情况' },
                     { field: 'repair_mark', sort: true, title: '备注' },
-                    { field: 'repair_begin', sort: true, title: '故障/改造时间' },
-                    { field: 'repair_starts', sort: true, title: '预计开工日期' },
+                    { field: 'repair_begin', sort: true, title: '故障/改造时间', minWidth: 120 },
+                    { field: 'repair_starts', sort: true, title: '预计开工日期', minWidth: 120 },
                     { field: 'repair_consume', sort: true, title: '预计耗时' },
                     { field: 'manager_opinion', sort: true, title: '经理意见' },
                     { field: 'isapproval', sort: true, title: '是否审批' },
                     { field: 'isover', sort: true, title: '是否完工' },
-                    { align: 'center', toolbar: '#tableBarUser', title: '操作', minWidth: 200 }
+                    { align: 'center', toolbar: '#tableBarUser', title: '操作', minWidth: 100, fixed: 'right' }
                 ]]
             });
 
@@ -172,7 +217,9 @@
             $('#btnAddNew').click(function () {
                 showEditModel();
             });
-
+            $('#btnAddNew2').click(function () {
+                showEditModel2();
+            });
             // 搜索
             form.on('submit(formSubSearchUser)', function (data) {
                 insTb.reload({ where: data.field }, 'data');
@@ -184,7 +231,10 @@
                 var layEvent = obj.event;
                 if (layEvent === 'edit') { // 修改
                     showEditModel(data);
-                } else if (layEvent === 'del') { // 删除
+                } else if (layEvent === 'edit2') { //修改2
+                    showEditModel2(data);
+                }
+                 else if (layEvent === 'del') { // 删除
                     doDel(data.id, data.device_id, data.point_type);
                 } else if (layEvent === 'reset') { // 重置密码
                     resetPsw(data.userId, data.nickName);
@@ -195,19 +245,32 @@
             function showEditModel(mUser) {
                 admin.open({
                     type: 1,
-                    title: (mUser ? '修改' : '添加') + '维修',
+                    title: (mUser ? '修改' : '添加') + '维修审批项',
                     content: $('#modelUser').html(),
                     success: function (layero, dIndex) {
+                        //加载一下时间选择器(只能在弹出层的SUCCESS里添加才奏效)
+                        var laydate1 = layui.laydate;
+                        var laydate2 = layui.laydate;
+                        laydate1.render({
+                            elem: '#time1'
+                            , type: 'datetime'
+                            , trigger: 'click'
+                        });
+                        laydate2.render({
+                            elem: '#time2'
+                            , type: 'datetime'
+                            , trigger: 'click'
+                        });
                         $(layero).children('.layui-layer-content').css('overflow', 'visible');
                         // 回显数据
                         form.val('modelUserForm', mUser);
                         // 表单提交事件
                         form.on('submit(modelSubmitUser)', function (data) {
-                            var url = mUser ? '/Supcon/SupconPointModify' : '/Supcon/SupconPointSubmit';
+                            var url = mUser ? '/Device/DevicePreRepairModify' : '/Supcon/SupconPointSubmit';
                             layer.load(2);
                             //res是返回后台返回的JSON格式内容
                             $.post(url, data.field, function (res) {
-                                //console.log(data.field);  //返回修改后的新数据
+                                console.log(data.field);  //返回修改后的新数据
                                 layer.closeAll('loading');
                                 if (res.code == 200) {
                                     layer.close(dIndex);
@@ -223,6 +286,50 @@
                 });
             }
 
+            // 显示表单弹窗2
+            function showEditModel2(mUser) {
+                admin.open({
+                    type: 1,
+                    title: (mUser ? '修改' : '添加') + '维修项',
+                    content: $('#modelUser2').html(),
+                    success: function (layero, dIndex) {
+                        //加载一下时间选择器(只能在弹出层的SUCCESS里添加才奏效)
+                        var laydate1 = layui.laydate;
+                        var laydate2 = layui.laydate;
+                        laydate1.render({
+                            elem: '#time1'
+                            , type: 'datetime'
+                            , trigger: 'click'
+                        });
+                        laydate2.render({
+                            elem: '#time2'
+                            , type: 'datetime'
+                            , trigger: 'click'
+                        });
+                        $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                        // 回显数据
+                        form.val('modelUserForm2', mUser);
+                        // 表单提交事件
+                        form.on('submit(modelSubmitUser)', function (data) {
+                            var url = mUser ? '/Device/DevicePreRepairModify' : '/Supcon/SupconPointSubmit';
+                            layer.load(2);
+                            //res是返回后台返回的JSON格式内容
+                            $.post(url, data.field, function (res) {
+                                console.log(data.field);  //返回修改后的新数据
+                                layer.closeAll('loading');
+                                if (res.code == 200) {
+                                    layer.close(dIndex);
+                                    layer.msg(res.msg, { icon: 1 });
+                                    insTb.reloadUrl();
+                                } else {
+                                    layer.msg(res.msg, { icon: 2 });
+                                }
+                            }, 'json');
+                            return false;
+                        });
+                    }
+                });
+            }
             // 删除
             function doDel(userId, nickName, temp) {
                 layer.confirm('确定要删除“' + nickName + '的' + temp + '”类型吗？', {
