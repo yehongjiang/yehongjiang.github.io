@@ -90,13 +90,13 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">故障/改造</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" name="repair_begin" id="time1" type="text" placeholder="故障/改造时间" maxlength="20">
+                    <input class="layui-input" name="repair_begin" id="time1" type="text" placeholder="故障/改造时间" maxlength="20" lay-verType="tips" lay-verify="required" required>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">预计开工</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" name="repair_starts" id="time2" type="text" placeholder="预计开工时间" maxlength="20">
+                    <input class="layui-input" name="repair_starts" id="time2" type="text" placeholder="预计开工时间" maxlength="20" lay-verType="tips" lay-verify="required" required>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -104,7 +104,34 @@
                 <div class="layui-input-block">
                     <input name="repair_consume" class="layui-input" type="text" placeholder="预计耗时"  lay-verify="number">
                 </div>
-            </div>            
+            </div>  
+            <div class="layui-form-item">
+                <label class="layui-form-label">维修类别</label>
+                <div class="layui-input-block">
+                    <select name="repair_class" lay-verType="tips" lay-verify="required">
+ 
+                        <option value="常规维护">常规维护</option>
+                        <option value="故障检修">故障检修</option>
+                        <option value="突发维修">突发维修</option>
+                        <option value="改装改造">改装改造</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+            </div>    
+            <div class="layui-form-item">
+                <label class="layui-form-label">维修原因</label>
+                <div class="layui-input-block">
+                    <input name="repair_reasons" placeholder="请输入维修原因" type="text" class="layui-input" 
+                           lay-verType="tips" lay-verify="required" required />
+                </div>
+            </div>    
+            <div class="layui-form-item">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <input name="repair_mark" placeholder="请输入备注" type="text" class="layui-input"
+                           lay-verType="tips" />
+                </div>
+            </div>     
             <div class="layui-form-item text-right">
                 <button class="layui-btn layui-btn-primary" type="button" ew-event="closePageDialog">取消</button>
                 <button class="layui-btn" lay-filter="modelSubmitUser" lay-submit>保存</button>
@@ -266,11 +293,11 @@
                         form.val('modelUserForm', mUser);
                         // 表单提交事件
                         form.on('submit(modelSubmitUser)', function (data) {
-                            var url = mUser ? '/Device/DevicePreRepairModify' : '/Supcon/SupconPointSubmit';
+                            var url = mUser ? '/Device/DevicePreRepairModify' : '/Device/DevicePreRepairSubmit';
                             layer.load(2);
                             //res是返回后台返回的JSON格式内容
                             $.post(url, data.field, function (res) {
-                                console.log(data.field);  //返回修改后的新数据
+                                //console.log(data.field);  //返回修改后的新数据
                                 layer.closeAll('loading');
                                 if (res.code == 200) {
                                     layer.close(dIndex);

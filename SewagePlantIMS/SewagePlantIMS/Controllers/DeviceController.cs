@@ -559,13 +559,13 @@ namespace SewagePlantIMS.Controllers
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
             con.Open();
             //建立设备id与对应名称的字典
-            string sql = "select id,title from dm_device;";
+            string sql = "select dm_device.id,dm_device.title as devicename,dm_technology.title as techname from dm_device,dm_technology where dm_device.technology_id=dm_technology.id order by techname;";
             Dictionary<int, string> dic_device_id_title = new Dictionary<int, string>();
             SqlCommand cmd = new SqlCommand(sql, con);
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())    // 判断数据是否读到尾. 
             {
-                dic_device_id_title[Convert.ToInt32(reader["id"])] = reader["title"].ToString();
+                dic_device_id_title[Convert.ToInt32(reader["id"])] = reader["techname"].ToString() + " 丨 " + reader["devicename"].ToString();
             }
             reader.Close();
             con.Close();
@@ -588,7 +588,9 @@ namespace SewagePlantIMS.Controllers
             int count = 0;
             while (reader.Read())    // 判断数据是否读到尾. 
             {
-                str += "{ \"id\": \"" + Convert.ToInt32(reader["id"]) + "\", \"device_id\": \"" + Convert.ToInt32(reader["device_id"]) + "\", \"technology_id\": \"" + Convert.ToInt32(reader["technology_id"]) + "\", \"repair_date\": \"" + Convert.ToDateTime(reader["repair_date"]) + "\", \"repair_finsh\": \"" + Convert.ToDateTime(reader["repair_finsh"]) + "\", \"repair_class\": \"" + reader["repair_class"].ToString() + "\", \"repair_title\": \"" + reader["repair_title"].ToString() + "\", \"repair_nums\": \"" + Convert.ToInt32(reader["repair_nums"]) + "\", \"repair_reasons\": \"" + reader["repair_reasons"].ToString() + "\",\"repair_conclusion\":\"" + reader["repair_conclusion"].ToString() + "\",\"repair_join\":\"" + reader["repair_join"].ToString() + "\",\"repair_consumption\":\"" + reader["repair_consumption"].ToString() + "\",\"repair_mark\":\"" + reader["repair_mark"].ToString() + "\", \"repair_begin\": \"" + Convert.ToDateTime(reader["repair_begin"]) + "\", \"repair_starts\": \"" + Convert.ToDateTime(reader["repair_starts"]) + "\", \"repair_consume\": \"" + Convert.ToInt32(reader["repair_consume"]) + "\",\"manager_opinion\":\"" + reader["manager_opinion"].ToString() + "\", \"isapproval\": \"" + Convert.ToInt32(reader["isapproval"]) + "\", \"isover\": \"" + Convert.ToInt32(reader["isover"]) + "\"},";
+                //str += "{ \"id\": \"" + Convert.ToInt32(reader["id"]) + "\", \"device_id\": \"" + Convert.ToInt32(reader["device_id"]) + "\", \"technology_id\": \"" + Convert.ToInt32(reader["technology_id"]) + "\", \"repair_date\": \"" + Convert.ToDateTime(reader["repair_date"]) + "\", \"repair_finsh\": \"" + Convert.ToDateTime(reader["repair_finsh"]) + "\", \"repair_class\": \"" + reader["repair_class"].ToString() + "\", \"repair_title\": \"" + reader["repair_title"].ToString() + "\", \"repair_nums\": \"" + Convert.ToInt32(reader["repair_nums"]) + "\", \"repair_reasons\": \"" + reader["repair_reasons"].ToString() + "\",\"repair_conclusion\":\"" + reader["repair_conclusion"].ToString() + "\",\"repair_join\":\"" + reader["repair_join"].ToString() + "\",\"repair_consumption\":\"" + reader["repair_consumption"].ToString() + "\",\"repair_mark\":\"" + reader["repair_mark"].ToString() + "\", \"repair_begin\": \"" + Convert.ToDateTime(reader["repair_begin"]) + "\", \"repair_starts\": \"" + Convert.ToDateTime(reader["repair_starts"]) + "\", \"repair_consume\": \"" + Convert.ToInt32(reader["repair_consume"]) + "\",\"manager_opinion\":\"" + reader["manager_opinion"].ToString() + "\", \"isapproval\": \"" + Convert.ToInt32(reader["isapproval"]) + "\", \"isover\": \"" + Convert.ToInt32(reader["isover"]) + "\"},";
+                str += "{ \"id\": \"" + reader["id"] + "\", \"device_id\": \"" + reader["device_id"] + "\", \"technology_id\": \"" + reader["technology_id"] + "\", \"repair_date\": \"" + reader["repair_date"] + "\", \"repair_finsh\": \"" + reader["repair_finsh"] + "\", \"repair_class\": \"" + reader["repair_class"] + "\", \"repair_title\": \"" + reader["repair_title"] + "\", \"repair_nums\": \"" + reader["repair_nums"] + "\", \"repair_reasons\": \"" + reader["repair_reasons"] + "\",\"repair_conclusion\":\"" + reader["repair_conclusion"] + "\",\"repair_join\":\"" + reader["repair_join"] + "\",\"repair_consumption\":\"" + reader["repair_consumption"] + "\",\"repair_mark\":\"" + reader["repair_mark"] + "\", \"repair_begin\": \"" + reader["repair_begin"] + "\", \"repair_starts\": \"" + reader["repair_starts"] + "\", \"repair_consume\": \"" + reader["repair_consume"] + "\",\"manager_opinion\":\"" + reader["manager_opinion"] + "\", \"isapproval\": \"" + reader["isapproval"] + "\", \"isover\": \"" + reader["isover"] + "\"},";
+
                 count += 1;
             }
             reader.Close();
@@ -600,9 +602,32 @@ namespace SewagePlantIMS.Controllers
             return json.ToString();
         }
         //提交维修预报的内容
-        public string DevicePreRepairModify()
+        public string DevicePreRepairSubmit()
         {
-            return "{ \"code\": 200, \"msg\": \"操作成功\"}";
+            //先查出对应设备ID的工艺段ID
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //查出所有的设备id及其对应的工艺段ID放入字典
+            string sql = "select ID,technology_id from dm_device";
+            Dictionary<int, int> dic_id = new Dictionary<int, int>();
+            SqlCommand cmd = new SqlCommand(sql, con);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                dic_id.Add(Convert.ToInt32(reader["id"]), Convert.ToInt32(reader["technology_id"]));
+            }
+            reader.Close();
+            //插入新的数据
+            sql = "insert into dm_device_repair(repair_title,user_id,technology_id,device_id,repair_begin,repair_starts,repair_consume,repair_class,repair_reasons,repair_mark,isapproval,isover) values('"
+                + Request["repair_title"].ToString()+"'," +Convert.ToInt32(Session["user_id"]) +","+dic_id[Convert.ToInt32(Request["device_id"])]+","+ Convert.ToInt32(Request["device_id"]) +",'"
+                +Request["repair_begin"].ToString()+"','" + Request["repair_starts"].ToString() + "'," + Convert.ToInt32(Request["repair_consume"])+",'"+ Request["repair_class"].ToString()+"','"
+                + Request["repair_reasons"].ToString()+"','"+ Request["repair_mark"].ToString() + "',0,0)";
+            cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            if(check==1)
+                return "{ \"code\": 200, \"msg\": \"操作成功\"}";
+            else
+                return "{ \"code\": 200, \"msg\": \"操作失败\"}";
         }
 
         ///////////下面是和维修有关的内容//////////////////
@@ -666,7 +691,7 @@ namespace SewagePlantIMS.Controllers
             string year, month;
             if (Request["year"] == null) year = DateTime.Now.Year.ToString(); else year = Request["year"].ToString();
             if (Request["month"] == null) month = DateTime.Now.Month.ToString(); else month = Request["month"].ToString();
-            sql = "select id,device_id,user_id,technology_id,repair_date,repair_finsh,repair_class,repair_title,repair_nums,repair_reasons,repair_conclusion,repair_join,repair_consumption,repair_mark from dm_device_repair where repair_title like '%" + Request["keyword"] + "%' and CONVERT(VARCHAR,Year(repair_date)) like '%" + year + "%' and Right(100+Month(repair_date),2) like '%" + month + "%' order by repair_finsh desc;";
+            sql = "select id,device_id,user_id,technology_id,repair_date,repair_finsh,repair_class,repair_title,repair_nums,repair_reasons,repair_conclusion,repair_join,repair_consumption,repair_mark from dm_device_repair where repair_title like '%" + Request["keyword"] + "%' and CONVERT(VARCHAR,Year(repair_finsh)) like '%" + year + "%' and Right(100+Month(repair_finsh),2) like '%" + month + "%' order by repair_finsh desc;";
             cmd = new SqlCommand(sql, con);
             reader = cmd.ExecuteReader();
             //设置一个变量count来记录数据条数
@@ -1356,7 +1381,7 @@ namespace SewagePlantIMS.Controllers
                 sheet1.GetRow(3).GetCell(1).SetCellValue(model.repair_title);
                 sheet1.GetRow(4).GetCell(1).SetCellValue(model.repair_nums);
                 sheet1.GetRow(5).GetCell(1).SetCellValue(technology_name);
-                sheet1.GetRow(6).GetCell(1).SetCellValue(model.repair_date.ToString("D"));
+                sheet1.GetRow(6).GetCell(1).SetCellValue(model.repair_date.ToString("f"));
                 sheet1.GetRow(7).GetCell(1).SetCellValue(model.repair_finsh.ToString("D"));
                 sheet1.GetRow(8).GetCell(1).SetCellValue(model.repair_reasons);
                 sheet1.GetRow(9).GetCell(1).SetCellValue(model.repair_conclusion);
