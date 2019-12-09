@@ -589,7 +589,7 @@ namespace SewagePlantIMS.Controllers
             while (reader.Read())    // 判断数据是否读到尾. 
             {
                 //str += "{ \"id\": \"" + Convert.ToInt32(reader["id"]) + "\", \"device_id\": \"" + Convert.ToInt32(reader["device_id"]) + "\", \"technology_id\": \"" + Convert.ToInt32(reader["technology_id"]) + "\", \"repair_date\": \"" + Convert.ToDateTime(reader["repair_date"]) + "\", \"repair_finsh\": \"" + Convert.ToDateTime(reader["repair_finsh"]) + "\", \"repair_class\": \"" + reader["repair_class"].ToString() + "\", \"repair_title\": \"" + reader["repair_title"].ToString() + "\", \"repair_nums\": \"" + Convert.ToInt32(reader["repair_nums"]) + "\", \"repair_reasons\": \"" + reader["repair_reasons"].ToString() + "\",\"repair_conclusion\":\"" + reader["repair_conclusion"].ToString() + "\",\"repair_join\":\"" + reader["repair_join"].ToString() + "\",\"repair_consumption\":\"" + reader["repair_consumption"].ToString() + "\",\"repair_mark\":\"" + reader["repair_mark"].ToString() + "\", \"repair_begin\": \"" + Convert.ToDateTime(reader["repair_begin"]) + "\", \"repair_starts\": \"" + Convert.ToDateTime(reader["repair_starts"]) + "\", \"repair_consume\": \"" + Convert.ToInt32(reader["repair_consume"]) + "\",\"manager_opinion\":\"" + reader["manager_opinion"].ToString() + "\", \"isapproval\": \"" + Convert.ToInt32(reader["isapproval"]) + "\", \"isover\": \"" + Convert.ToInt32(reader["isover"]) + "\"},";
-                str += "{ \"id\": \"" + reader["id"] + "\", \"device_id\": \"" + reader["device_id"] + "\", \"technology_id\": \"" + reader["technology_id"] + "\", \"repair_date\": \"" + reader["repair_date"] + "\", \"repair_finsh\": \"" + reader["repair_finsh"] + "\", \"repair_class\": \"" + reader["repair_class"] + "\", \"repair_title\": \"" + reader["repair_title"] + "\", \"repair_nums\": \"" + reader["repair_nums"] + "\", \"repair_reasons\": \"" + reader["repair_reasons"] + "\",\"repair_conclusion\":\"" + reader["repair_conclusion"] + "\",\"repair_join\":\"" + reader["repair_join"] + "\",\"repair_consumption\":\"" + reader["repair_consumption"] + "\",\"repair_mark\":\"" + reader["repair_mark"] + "\", \"repair_begin\": \"" + reader["repair_begin"] + "\", \"repair_starts\": \"" + reader["repair_starts"] + "\", \"repair_consume\": \"" + reader["repair_consume"] + "\",\"manager_opinion\":\"" + reader["manager_opinion"] + "\", \"isapproval\": \"" + reader["isapproval"] + "\", \"isover\": \"" + reader["isover"] + "\"},";
+                str += "{ \"id\": \"" + reader["id"] + "\", \"device_id\": \"" + reader["device_id"] + "\", \"technology_id\": \"" + reader["technology_id"] + "\", \"repair_date\": \"" + reader["repair_date"] + "\", \"repair_finsh\": \"" + reader["repair_finsh"] + "\", \"repair_class\": \"" + reader["repair_class"].ToString().Trim() + "\", \"repair_title\": \"" + reader["repair_title"] + "\", \"repair_nums\": \"" + reader["repair_nums"] + "\", \"repair_reasons\": \"" + reader["repair_reasons"] + "\",\"repair_conclusion\":\"" + reader["repair_conclusion"] + "\",\"repair_join\":\"" + reader["repair_join"] + "\",\"repair_consumption\":\"" + reader["repair_consumption"] + "\",\"repair_mark\":\"" + reader["repair_mark"] + "\", \"repair_begin\": \"" + reader["repair_begin"] + "\", \"repair_starts\": \"" + reader["repair_starts"] + "\", \"repair_consume\": \"" + reader["repair_consume"] + "\",\"manager_opinion\":\"" + reader["manager_opinion"] + "\", \"isapproval\": \"" + reader["isapproval"] + "\", \"isover\": \"" + reader["isover"] + "\", \"devicename\": \"" + reader["devicename"] + "\", \"techname\": \"" + reader["techname"] + "\"},";
 
                 count += 1;
             }
@@ -618,18 +618,99 @@ namespace SewagePlantIMS.Controllers
             }
             reader.Close();
             //插入新的数据
-            sql = "insert into dm_device_repair(repair_title,user_id,technology_id,device_id,repair_begin,repair_starts,repair_consume,repair_class,repair_reasons,repair_mark,isapproval,isover) values('"
+            sql = "insert into dm_device_repair(repair_title,user_id,technology_id,device_id,repair_begin,repair_starts,repair_consume,repair_class,repair_reasons,repair_mark,isapproval,isover,repair_nums) values('"
                 + Request["repair_title"].ToString()+"'," +Convert.ToInt32(Session["user_id"]) +","+dic_id[Convert.ToInt32(Request["device_id"])]+","+ Convert.ToInt32(Request["device_id"]) +",'"
                 +Request["repair_begin"].ToString()+"','" + Request["repair_starts"].ToString() + "'," + Convert.ToInt32(Request["repair_consume"])+",'"+ Request["repair_class"].ToString()+"','"
-                + Request["repair_reasons"].ToString()+"','"+ Request["repair_mark"].ToString() + "',0,0)";
+                + Request["repair_reasons"].ToString()+"','"+ Request["repair_mark"].ToString() + "',0,0,"+ Convert.ToInt32(Request["repair_nums"])+")";
             cmd = new SqlCommand(sql, con);
             int check = cmd.ExecuteNonQuery();
+            con.Close();
             if(check==1)
                 return "{ \"code\": 200, \"msg\": \"操作成功\"}";
             else
                 return "{ \"code\": 200, \"msg\": \"操作失败\"}";
         }
-
+        //修改维修预报内容
+        public string DevicePreRepairModify()
+        {
+            //先查出对应设备ID的工艺段ID
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //查出所有的设备id及其对应的工艺段ID放入字典
+            string sql = "select ID,technology_id from dm_device";
+            Dictionary<int, int> dic_id = new Dictionary<int, int>();
+            SqlCommand cmd = new SqlCommand(sql, con);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                dic_id.Add(Convert.ToInt32(reader["id"]), Convert.ToInt32(reader["technology_id"]));
+            }
+            reader.Close();
+            //插入新的数据
+            sql = "update dm_device_repair set repair_title = '" + Request["repair_title"].ToString() + "'," +
+                "user_id = " + Convert.ToInt32(Session["user_id"]) + "," +
+                "technology_id = " + dic_id[Convert.ToInt32(Request["device_id"])] + "," +
+                 "device_id = " + Convert.ToInt32(Request["device_id"]) + "," +
+                  "repair_begin = '" + Request["repair_begin"].ToString() + "'," +
+                   "repair_starts = '" + Request["repair_starts"].ToString() + "'," +
+                   "repair_consume = " + Convert.ToInt32(Request["repair_consume"]) + "," +
+                   "repair_class = '" + Request["repair_class"].ToString() + "'," +
+                   "repair_reasons = '" + Request["repair_reasons"].ToString() + "'," +
+                   "repair_mark = '" + Request["repair_mark"].ToString() + "'," +
+                   "isapproval = 0" + "," +
+                   "isover = 0" + "," +
+                    "repair_nums = " + Convert.ToInt32(Request["repair_nums"]) + " where id = " + Request["id"].ToString(); 
+            cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check == 1)
+                return "{ \"code\": 200, \"msg\": \"操作成功\"}";
+            else
+                return "{ \"code\": 200, \"msg\": \"操作失败\"}";
+        }
+        //修改完工结论
+        public string DevicePreRepairFinishModify()
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "update dm_device_repair set repair_date = '" + Request["repair_date"].ToString() + "'," + 
+                                                     "repair_finsh = '" + Request["repair_finsh"].ToString() + "'," +
+                                                     "repair_conclusion = '" + Request["repair_conclusion"].ToString() + "'," +
+                                                     "repair_consumption = '" + Request["repair_consumption"].ToString() + "'," +
+                                                     "repair_join = '" + Request["repair_join"].ToString() + "'," +
+                                                     "manager_opinion = '" + Request["manager_opinion"].ToString() + "' where id = " + Request["id"].ToString();
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check == 1)
+                return "{ \"code\": 200, \"msg\": \"操作成功\"}";
+            else
+                return "{ \"code\": 200, \"msg\": \"操作失败\"}";
+        }
+        //维修预报确认审批
+        public string DevicePreRepairApproval(string id)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "update dm_device_repair set isapproval = 1 where id = " + id;
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check == 1) return "right";
+            else return "wrong";
+        }
+        //维修预报完工按钮
+        public string DevicePreRepairOver(string id)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            string sql = "update dm_device_repair set isover = 1 where id = " + id;
+            SqlCommand cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            con.Close();
+            if (check == 1) return "right";
+            else return "wrong";
+        }
         ///////////下面是和维修有关的内容//////////////////
         public ActionResult DeviceRepair()
         {
@@ -1140,8 +1221,8 @@ namespace SewagePlantIMS.Controllers
 
 
         }
-        //删除与维修记录有关一切信息
-        public string DeleteDeviceRepair(string id)
+        //删除与维修记录有关一切信息(这里展示了两种不同的返回数据的方式)
+        /*public ActionResult DeleteDeviceRepair(string id,int index)
         {
             //连接数据库
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
@@ -1167,9 +1248,45 @@ namespace SewagePlantIMS.Controllers
             sql = "delete from dm_device_repair_pic where repair_id = " + id + ";" + "delete from dm_device_repair where id = " + id + "; ";
             cmd = new SqlCommand(sql, con);
             int check = cmd.ExecuteNonQuery();
-            if (check == 2)
+            if (check == 1)
             {
-                return "";
+                return Content(index.ToString()); //好像必须是这种Ajax的success才能接收到数据呢,是cmd.ExecuteNonQuery返回数量搞错了
+            }
+            else
+            {
+                return Content("");
+            }
+
+        }*/
+        public string DeleteDeviceRepair(string id, int index)
+        {
+            //连接数据库
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SewagePlantIMS"].ConnectionString);
+            con.Open();
+            //查询出所有图片的url
+            string sql = "select pic_url from dm_device_repair_pic where repair_id = " + id + ";";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            SqlDataReader reader = cmd.ExecuteReader();
+            string filePath;
+            FileInfo file;
+            while (reader.Read())
+            {
+                //删除对应的实体文件
+                filePath = Server.MapPath(reader["pic_url"].ToString());//路径 
+                file = new FileInfo(filePath);
+                if (file.Exists)
+                {
+                    file.Delete();
+                }
+            }
+            reader.Close();
+            //删除维修图片和维修记录
+            sql = "delete from dm_device_repair_pic where repair_id = " + id + ";" + "delete from dm_device_repair where id = " + id + "; ";
+            cmd = new SqlCommand(sql, con);
+            int check = cmd.ExecuteNonQuery();
+            if (check != 0)
+            {
+                return index.ToString(); //好像必须是这种Ajax的success才能接收到数据呢,是cmd.ExecuteNonQuery返回数量搞错了
             }
             else
             {

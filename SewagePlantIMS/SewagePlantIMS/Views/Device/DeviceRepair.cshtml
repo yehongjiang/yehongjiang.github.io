@@ -187,7 +187,7 @@
                     if (flag) {
                         $.ajax({
                             type: 'post',
-                            url: "/Device/DeleteDeviceRepair?id=" + data["id"],
+                            url: "/Device/DeleteDeviceRepair?id=" + data["id"]+"&index=0",
                             data: "{}",
                             contentType: "application/json",
                             //dataType: "json",

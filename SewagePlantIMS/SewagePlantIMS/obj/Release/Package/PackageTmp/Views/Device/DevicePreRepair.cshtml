@@ -10,7 +10,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>维修审批</title>
+    <title>维修预报</title>
     <link rel="stylesheet" href="~/assets/libs/layui/css/layui.css" />
     <link rel="stylesheet" href="~/assets/module/admin.css?v=312" />
     <!--没有下面两个JS则后台javascript返回失效-->
@@ -54,16 +54,12 @@
 
     <!-- 表格操作列 -->
     <script type="text/html" id="tableBarTbBas">
-        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="approval" style="margin-left:0px;margin-right:0px;">审批</a>
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="over" style="margin-left:0px; margin-right:0px;">完工</a>
-        <a class="layui-btn layui-btn-xs" data-dropdown="#dropUser{{d.LAY_INDEX}}" no-shade="true" style="margin-left:0px;margin-right:0px;">
+        <a class="layui-btn layui-btn-xs" data-dropdown="#dropUser{{d.LAY_INDEX}}" no-shade="true">
             更多<i class="layui-icon layui-icon-drop" style="font-size: 12px;margin-right: 0;"></i>
         </a>
         <!-- 下拉菜单 -->
         <ul class="dropdown-menu-nav dropdown-bottom-right layui-hide" id="dropUser{{d.LAY_INDEX}}">
             <div class="dropdown-anchor"></div>
-            <li><a lay-event="modify_approval"><i class="layui-icon layui-icon-edit"></i>修改审批</a></li>
-            <li><a lay-event="add_result"><i class="layui-icon layui-icon-add-1"></i>编辑结论</a></li>
             <li><a lay-event="fault_pic"><i class="layui-icon layui-icon-picture"></i>故障图片</a></li>
             <li><a lay-event="edit_pic"><i class="layui-icon layui-icon-picture"></i>维修图片</a></li>
             <li><a lay-event="del"><i class="layui-icon layui-icon-close-fill"></i>删除</a></li>
@@ -124,6 +120,7 @@
                 <label class="layui-form-label">维修类别</label>
                 <div class="layui-input-block">
                     <select name="repair_class" lay-verType="tips" lay-verify="required">
+
                         <option value="常规维护">常规维护</option>
                         <option value="故障检修">故障检修</option>
                         <option value="突发维修">突发维修</option>
@@ -157,43 +154,48 @@
         <form id="modelUserForm2" lay-filter="modelUserForm2" class="layui-form model-form">
             <input name="id" type="hidden" />
             <div class="layui-form-item">
+                <label class="layui-form-label">维修详名</label>
+                <div class="layui-input-block">
+                    <input name="repair_title" placeholder="请输入维修名称" type="text" class="layui-input" maxlength="20"
+                           lay-verType="tips" lay-verify="required" required />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">设备名称</label>
+                <div class="layui-input-block">
+                    <select name="device_id" lay-verType="tips" lay-verify="required">
+                        @{
+                            foreach (var item in ViewBag.DeviceName.Keys)
+                            {
+                                <option value=@item>@ViewBag.DeviceName[item]</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
                 <label class="layui-form-label">维修日期</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" name="repair_date" id="time1" type="text" placeholder="维修时间" maxlength="20" lay-verType="tips" lay-verify="required" required>
+                    <input class="layui-input" name="repair_date" id="time1" type="text" placeholder="维修时间" maxlength="20">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">完工日期</label>
+                <label class="layui-form-label">预计开工</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" name="repair_finsh" id="time2" type="text" placeholder="完工时间" maxlength="20" lay-verType="tips" lay-verify="required" required>
+                    <input class="layui-input" name="repair_starts" id="time2" type="text" placeholder="预计开工时间" maxlength="20">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">维修结论</label>
+                <label class="layui-form-label">预计耗时</label>
                 <div class="layui-input-block">
-                    <input name="repair_conclusion" placeholder="请输入维修结论" type="text" class="layui-input" 
+                    <input name="repair_consume" class="layui-input" type="text" placeholder="预计耗时" lay-verify="number">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">维修原因</label>
+                <div class="layui-input-block">
+                    <input name="repair_reasons" placeholder="请输入维修原因" type="text" class="layui-input" maxlength="20"
                            lay-verType="tips" lay-verify="required" required />
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">消耗情况</label>
-                <div class="layui-input-block">
-                    <input name="repair_consumption" placeholder="请输入维修消耗" type="text" class="layui-input"
-                           lay-verType="tips" lay-verify="required" required />
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">参与人员</label>
-                <div class="layui-input-block">
-                    <input name="repair_join" placeholder="请输入参与人员" type="text" class="layui-input"
-                           lay-verType="tips" lay-verify="required" required />
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">经理意见</label>
-                <div class="layui-input-block">
-                    <input name="manager_opinion" placeholder="请输入参经理意见" type="text" class="layui-input"
-                           lay-verType="tips"  />
                 </div>
             </div>
             <div class="layui-form-item text-right">
@@ -205,7 +207,6 @@
     <!-- js部分 -->
     <script type="text/javascript" src="../../assets/libs/layui/layui.js"></script>
     <script type="text/javascript" src="../../assets/js/common.js?v=312"></script>
-    
     <script>
         layui.use(['layer', 'form', 'table', 'util', 'admin', 'tableX', 'laydate','dropdown'], function () {
             var $ = layui.jquery;
@@ -225,7 +226,7 @@
                 page: true,
                 cellMinWidth: 100,
                 cols: [[
-                    { type: 'numbers', title: '#', fixed: 'left'},
+                    { type: 'numbers', title: '#', fixed: 'left' },
                     { field: 'id', align: 'center', sort: true, title: 'id', hide: true },
                     { field: 'repair_title', sort: true, title: '维修名称', fixed: 'left' },
                     { field: 'devicename', sort: true, title: '设备名称' },
@@ -237,7 +238,7 @@
                     { field: 'repair_class', sort: true, title: '维修类别' },
                     { field: 'repair_nums', sort: true, title: '设备数量' },
                     { field: 'repair_reasons', sort: true, title: '维修原因' },
-                    { field: 'repair_conclusion', sort: true, title: '维修结论' },
+                    { field: 'repair_concluson', sort: true, title: '维修结论' },
                     { field: 'repair_join', sort: true, title: '参与人员' },
                     { field: 'repair_consumption', sort: true, title: '消耗情况' },
                     { field: 'repair_mark', sort: true, title: '备注' },
@@ -245,9 +246,9 @@
                     { field: 'repair_starts', sort: true, title: '预计开工日期', minWidth: 120 },
                     { field: 'repair_consume', sort: true, title: '预计耗时' },
                     { field: 'manager_opinion', sort: true, title: '经理意见' },
-                    { field: 'isapproval', sort: true, title: '是否审批', templet: function (d) { if (d.isapproval == '0') { return '未审批' } else if (d.isapproval == '1') { return '已审批' } } },
-                    { field: 'isover', sort: true, title: '是否完工', templet: function (d) { if (d.isover == '0') { return '未完工' } else if (d.isover == '1') { return '已完工' } } },
-                    { align: 'center', toolbar: '#tableBarTbBas', title: '操作', minWidth: 160, fixed: 'right' }
+                    { field: 'isapproval', sort: true, title: '是否审批' },
+                    { field: 'isover', sort: true, title: '是否完工' },
+                    { align: 'center', toolbar: '#tableBarTbBas', title: '操作', minWidth: 100, fixed: 'right' }
                 ]]
             });
 
@@ -372,68 +373,26 @@
                     layui.layer.full(index);
 
 
-                } else if (layEvent === 'approval') {//输出维修审批表
+                } else if (layEvent === 'output_approval') {//输出维修审批表
                     //window.location.href = "/Device/OutputDeiveRepairApprovalExcel?id=" + data["id"];
                     //询问框
-                    layer.confirm('是否确认已审批', {
+                    layer.confirm('请选择对应的版本下载', {
                         skin: "my-skin",
-                        title: "提示框",
-                        btn: ['确认', '取消'] //可以无限个按钮
-                    , 
+                        title: "经理签字表",
+                        btn: ['审批表', '审核表', '旧样式'] //可以无限个按钮
+                    , btn3: function (index, layero) {
+                        window.location.href = "/Device/OutputDeiveOldRepairExcel?id=" + data["id"];
+                        layer.close(index);
+                    }
                     }, function (index, layero) {
-                        $.ajax({
-                            type: 'post',
-                            url: "/Device/DevicePreRepairApproval?id=" + data["id"],
-                            data: "{}",
-                            contentType: "application/json", //告诉服务器我要发什么类型的数据
-                            dataType: "text", //告诉服务器我要接受什么类型的数据
-                            success: function (result) {                               
-                                insTb.reloadUrl();
-                                layer.msg("该维修记录已审批！！！");
-                            },
-                            error: function () {
-                                layer.msg("删除失败！！！请联系管理员探讨问题所在~");
-                            }
-                        })
-                        
-                       
+                        window.location.href = "/Device/OutputDeivePreRepairExcel?id=" + data["id"];
+                        layer.close(index);
                     }, function (index) {
+                        window.location.href = "/Device/OutputDeiveAfterRepairExcel?id=" + data["id"];
                         layer.close(index);
                     });
 
-                } else if (layEvent === 'modify_approval') {
-                    showEditModel(data)
-                } else if (layEvent === 'over') {
-                    layer.confirm('是否确认已完工', {
-                        skin: "my-skin",
-                        title: "提示框",
-                        btn: ['确认', '取消'] //可以无限个按钮
-                    ,
-                    }, function (index, layero) {
-                        $.ajax({
-                            type: 'post',
-                            url: "/Device/DevicePreRepairOver?id=" + data["id"],
-                            data: "{}",
-                            contentType: "application/json", //告诉服务器我要发什么类型的数据
-                            dataType: "text", //告诉服务器我要接受什么类型的数据
-                            success: function (result) {
-                                insTb.reloadUrl();
-                                layer.msg("该维修记录已完工！！！");
-                            },
-                            error: function () {
-                                layer.msg("删除失败！！！请联系管理员探讨问题所在~");
-                            }
-                        })
-
-
-                    }, function (index) {
-                        layer.close(index);
-                    });
-
-                } else if (layEvent === 'add_result') {
-                    showEditModel2(data);
-                } 
-
+                }
                 dropdown.hideAll();
             });
 
@@ -460,7 +419,6 @@
                         $(layero).children('.layui-layer-content').css('overflow', 'visible');
                         // 回显数据
                         form.val('modelUserForm', mUser);
-                        console.log(mUser);
                         // 表单提交事件
                         form.on('submit(modelSubmitUser)', function (data) {
                             var url = mUser ? '/Device/DevicePreRepairModify' : '/Device/DevicePreRepairSubmit';
@@ -487,7 +445,7 @@
             function showEditModel2(mUser) {
                 admin.open({
                     type: 1,
-                    title: (mUser ? '修改' : '添加') + '维修结论',
+                    title: (mUser ? '修改' : '添加') + '维修项',
                     content: $('#modelUser2').html(),
                     success: function (layero, dIndex) {
                         //加载一下时间选择器(只能在弹出层的SUCCESS里添加才奏效)
@@ -508,7 +466,7 @@
                         form.val('modelUserForm2', mUser);
                         // 表单提交事件
                         form.on('submit(modelSubmitUser)', function (data) {
-                            var url = mUser ? '/Device/DevicePreRepairFinishModify' : '/Supcon/SupconPointSubmit';
+                            var url = mUser ? '/Device/DevicePreRepairModify' : '/Supcon/SupconPointSubmit';
                             layer.load(2);
                             //res是返回后台返回的JSON格式内容
                             $.post(url, data.field, function (res) {
@@ -591,7 +549,6 @@
 
         });
     </script>
-
 
     <script type="text/html" id="statechange">
 

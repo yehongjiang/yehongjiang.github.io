@@ -19,6 +19,14 @@
     <script type="text/javascript" src="~/assets/libs/layui/layui.js"></script>
     <script type="text/javascript" src="~/assets/js/common.js?v=312"></script>
     <script src="/static/build/layui.js"></script>
+    <!--设置一下弹出框的button样式-->
+    <style>
+       .my-skin .layui-layer-btn a {
+            background-color: #009688;
+            border: 1px solid #009688;
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <!-- 加载动画 -->
@@ -104,16 +112,20 @@
         <!-- 下拉菜单 -->
         <ul class="dropdown-menu-nav dropdown-bottom-right layui-hide" id="dropUser{{d.LAY_INDEX}}">
             <div class="dropdown-anchor"></div>
+            <li><a lay-event="fault_pic"><i class="layui-icon layui-icon-picture"></i>故障图片</a></li>
             <li><a lay-event="edit_pic"><i class="layui-icon layui-icon-picture"></i>维修图片</a></li>
             <li><a lay-event="del"><i class="layui-icon layui-icon-close-fill"></i>删除</a></li>
             <li>
-                <a lay-event="output"><i class="layui-icon layui-icon-file-b"></i>导出</a>
+                <a lay-event="output_approval"><i class="layui-icon layui-icon-file-b"></i>导出审批</a>
+            </li>
+            <li>
+                <a lay-event="output"><i class="layui-icon layui-icon-file-b"></i>导出记录</a>
             </li>
 
         </ul>
     </script>
     <script>
-        layui.use(['layer', 'form', 'table', 'util', 'dropdown','tableX'], function () {
+        layui.use(['layer', 'form', 'table', 'util', 'dropdown', 'tableX'], function () {
             var $ = layui.jquery;
             var layer = layui.layer;
             var form = layui.form;
@@ -138,8 +150,8 @@
                     { field: 'repair_title', align: 'center', sort: true, title: '维修名称', fixed: 'left' },
                     { field: 'device_id', align: 'center', sort: true, title: '对应设备' },
                     { field: 'technology_id', align: 'center', sort: true, title: '工艺段' },
-                    { field: 'repair_date', align: 'center', sort: true, title: '维修日期' },
-                     { field: 'repair_finsh', align: 'center', sort: true, title: '完工日期' },
+                    { field: 'repair_date', align: 'center', sort: true, title: '维修日期', minWidth: 120 },
+                     { field: 'repair_finsh', align: 'center', sort: true, title: '完工日期', minWidth: 120 },
                       { field: 'repair_class', align: 'center', sort: true, title: '维修类别' },
                        { field: 'repair_nums', align: 'center', sort: true, title: '数量' },
                         { field: 'repair_reasons', align: 'center', sort: true, title: '维修原因' },
@@ -175,7 +187,7 @@
                     if (flag) {
                         $.ajax({
                             type: 'post',
-                            url: "/Device/DeleteDeviceRepair?id=" + data["id"],
+                            url: "/Device/DeleteDeviceRepair?id=" + data["id"]+"&index=0",
                             data: "{}",
                             contentType: "application/json",
                             //dataType: "json",
@@ -200,6 +212,27 @@
                     layer.msg('点击了下拉菜单打印');
                 } else if (layEvent === 'output') { // 输出Excel
                     window.location.href = "/Device/OutputDeiveRepairExcel?id=" + data["id"];
+
+                } else if (layEvent === 'fault_pic') {//故障图片
+                    window.location.href = "/Device/DeviceRepairFaultPic?id=" + data["id"];
+                } else if (layEvent === 'output_approval') {//输出维修审批表
+                    //window.location.href = "/Device/OutputDeiveRepairApprovalExcel?id=" + data["id"];
+                    //询问框
+                    layer.confirm('请选择对应的版本下载', {
+                        skin: "my-skin",
+                        title:"经理签字表",
+                        btn: ['审批表', '审核表', '旧样式'] //可以无限个按钮
+                    , btn3: function (index, layero) {
+                        window.location.href = "/Device/OutputDeiveOldRepairExcel?id=" + data["id"];
+                        layer.close(index);
+                    }
+                    }, function (index, layero) {
+                        window.location.href = "/Device/OutputDeivePreRepairExcel?id=" + data["id"];
+                        layer.close(index);
+                    }, function (index) {
+                        window.location.href = "/Device/OutputDeiveAfterRepairExcel?id=" + data["id"];
+                        layer.close(index);
+                    });
 
                 }
                 dropdown.hideAll();

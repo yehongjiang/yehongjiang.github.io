@@ -25,6 +25,7 @@ using NPOI.SS.Util;
 
 namespace SewagePlantIMS.Controllers
 {
+    [LoginAttribute(isNeed = true)]
     public class SupconController : Controller
     {
         // GET: Supcon
