@@ -99,7 +99,9 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">故障/改造</label>
                 <div class="layui-input-block">
-                    <input class="layui-input" name="repair_begin" id="time1" type="text" placeholder="故障/改造时间" maxlength="20" lay-verType="tips" lay-verify="required" required>
+                   <input class="layui-input" name="repair_begin" id="time1" type="text" placeholder="故障/改造时间" maxlength="20" lay-verType="tips" lay-verify="required" required>
+ 
+
                 </div>
             </div>
             <div class="layui-form-item">
@@ -451,23 +453,26 @@
                             elem: '#time1'
                             , type: 'datetime'
                             , trigger: 'click'
+                          // , format: 'yyyy-MM-dd HH:mm:ss' //可任意组合
                         });
                         laydate2.render({
                             elem: '#time2'
                             , type: 'datetime'
                             , trigger: 'click'
+                             //, format: 'yyyy-MM-dd HH:mm:ss' //可任意组合
                         });
                         $(layero).children('.layui-layer-content').css('overflow', 'visible');
                         // 回显数据
                         form.val('modelUserForm', mUser);
-                        console.log(mUser);
+                       // mUser.repair_begin = '2020/12/19 15:06:04'
+                        //console.log(mUser.repair_begin);
                         // 表单提交事件
                         form.on('submit(modelSubmitUser)', function (data) {
                             var url = mUser ? '/Device/DevicePreRepairModify' : '/Device/DevicePreRepairSubmit';
                             layer.load(2);
                             //res是返回后台返回的JSON格式内容
                             $.post(url, data.field, function (res) {
-                                //console.log(data.field);  //返回修改后的新数据
+                                console.log(data.field);  //返回修改后的新数据
                                 layer.closeAll('loading');
                                 if (res.code == 200) {
                                     layer.close(dIndex);

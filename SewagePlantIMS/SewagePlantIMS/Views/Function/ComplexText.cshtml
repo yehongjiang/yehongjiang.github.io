@@ -1,0 +1,88 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>富文本编辑</title>
+    <link rel="stylesheet" href="~/assets/libs/layui/css/layui.css" />
+    <link rel="stylesheet" href="~/assets/module/admin.css?v=312" />
+    <!--没有下面两个JS则后台javascript返回失效-->
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <!-- js部分 -->
+    <script type="text/javascript" src="~/assets/libs/layui/layui.js"></script>
+    <script type="text/javascript" src="~/assets/js/common.js?v=312"></script>
+    <script src="/static/build/layui.js"></script>
+    <style>
+        #richtext {
+            background-color: white;
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+        #buttons{
+            background-color: white;
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-top: 10px;
+            padding:10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="richtext">
+        <textarea id="demo" style="display: none;" name="textarea1"></textarea>
+    </div>
+    <fieldset class="layui-elem-field site-demo-button" id="buttons">
+        <legend>测试按钮组</legend>
+        <div>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-radius" id="submit">提交按钮</button>
+            <button type="button" class="layui-btn layui-btn-radius">读取按钮</button>
+            <button type="button" class="layui-btn layui-btn-normal layui-btn-radius">百搭按钮</button>
+            <button type="button" class="layui-btn layui-btn-warm layui-btn-radius">暖色按钮</button>
+            <button type="button" class="layui-btn layui-btn-danger layui-btn-radius">警告按钮</button>
+            <button type="button" class="layui-btn layui-btn-disabled layui-btn-radius">禁用按钮</button>
+        </div>
+    </fieldset>
+    <div id="richtext">
+        @Html.Raw(@ViewBag.richtext)
+    </div>
+    <script>
+        layui.use(['layer', 'form', 'table', 'util', 'admin', 'tableX', 'laydate', 'dropdown', 'layedit'], function () {
+            var $ = layui.jquery;
+            var layer = layui.layer;
+            var form = layui.form;
+            var table = layui.table;
+            var util = layui.util;
+            var admin = layui.admin;
+            var tableX = layui.tableX;
+            var layedit = layui.layedit;
+            var index = layedit.build('demo')//建立编辑器
+            $('#submit').click(function () {
+                //先获取textarea1的内容
+                console.log(layedit.getContent(index));
+                $.ajax({
+                    type: 'post',
+                    url: "/Function/RichTextEdit_Submit",
+                    data: "{'text':'"+layedit.getContent(index)+"'}",
+                    contentType: "application/json", //告诉服务器我要发什么类型的数据
+                    dataType: "text", //告诉服务器我要接受什么类型的数据
+                    success: function (result){                  
+                        layer.msg("测试成功！！！" + result);
+                    },
+                    error: function () {
+                        layer.msg("测试失败~");
+                    }
+                })
+            });
+        });
+    </script>
+
+
+</body>
+</html>

@@ -588,8 +588,45 @@ namespace SewagePlantIMS.Controllers
             int count = 0;
             while (reader.Read())    // 判断数据是否读到尾. 
             {
+                //尝试后台转换以下格式.ToString("yyyy-MM-dd HH:mm:ss")
+                string repair_begin;
+                if (reader["repair_begin"].ToString() == "")
+                {
+                    repair_begin = "";
+                }
+                else
+                {
+                    repair_begin = Convert.ToDateTime(reader["repair_begin"]).ToString("yyyy-MM-dd HH:mm:ss");
+                }
+                string repair_starts;
+                if (reader["repair_starts"].ToString() == "")
+                {
+                    repair_starts = "";
+                }
+                else
+                {
+                    repair_starts = Convert.ToDateTime(reader["repair_starts"]).ToString("yyyy-MM-dd HH:mm:ss");
+                }
+                string repair_date;
+                if (reader["repair_date"].ToString() == "")
+                {
+                    repair_date = "";
+                }
+                else
+                {
+                    repair_date = Convert.ToDateTime(reader["repair_date"]).ToString("yyyy-MM-dd HH:mm:ss");
+                }
+                string repair_finsh;
+                if (reader["repair_finsh"].ToString() == "")
+                {
+                    repair_finsh = "";
+                }
+                else
+                {
+                    repair_finsh = Convert.ToDateTime(reader["repair_finsh"]).ToString("yyyy-MM-dd HH:mm:ss");
+                }
                 //str += "{ \"id\": \"" + Convert.ToInt32(reader["id"]) + "\", \"device_id\": \"" + Convert.ToInt32(reader["device_id"]) + "\", \"technology_id\": \"" + Convert.ToInt32(reader["technology_id"]) + "\", \"repair_date\": \"" + Convert.ToDateTime(reader["repair_date"]) + "\", \"repair_finsh\": \"" + Convert.ToDateTime(reader["repair_finsh"]) + "\", \"repair_class\": \"" + reader["repair_class"].ToString() + "\", \"repair_title\": \"" + reader["repair_title"].ToString() + "\", \"repair_nums\": \"" + Convert.ToInt32(reader["repair_nums"]) + "\", \"repair_reasons\": \"" + reader["repair_reasons"].ToString() + "\",\"repair_conclusion\":\"" + reader["repair_conclusion"].ToString() + "\",\"repair_join\":\"" + reader["repair_join"].ToString() + "\",\"repair_consumption\":\"" + reader["repair_consumption"].ToString() + "\",\"repair_mark\":\"" + reader["repair_mark"].ToString() + "\", \"repair_begin\": \"" + Convert.ToDateTime(reader["repair_begin"]) + "\", \"repair_starts\": \"" + Convert.ToDateTime(reader["repair_starts"]) + "\", \"repair_consume\": \"" + Convert.ToInt32(reader["repair_consume"]) + "\",\"manager_opinion\":\"" + reader["manager_opinion"].ToString() + "\", \"isapproval\": \"" + Convert.ToInt32(reader["isapproval"]) + "\", \"isover\": \"" + Convert.ToInt32(reader["isover"]) + "\"},";
-                str += "{ \"id\": \"" + reader["id"] + "\", \"device_id\": \"" + reader["device_id"] + "\", \"technology_id\": \"" + reader["technology_id"] + "\", \"repair_date\": \"" + reader["repair_date"] + "\", \"repair_finsh\": \"" + reader["repair_finsh"] + "\", \"repair_class\": \"" + reader["repair_class"].ToString().Trim() + "\", \"repair_title\": \"" + reader["repair_title"] + "\", \"repair_nums\": \"" + reader["repair_nums"] + "\", \"repair_reasons\": \"" + reader["repair_reasons"] + "\",\"repair_conclusion\":\"" + reader["repair_conclusion"] + "\",\"repair_join\":\"" + reader["repair_join"] + "\",\"repair_consumption\":\"" + reader["repair_consumption"] + "\",\"repair_mark\":\"" + reader["repair_mark"] + "\", \"repair_begin\": \"" + reader["repair_begin"] + "\", \"repair_starts\": \"" + reader["repair_starts"] + "\", \"repair_consume\": \"" + reader["repair_consume"] + "\",\"manager_opinion\":\"" + reader["manager_opinion"] + "\", \"isapproval\": \"" + reader["isapproval"] + "\", \"isover\": \"" + reader["isover"] + "\", \"devicename\": \"" + reader["devicename"] + "\", \"techname\": \"" + reader["techname"] + "\"},";
+                str += "{ \"id\": \"" + reader["id"] + "\", \"device_id\": \"" + reader["device_id"] + "\", \"technology_id\": \"" + reader["technology_id"] + "\", \"repair_date\": \"" + repair_date + "\", \"repair_finsh\": \"" + repair_finsh + "\", \"repair_class\": \"" + reader["repair_class"].ToString().Trim() + "\", \"repair_title\": \"" + reader["repair_title"] + "\", \"repair_nums\": \"" + reader["repair_nums"] + "\", \"repair_reasons\": \"" + reader["repair_reasons"] + "\",\"repair_conclusion\":\"" + reader["repair_conclusion"] + "\",\"repair_join\":\"" + reader["repair_join"] + "\",\"repair_consumption\":\"" + reader["repair_consumption"] + "\",\"repair_mark\":\"" + reader["repair_mark"] + "\", \"repair_begin\": \"" + repair_begin + "\", \"repair_starts\": \"" + repair_starts + "\", \"repair_consume\": \"" + reader["repair_consume"] + "\",\"manager_opinion\":\"" + reader["manager_opinion"] + "\", \"isapproval\": \"" + reader["isapproval"] + "\", \"isover\": \"" + reader["isover"] + "\", \"devicename\": \"" + reader["devicename"] + "\", \"techname\": \"" + reader["techname"] + "\"},";
 
                 count += 1;
             }
@@ -620,7 +657,7 @@ namespace SewagePlantIMS.Controllers
             //插入新的数据
             sql = "insert into dm_device_repair(repair_title,user_id,technology_id,device_id,repair_begin,repair_starts,repair_consume,repair_class,repair_reasons,repair_mark,isapproval,isover,repair_nums) values('"
                 + Request["repair_title"].ToString()+"'," +Convert.ToInt32(Session["user_id"]) +","+dic_id[Convert.ToInt32(Request["device_id"])]+","+ Convert.ToInt32(Request["device_id"]) +",'"
-                +Request["repair_begin"].ToString()+"','" + Request["repair_starts"].ToString() + "'," + Convert.ToInt32(Request["repair_consume"])+",'"+ Request["repair_class"].ToString()+"','"
+                +Request["repair_begin"].ToString()+"','" + Request["repair_starts"].ToString() + "'," + Request["repair_consume"]+",'"+ Request["repair_class"].ToString()+"','"
                 + Request["repair_reasons"].ToString()+"','"+ Request["repair_mark"].ToString() + "',0,0,"+ Convert.ToInt32(Request["repair_nums"])+")";
             cmd = new SqlCommand(sql, con);
             int check = cmd.ExecuteNonQuery();
@@ -653,7 +690,7 @@ namespace SewagePlantIMS.Controllers
                  "device_id = " + Convert.ToInt32(Request["device_id"]) + "," +
                   "repair_begin = '" + Request["repair_begin"].ToString() + "'," +
                    "repair_starts = '" + Request["repair_starts"].ToString() + "'," +
-                   "repair_consume = " + Convert.ToInt32(Request["repair_consume"]) + "," +
+                   "repair_consume = " + Request["repair_consume"] + "," +
                    "repair_class = '" + Request["repair_class"].ToString() + "'," +
                    "repair_reasons = '" + Request["repair_reasons"].ToString() + "'," +
                    "repair_mark = '" + Request["repair_mark"].ToString() + "'," +
@@ -1419,8 +1456,9 @@ namespace SewagePlantIMS.Controllers
                         Cell.CellStyle = cellstyle;
                         Row = sheet1.GetRow(row);
                         Row.Height = 20 * 355;
-                        AddPieChart(sheet1, hssfworkbook, drp[i].pic_url, row, 1, ".png");
-                        row++;
+                        // AddPieChart(sheet1, hssfworkbook, drp[i].pic_url, row, 1, ".png");
+                        AddCellPicture(sheet1, hssfworkbook, drp[i].pic_url, row, 1);
+                         row++;
                         Cell = sheet1.CreateRow(row).CreateCell(0);
                         Cell.CellStyle = cellstyle;
                         sheet1.GetRow(row).GetCell(0).SetCellValue("描述");
@@ -1510,7 +1548,8 @@ namespace SewagePlantIMS.Controllers
                 int col = 1;
                 while (index < pic_url.Count && temp <= 4)
                 {
-                    AddPieChart(sheet1, hssfworkbook, pic_url[index], row, col, ".png");
+                    //AddPieChart(sheet1, hssfworkbook, pic_url[index], row, col, ".png");
+                    AddCellPicture(sheet1, hssfworkbook, pic_url[index], row, col);
                     index += 1;
                     temp += 1;
                     if (temp == 2)
@@ -1609,7 +1648,8 @@ namespace SewagePlantIMS.Controllers
                 int col = 1;
                 while (index < pic_url.Count && temp <= 4)
                 {
-                    AddPieChart(sheet1, hssfworkbook, pic_url[index], row, col, ".png");
+                    //AddPieChart(sheet1, hssfworkbook, pic_url[index], row, col, ".png");
+                    AddCellPicture(sheet1, hssfworkbook, pic_url[index], row, col);
                     index += 1;
                     temp += 1;
                     if (temp == 2)
@@ -1756,7 +1796,8 @@ namespace SewagePlantIMS.Controllers
                         Cell.CellStyle = cellstyle;
                         Row = sheet1.GetRow(row);
                         Row.Height = 20*355;
-                        AddPieChart(sheet1, hssfworkbook, drp[i].pic_url, row, 1, ".png");
+                        //AddPieChart(sheet1, hssfworkbook, drp[i].pic_url, row, 1, ".png");
+                        AddCellPicture(sheet1, hssfworkbook, drp[i].pic_url, row, 1);
                         row++;
                         Cell = sheet1.CreateRow(row).CreateCell(0);
                         Cell.CellStyle = cellstyle;
@@ -1919,6 +1960,35 @@ namespace SewagePlantIMS.Controllers
             ms.Dispose();
         }
         #endregion
+        #region 向excel单元格插入图片方法2可以更加精准
+        private void AddCellPicture(ISheet sheet, HSSFWorkbook workbook, string fileurl, int row, int col)
+        {
+            try
+            {
+                //由于File类只能读取本地资源，所以在配置文件中配置了物理路径的前半部分
+                string DiscPath = ConfigurationManager.AppSettings["PictureDiscPath"];
+                // string FileName = DiscPath.Replace("\\", "/") + fileurl.Replace("http://www.bolioptics.com/", "");
+                string FileName = fileurl;
+                FileInfo file = new FileInfo(FileName);
+                if (file.Exists == true)
+                {
+                    byte[] bytes = System.IO.File.ReadAllBytes(FileName);
+                    if (!string.IsNullOrEmpty(FileName))
+                    {
+                        int pictureIdx = workbook.AddPicture(bytes, NPOI.SS.UserModel.PictureType.JPEG);
+                        HSSFPatriarch patriarch = (HSSFPatriarch)sheet.CreateDrawingPatriarch();
+                        HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0, col, row, col + 1, row + 1);
+                        HSSFPicture pict = (HSSFPicture)patriarch.CreatePicture(anchor, pictureIdx);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+
         //导出维修清单用
         public void OutputDeviceRepairListModel(string data)
         {

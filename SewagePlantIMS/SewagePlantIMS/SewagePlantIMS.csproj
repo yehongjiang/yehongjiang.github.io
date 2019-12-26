@@ -217,6 +217,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\ChemicalController.cs" />
     <Compile Include="Controllers\DeviceController.cs" />
+    <Compile Include="Controllers\FunctionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ElectricManageController.cs" />
     <Compile Include="Controllers\SupconController.cs" />
@@ -533,6 +534,10 @@
     <Content Include="ExcelModel\RepairListModel.xls" />
     <Content Include="ExcelModel\MaintenanceListModel.xls" />
     <Content Include="ExcelModel\DeviceStateRecord.xls" />
+    <Content Include="ExcelModel\DeviceRepairAfterApproval.xls" />
+    <Content Include="ExcelModel\DeviceRepairOldApproval.xls" />
+    <Content Include="ExcelModel\DeviceRepairPreApproval.xls" />
+    <Content Include="ExcelModel\testexcel.xls" />
     <None Include="Properties\PublishProfiles\SewagePlantIMS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\DataTableExtend.js" />
@@ -602,6 +607,8 @@
     <Content Include="Scripts\laydate\theme\default\font\iconfont.woff" />
     <Content Include="Views\Device\DeviceRepairFaultPic.cshtml" />
     <Content Include="Views\Device\DevicePreRepair.cshtml" />
+    <Content Include="Views\Function\Index.cshtml" />
+    <Content Include="Views\Function\ComplexText.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
