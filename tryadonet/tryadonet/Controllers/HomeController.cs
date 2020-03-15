@@ -569,5 +569,9 @@ namespace tryadonet.Controllers
             ViewBag.Content = "<p>第一行</p><p>第二行</p>";
             return View();
         }
+        public ActionResult CKeditor()
+        {
+            return View();
+        }
     }
 }
